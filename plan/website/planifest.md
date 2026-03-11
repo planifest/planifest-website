@@ -38,4 +38,4 @@
 - Downstream: none
 
 ## Confirmation
-Human confirmed this Planifest before proceeding: yes / no
+Human confirmed this Planifest before proceeding: yes

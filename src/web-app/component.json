@@ -1,0 +1,102 @@
+{
+    "id": "web-app",
+    "name": "Planifest Website",
+    "initiative": "website",
+    "version": "0.1.0",
+    "status": "planned",
+    "purpose": {
+        "summary": "Displaying the Planifest landing page.",
+        "systemContext": "Serves as the public face of the project, hosted freely on GitHub Pages.",
+        "type": "microfrontend",
+        "domain": "marketing",
+        "responsibilities": [
+            "Display landing page details and animations",
+            "Render markdown files from planifest-docs at build time",
+            "Provide light/dark mode theme toggling"
+        ],
+        "notResponsibleFor": [
+            "Backend server operations",
+            "User authentication",
+            "Database storage",
+            "Real-time dynamic route rendering"
+        ]
+    },
+    "stack": {
+        "language": "typescript",
+        "runtime": "node",
+        "framework": "none",
+        "frontend": "none",
+        "styling": "vanilla-css",
+        "componentLibrary": "none",
+        "database": "none",
+        "orm": "none",
+        "testing": "none",
+        "iac": "none",
+        "cloud": "none",
+        "compute": "none",
+        "ci": "github-actions"
+    },
+    "contract": {
+        "apiSpec": "none",
+        "inputs": [],
+        "outputs": [],
+        "consumedBy": [],
+        "consumes": [],
+        "breakingChangePolicy": "requires-adr"
+    },
+    "data": {
+        "ownsData": false,
+        "dataContract": "",
+        "tables": [],
+        "schemaVersion": "0.0.0",
+        "migrationPath": ""
+    },
+    "risk": {
+        "level": "low",
+        "items": []
+    },
+    "scope": {
+        "in": [
+            "Beautiful hero section",
+            "Technical overview",
+            "Light/dark mode",
+            "Static site generation via Vite",
+            "Dynamic rendering of planifest-docs files during build",
+            "Removal of metadata/IDs for cleaner reading",
+            "Linking documentation pages automatically"
+        ],
+        "out": [
+            "Backend APIs",
+            "Databases",
+            "User authentication",
+            "Multi-page routing mechanism",
+            "Displaying meta data/IDs from MD docs natively"
+        ],
+        "deferred": [
+            "Interactive playground"
+        ]
+    },
+    "quality": {
+        "testCoverage": {
+            "unit": 0,
+            "integration": 0,
+            "e2e": 0
+        },
+        "techDebt": [],
+        "quirks": []
+    },
+    "pipeline": {
+        "templateVersion": "1.0.0",
+        "initiativeMode": "greenfield",
+        "domainKnowledgePath": "plan/website/docs"
+    },
+    "metadata": {
+        "createdAt": "2026-03-11T23:21:00Z",
+        "updatedAt": "2026-03-11T23:21:00Z",
+        "createdBy": "agent",
+        "lastModifiedBy": "agent",
+        "skill": "planifest-spec-agent",
+        "tool": "antigravity",
+        "model": "gemini-2.5-pro"
+    }
+}
