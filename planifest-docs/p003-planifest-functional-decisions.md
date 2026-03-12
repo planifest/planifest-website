@@ -11,6 +11,7 @@
 | 5 | Updated FD-015 with reference to Backend Stack Evaluation (p013) and agent-suitability guidance for stack selection | 07 MAR 2026 | Martin Mayer (via agent) |
 | 6 | Updated FD-015 with reference to Frontend Stack Evaluation (p016) for frontend stack selection guidance | 09 MAR 2026 | Martin Mayer (via agent) |
 | 7 | Updated FD-021 with reference to Strategic Intent vs Stochastic Execution (p017) | 11 MAR 2026 | Martin Mayer |
+| 8 | Removed MCP from v1.0 decisions - FD-010, FD-011, FD-012, FD-013, FD-020 updated to reflect agentskills.io as v1.0 delivery; MCP noted as roadmap | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 
@@ -141,35 +142,29 @@ Agents query before generating. Before building any component, an agent must at 
 
 ---
 
-## FD-010 - The Domain Knowledge Store has two access paths
+## FD-010 - The Domain Knowledge Store is accessed via the git `docs/` folder in v1.0
 
-**Decision:** Agents access the domain knowledge store via one of two paths. Both produce and consume the same document structure and honour the same default rules. The choice is operational, not architectural.
+**Decision:** In v1.0, agents access the domain knowledge store by reading and writing the `docs/` folder directly via Agent Skills. Documents are colocated with the code they describe. No additional infrastructure is required - the store works locally and in CI.
 
-- **MCP service** - a queryable service wrapping the document store. Agents ask targeted natural language questions and receive scoped, confident answers with source references. Better suited to larger teams, multiple initiatives, or complex domains.
-- **Git `docs/` folder** - documents colocated with the code they describe. No additional infrastructure. Works locally and in CI. Better suited to smaller teams, single initiatives, or environments where running an additional service is not desirable.
+A queryable MCP service wrapping the Domain Knowledge Store is a roadmap item (see [RC-001](p014-planifest-roadmap.md)). It will provide tighter agent context and structured query responses suited to larger teams or complex domains.
 
-**Rationale:** Forcing all teams to run an MCP service creates unnecessary overhead for simpler deployments. Forcing large teams to navigate raw files creates noise and context bloat. Both paths are valid - the structure is identical either way.
+**Rationale:** The git `docs/` folder provides sufficient queryability for single-agent, single-initiative work. The standardised file paths and artifact structure mean agents can navigate the store efficiently. The MCP service becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.
 
 ---
 
-## FD-011 - The MCP service is the sole writer to the git repository
+## FD-011 - Code and docs are always committed atomically
 
-**Decision:** When operating via the MCP path, the MCP service is the sole writer to the git monorepo - for both code and docs. Agents never write to git directly. All writes are posted to the MCP service and queued for serial processing. Code and docs are always committed atomically - never one without the other.
+**Decision:** Code and documentation are always committed together in a single atomic operation. Neither is ever committed without the other. In v1.0, this discipline is enforced by the pipeline skill instructions and reviewed at the PR gate.
 
-Direct git pushes by humans or external systems during active pipeline operation are a process violation.
+A serial write queue where the domain-knowledge-server is the sole writer to the git repository - structurally eliminating merge conflicts from concurrent agents - is a roadmap item (see [RC-003](p014-planifest-roadmap.md)).
 
-**Rationale:** Serial writes via a single service eliminate merge conflicts by design. Atomic commits ensure the repository is never in a state where code exists without documentation or vice versa.
+**Rationale:** Atomic commits ensure the repository is never in a state where code exists without documentation or vice versa. The serial write queue model becomes important when multiple agents operate concurrently; v1.0 runs one agent session at a time.
 
 ---
 
 ## FD-012 - Credentials are never present in agent context
 
-**Decision:** Agents are never given credentials directly. The agent is given a capability - it can commit to git - not a credential. Authentication is handled natively by the environment:
-
-- **MCP path** - the MCP service holds credentials; agents post writes to the service
-- **Non-MCP path** - credentials are managed by the OS (macOS Keychain, Windows Credential Manager, Linux git credential store) or injected as masked environment variables in CI
-
-Credentials are never present in the agent's context window regardless of how the agent is prompted.
+**Decision:** Agents are never given credentials directly. The agent is given a capability - it can commit to git - not a credential. In v1.0, credentials are managed by the OS (macOS Keychain, Windows Credential Manager, Linux git credential store) or injected as masked environment variables in CI. Agents interact with the filesystem and git via Agent Skills, never via credentials in their context window.
 
 **Rationale:** An agent that holds credentials can leak them. An agent that holds a capability cannot. This is a security boundary, not a convenience.
 
@@ -177,13 +172,11 @@ Credentials are never present in the agent's context window regardless of how th
 
 ## FD-013 - The artifacts are the product; the destination is pluggable
 
-**Decision:** Planifest produces structured markdown artifacts. Where they are stored and rendered is an integration concern. The artifacts are the source of truth. Document store integration uses one of three delivery paths:
+**Decision:** Planifest produces structured markdown artifacts. Where they are stored and rendered is an integration concern. The artifacts are the source of truth.
 
-1. **Existing MCP server + override skill** - destination has an MCP server but requires Planifest-specific behaviour for artifact structure, naming, cross-linking, or tagging
-2. **Override skill only** - the interface is trivially simple and no MCP server is required (e.g. git repo, filesystem)
-3. **Build an MCP server** - no MCP server exists and the destination interface is sufficiently complex to warrant one
+In v1.0, the git repository is the default - artifacts land alongside the code via Agent Skills, no additional integration required. A git repo is already in scope for every initiative.
 
-The git repository is the default - artifacts land alongside the code, no additional integration required, and a git repo is already in scope for every initiative.
+Teams that want a richer documentation experience (Obsidian, Notion, Confluence) can integrate at the documentation provider level - see [RC-005 - Pluggable Documentation Provider](p014-planifest-roadmap.md).
 
 **Rationale:** Tying Planifest to a specific document store constrains adoption. The artifacts themselves are the source of truth - the destination is a delivery detail.
 
@@ -305,11 +298,13 @@ The guiding principle: **one reason to change, easy to rebuild rather than modif
 
 ---
 
-## FD-020 - MCP is the nervous system; Planifest is the brain
+## FD-020 - agentskills.io is the delivery mechanism; Planifest is the brain
 
-**Decision:** MCP provides agent capabilities and connections. Planifest provides the knowledge, requirements, standards, and procedure that give those capabilities purpose and direction. They are complementary, not overlapping.
+**Decision:** In v1.0, Agent Skills (delivered via agentskills.io) are the execution mechanism. Planifest provides the knowledge, requirements, standards, and procedure that give those capabilities purpose and direction. They are complementary, not overlapping.
 
-**Rationale:** Without Planifest, an MCP-connected agent is capable but undirected. Without MCP, Planifest has no means of execution. The two layers must be understood and maintained separately.
+MCP will eventually provide the infrastructure layer - typed tool calls, credential isolation, structured query responses - see [RC-001](p014-planifest-roadmap.md) through [RC-004](p014-planifest-roadmap.md).
+
+**Rationale:** Without Planifest, an agent is capable but undirected. Without a delivery mechanism, Planifest has no means of execution. The specification and the execution layer must be understood and maintained separately.
 
 ---
 

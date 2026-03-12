@@ -11,6 +11,7 @@
 | 5 | Deduplicated default rules table - now references canonical table in p003 FD-007 | 07 MAR 2026 | Martin Mayer (via agent) |
 | 6 | Added Planifest name etymology; replaced monorepo structure with v1.0 skills-based layout; replaced docs sync with v1.0 git-native framing | 07 MAR 2026 | Martin Mayer (via agent) |
 | 7 | Added Strategic Intent vs Stochastic Execution (p017) to related links | 11 MAR 2026 | Martin Mayer |
+| 8 | Removed MCP from v1.0 content - MCP is roadmap only; v1.0 uses agentskills.io; removed Build Sequence (MCP-first future plan) | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 
@@ -33,7 +34,6 @@
 - [9. Adoption Modes](#9-adoption-modes)
 - [10. Monorepo Structure](#10-monorepo-structure)
 - [11. Documentation Sync](#11-documentation-sync)
-- [12. Build Sequence](#12-build-sequence)
 - [Local Dev - Agentic Tool Execution Mode](p010-planifest-agentic-tool-runbook.md)
 - [MCP Design - Tool Server Architecture](roadmap/p005-planifest-mcp-architecture.md) *(roadmap)*
 - [Functional Decisions](p003-planifest-functional-decisions.md)
@@ -59,8 +59,6 @@ Planifest specifies three layers of every initiative:
 
 Across all three layers, Scope, Risks, and Dependencies are first-class concerns. Nothing significant is left implicit. See [Functional Decisions](p003-planifest-functional-decisions.md) for the full set of functional decisions.
 
-**MCP is the nervous system. Planifest is the brain.** MCP provides agent capabilities and connections. Planifest provides the knowledge, requirements, standards, and procedure that give those capabilities purpose and direction. They are complementary, not overlapping.
-
 ---
 
 ## 2. System Overview
@@ -82,27 +80,10 @@ flowchart TD
     HGATE --> DA[docs-agent]
     DA --> DKS[(Domain Knowledge Store)]
 
-    subgraph MCP["MCP Servers"]
-        M1["domain-knowledge-server"]
-        M2["filesystem-server"]
-        M3["ci-server"]
-        M4["vcs-server"]
-        M5["docs-server"]
-    end
-
-    SA <-->|tool calls| MCP
-    AA <-->|tool calls| MCP
-    CA <-->|tool calls| MCP
-    VA <-->|tool calls| MCP
-    SEC <-->|tool calls| MCP
-    PRA <-->|tool calls| MCP
-    DA <-->|tool calls| MCP
-
     style A fill:#d4edda,stroke:#28a745,color:#000
     style Z fill:#d4edda,stroke:#28a745,color:#000
     style HGATE fill:#d4edda,stroke:#28a745,color:#000
     style GATE1 fill:#fff8e1,stroke:#f0a500
-    style MCP fill:#fff3cd,stroke:#ffc107
     style DKS fill:#cce5ff,stroke:#0066cc
 ```
 
@@ -125,20 +106,18 @@ flowchart LR
         GDC["get_data_contract"]
     end
 
-    AG["Agents"] -->|MCP tool calls| DKS
-    DKS --> STORE[(git docs/ or MCP service)]
+    AG["Agents"] -->|read / write| DKS
+    DKS --> STORE[(git docs/ folder)]
 
     style DKS fill:#fff3cd,stroke:#ffc107
     style STORE fill:#cce5ff,stroke:#0066cc
 ```
 
-### Two access paths
+### Access path - v1.0
 
-**MCP-enabled service** - agents call tools and receive scoped, purposeful responses. Keeps agent context tight. Better suited to larger teams, multiple initiatives, or complex domains.
+**Git `docs/` folder** - agents read and write documents directly via Agent Skills. Documents are colocated with code. No additional infrastructure required. Works locally and in CI.
 
-**Git `docs/` folder** - documents colocated with code. No additional infrastructure. Better suited to smaller teams, single initiatives, or local development.
-
-Both paths produce and consume the same document structure and honour the same default rules. The choice is operational, not architectural.
+A queryable MCP service wrapping the Domain Knowledge Store is a roadmap item - see [RC-001](p014-planifest-roadmap.md).
 
 ### Agents query before generating
 
@@ -152,7 +131,7 @@ Before building any component, an agent must at minimum:
 
 Every document is versioned. Updates create new versions rather than overwriting. History is never destroyed - only superseded. Documents carry `author: "human" | "agent"` - agent-authored documents are always flagged distinctly.
 
-See [MCP Design](roadmap/p005-planifest-mcp-architecture.md), [MCP Domain Service Spec](roadmap/p007-planifest-domain-knowledge-service-reference.md), and [MCP Interface Spec](roadmap/p006-planifest-domain-knowledge-service-interface.md) for the full tool interface and conformance requirements *(roadmap)*.
+See [MCP Design](roadmap/p005-planifest-mcp-architecture.md), [MCP Domain Service Spec](roadmap/p007-planifest-domain-knowledge-service-reference.md), and [MCP Interface Spec](roadmap/p006-planifest-domain-knowledge-service-interface.md) for the full MCP tool interface and conformance requirements *(roadmap - RC-001)*.
 
 ---
 
@@ -259,14 +238,14 @@ flowchart TD
 
 ### Agent responsibilities
 
-| Agent | Domain Knowledge Tools | Output |
+| Agent | Domain Knowledge Access (v1.0) | Output |
 |---|---|---|
-| spec-agent | `domain_query`, `get_component`, `get_glossary`, `get_risk` | design-spec.md, openapi.yaml, scope.md, risk-register.md |
-| adr-agent | `list_adrs`, `domain_query` | docs/adr/*.md |
-| codegen-agent | `get_component`, `get_data_contract`, `filesystem.read_file`, `filesystem.write_file` | Full implementation + tests + IaC |
-| security-agent | `get_risk`, `filesystem.read_file`, `ci.run_sast` | security-report.md |
-| pr-agent | `vcs.create_pr` | PR with full description |
-| docs-agent | `create_document`, `update_document`, `docs.sync` | Domain Knowledge Store updated + docs synced |
+| spec-agent | Reads `docs/` and `plan/` folders directly | design-spec.md, openapi.yaml, scope.md, risk-register.md |
+| adr-agent | Reads `docs/adr/` directly | docs/adr/*.md |
+| codegen-agent | Reads component files; writes via filesystem | Full implementation + tests + IaC |
+| security-agent | Reads source files directly | security-report.md |
+| pr-agent | Via git push + CLI | PR with full description |
+| docs-agent | Writes to `docs/` and `plan/` folders directly | Domain Knowledge Store updated |
 
 ---
 
@@ -337,27 +316,11 @@ flowchart TD
 
 ## 7. Agent Orchestration Layer
 
-A single containerised orchestrator service (TypeScript, Fastify) that:
-- Watches for new Initiative Briefs via webhook, file watcher, or queue trigger
-- Runs the pipeline as a **state machine**: Discovery -> Spec -> ADR -> Codegen -> Validate -> Security -> PR -> Docs
-- Persists state between steps so retries have full error context
-- Is **idempotent** - re-running with the same Initiative Brief produces the same output
+In v1.0, the pipeline is executed by a human-triggered agent session following the orchestrator skill. The orchestrator skill sequences the phase skills, and each agent reads and writes files directly.
 
-### MCP write model
+A fully automated orchestrator service (watching for Initiative Briefs, running the pipeline as a CI state machine) is a roadmap item - see [RC-002](p014-planifest-roadmap.md). A serial write queue to structurally eliminate concurrent merge conflicts is [RC-003](p014-planifest-roadmap.md).
 
-The domain-knowledge-server is the **sole writer** to the document store and git repository. Agents never write directly. All writes are posted to the MCP service and queued for serial processing - one write at a time, in order. This eliminates merge conflicts by design.
-
-```mermaid
-flowchart LR
-    AG["Agent"] -->|propose write| Q["Write queue\n(serial)"]
-    Q --> L["Listener"]
-    L -->|atomic commit\ncode + docs together| GIT["Git repo"]
-
-    style Q fill:#fff8e1,stroke:#f0a500
-    style GIT fill:#f0f4ff,stroke:#6c8ebf
-```
-
-Code and docs are always committed together in a single atomic operation. Neither is ever committed without the other.
+Code and docs are always committed together in a single atomic operation. Neither is ever committed without the other - enforced by the pipeline skill instructions and reviewed at the PR gate.
 
 ### Agent interface
 
@@ -372,7 +335,7 @@ type AgentContext = {
 type AgentResult = {
   status: "complete" | "blocked" | "failed"
   blockedReason?: string    // surfaces a spec gap if blocked
-  outputPaths: string[]     // files written via MCP
+  outputPaths: string[]     // files written to disk
 }
 ```
 
@@ -505,59 +468,6 @@ Every agent output is a markdown document, written to `plan/{initiative-id}/docs
 Teams that want a richer documentation experience (Obsidian, Notion, Confluence) can integrate at the documentation provider level - see [RC-005 - Pluggable Documentation Provider](p014-planifest-roadmap.md) in the roadmap.
 
 ---
-
-## 12. Build Sequence
-
-```mermaid
-flowchart LR
-    subgraph M1["Milestone 1"]
-        A1["Domain Knowledge\nMCP server"]
-    end
-    subgraph M2["Milestone 2"]
-        A2["Orchestrator\nskeleton"]
-    end
-    subgraph M3["Milestone 3"]
-        A3["CI templates\nVCS-MCP\nPulumi modules"]
-    end
-    subgraph M4["Milestone 4"]
-        B1["spec-agent\nadr-agent"]
-    end
-    subgraph M5["Milestone 5"]
-        B2["codegen-agent\nvalidate loop"]
-    end
-    subgraph M6["Milestone 6"]
-        B3["security-agent\npr-agent\ndocs-agent"]
-    end
-    subgraph M7["Milestone 7+"]
-        C1["First initiative\nend-to-end"]
-        C2["Prompt tuning"]
-    end
-
-    M1 --> M2 --> M3 --> M4 --> M5 --> M6 --> M7
-    C1 --> C2
-
-    style M1 fill:#f0f4ff,stroke:#6c8ebf
-    style M2 fill:#f0f4ff,stroke:#6c8ebf
-    style M3 fill:#f0f4ff,stroke:#6c8ebf
-    style M4 fill:#fff8e1,stroke:#f0a500
-    style M5 fill:#fff8e1,stroke:#f0a500
-    style M6 fill:#fff8e1,stroke:#f0a500
-    style M7 fill:#d4edda,stroke:#28a745
-```
-
-**Milestone 1 - Domain Knowledge MCP server.** The new foundation. Build `apps/domain-knowledge-mcp` first: document schema, all query and write tools, the serial write queue. Everything downstream reads from and writes to this service.
-
-**Milestone 2 - Orchestrator skeleton.** State machine with stubbed agents. Prove pipeline wiring, state persistence, retry logic, and idempotency.
-
-**Milestone 3 - Templates.** CI pipeline templates, VCS-MCP, Pulumi modules. Prove a manual scaffold works end-to-end.
-
-**Milestone 4 - spec-agent and adr-agent.** Highest leverage. Implement the hard gate: spec must be complete before proceeding.
-
-**Milestone 5 - codegen-agent and validate loop.** Hardest to tune. Incremental write-to-disk. Self-correct retry loop.
-
-**Milestone 6 - security-agent, pr-agent, docs-agent.** Close the loop.
-
-**Milestone 7 - First real initiative.** The first run surfaces gaps that no upfront planning reveals.
 
 ---
 

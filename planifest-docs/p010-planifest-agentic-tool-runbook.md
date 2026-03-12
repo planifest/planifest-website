@@ -6,6 +6,7 @@
 |---|---|---|---|
 | 1 | Created from local dev runbook - expanded to cover Claude Code, Cursor, Antigravity, and GitHub Copilot | 05 MAR 2026 | Martin Mayer |
 | 2 | Reframed for v1.0 skills-based delivery - pipeline-manifest.md replaced by orchestrator skill; MCP server setup replaced by direct file access; added Planifest name concept | 07 MAR 2026 | Martin Mayer (via agent) |
+| 3 | MCP column in tool comparison table clarified as roadmap; context limit diagram updated to remove filesystem MCP reference | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 
@@ -47,7 +48,7 @@ For changes to existing initiatives, the orchestrator invokes the change-agent s
 
 | Concern | Claude Code | Cursor | Antigravity | GitHub Copilot |
 |---|---|---|---|---|
-| MCP support | Native - stdio (future, when MCP servers are built) | Via MCP extension (future) | Native (future) | Limited / via extensions |
+| MCP support | Native - stdio *(roadmap - see RC-001 to RC-004)* | Via MCP extension *(roadmap)* | Native *(roadmap)* | Limited / via extensions *(roadmap)* |
 | Authentication | Claude Code session - no API key needed | API key or Cursor account | Antigravity account | GitHub account |
 | Runs full pipeline | Yes - loads orchestrator skill, executes phases | Yes - with adapter + skills | Yes - pipeline-native | Partial - prompt-driven per phase |
 | Domain Knowledge Store | Reads `docs/` folder directly | Reads `docs/` folder directly | Reads `docs/` folder directly | Reads `docs/` folder via workspace indexing |
@@ -201,7 +202,7 @@ Applies to all local tools. The file system is the memory - write outputs to dis
 
 ```mermaid
 flowchart TD
-    A{Phase complete?} -->|Yes| B[Write outputs to disk\nvia filesystem MCP]
+    A{Phase complete?} -->|Yes| B[Write outputs to disk]
     B --> C[Log to pipeline-run.md]
     C --> D[Reference by path\nin next phase]
     D --> E[Next phase reads\nonly what it needs]

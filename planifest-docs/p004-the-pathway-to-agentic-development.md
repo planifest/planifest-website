@@ -11,6 +11,7 @@
 | 5 | Updated Stack Configuration section with Backend Stack Evaluation (p013) reference and polyglot guidance | 07 MAR 2026 | Martin Mayer (via agent) |
 | 6 | Updated Stack Configuration section with Frontend Stack Evaluation (p016) reference | 09 MAR 2026 | Martin Mayer (via agent) |
 | 7 | Added Research Report: Strategic Intent vs Stochastic Execution (p017) reference | 11 MAR 2026 | Martin Mayer |
+| 8 | Removed MCP from v1.0 content - accessing the domain section updated to git docs/ only; MCP service noted as roadmap | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 
@@ -207,7 +208,7 @@ Worth considering when: your component library is extensive enough that agents k
 
 The domain Planifest builds isn't held in memory - it's written to a structured document store as the system is built. Every component produces documentation as a first-class output, not an afterthought. The documents are granular, standard, and machine-readable. Agents querying the domain get consistent, predictable answers.
 
-Documents are versioned. Updates create new versions rather than overwriting. History is never destroyed - only superseded. This mirrors how the git `docs/` fallback works naturally via version control, and the MCP service follows the same principle.
+Documents are versioned. Updates create new versions rather than overwriting. History is never destroyed - only superseded. This is enforced naturally by version control in the git `docs/` folder.
 
 Three concerns appear at every level - initiative, component, and system-wide:
 
@@ -265,13 +266,9 @@ Schema changes follow a strict path regardless of other configuration:
 
 ### Accessing the Domain
 
-Agents access the domain knowledge store in one of two ways:
+In v1.0, agents access the domain knowledge store by reading the `docs/` folder directly via Agent Skills. Documents are colocated with the code they describe. No additional infrastructure is required - works locally and in CI.
 
-**MCP-enabled service** - a queryable service wrapping the document store, allowing agents to ask targeted questions: *"what components handle authentication?"*, *"what are the SLO constraints for this service?"*, *"what risk has already been identified for this domain?"*. Keeps agent context tight. Better suited to larger teams, multiple initiatives, or complex domains where file-based navigation would be unwieldy.
-
-**Git `docs/` folder** - documents are colocated with the code they describe. No additional infrastructure, works locally and in CI. Better suited to smaller teams, single initiatives, or environments where running an additional service is not desirable.
-
-Both paths produce and consume the same document structure and honour the same default rules. The choice is operational, not architectural.
+A queryable MCP service wrapping the Domain Knowledge Store - allowing agents to ask targeted questions and receive scoped, structured responses - is a roadmap item. See [RC-001](p014-planifest-roadmap.md). It becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.
 
 ---
 

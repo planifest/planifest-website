@@ -7,6 +7,7 @@
 | 1 | Initial document | 02 MAR 2026 | Martin Mayer |
 | 2 | Reframed as specification framework; corrected human gate language; added domain knowledge, adoption modes, data contracts | 05 MAR 2026 | Martin Mayer |
 | 3 | Added Planifest name etymology; reframed solution as Agent Skills delivery; removed TypeScript-specific language and pluggable docs provider | 07 MAR 2026 | Martin Mayer (via agent) |
+| 4 | Replaced MCP servers with Agent Skills in open source library description | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 
@@ -100,11 +101,11 @@ The third differentiator is documentation as a first-class output. Every pipelin
 
 ## What This Could Become
 
-**As an open source library**, Planifest could be a composable specification framework and set of MCP servers that any team drops into their monorepo. The document schema is the API surface - teams adopt it, and the rest of the tooling builds on top. The Domain Knowledge Store, the pipeline templates, the agent prompts, and the documentation sync are all independently useful and independently adoptable. Teams bring their own CI platform, their own cloud, and their own documentation system - Planifest adapts to each. Three adoption modes cover the full spectrum: greenfield, retrofit of an existing system, and the Agent Interface Layer for complex domains.
+**As an open source library**, Planifest could be a composable specification framework and set of Agent Skills that any team drops into their monorepo. The document schema is the API surface - teams adopt it, and the rest of the tooling builds on top. The Domain Knowledge Store, the pipeline templates, the agent prompts, and the documentation sync are all independently useful and independently adoptable. Teams bring their own CI platform, their own cloud, and their own documentation system - Planifest adapts to each. Three adoption modes cover the full spectrum: greenfield, retrofit of an existing system, and the Agent Interface Layer for complex domains.
 
 **As a product**, the opportunity is the intelligence layer itself. The Component Registry becomes a SaaS service - teams connect their repos, manifests are indexed, and agents across any tool (Claude Code, Copilot, Cursor, CI pipelines) can query the registry to understand the codebase before acting. The value compounds as more components are registered and more change history is accumulated. The observability store - tracking which components fail most, which briefs are consistently underspecified, how many retries a given agent needs - becomes a product analytics layer for engineering quality.
 
-**The wedge** is the open source library. Teams adopt it because the pipeline templates and MCP servers are immediately useful and free. The registry SaaS becomes valuable as the number of components grows and the need for cross-tool, cross-session component intelligence becomes real.
+**The wedge** is the open source library. Teams adopt it because the pipeline templates and Agent Skills are immediately useful and free. The registry SaaS becomes valuable as the number of components grows and the need for cross-tool, cross-session component intelligence becomes real.
 
 ---
 
