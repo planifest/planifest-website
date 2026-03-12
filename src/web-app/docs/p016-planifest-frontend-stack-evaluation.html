@@ -1075,7 +1075,7 @@
 </tr>
 </tbody></table>
 <h3>Trade-Off Matrix</h3>
-<pre><code>                    Agent Success ←-&gt; Bundle Efficiency
+<pre><code class="language-">                    Agent Success ←-> Bundle Efficiency
                     ┌─────────────────────────────────┐
           High      │  React+Vite                     │
       Agent         │    Next.js   Vue+Nuxt           │
@@ -1088,9 +1088,7 @@
       Success       │                                  │
                     └─────────────────────────────────┘
                     Large                        Small
-                    Bundles                   Bundles
-</code></pre>
-<pre><code>                    Agent Success ←-&gt; Framework Complexity
+                    Bundles                   Bundles</code></pre><pre><code class="language-">                    Agent Success ←-> Framework Complexity
                     ┌─────────────────────────────────┐
           High      │  React+Vite  HTMX               │
       Agent         │     Vue+Nuxt                     │
@@ -1103,9 +1101,7 @@
       Success       │                                   │
                     └─────────────────────────────────┘
                     Simple                       Complex
-                    Framework                 Framework
-</code></pre>
-<h3>The Complexity Cliff - Frontend-Specific</h3>
+                    Framework                 Framework</code></pre><h3>The Complexity Cliff - Frontend-Specific</h3>
 <p>Addy Osmani&#39;s research at React Summit quantified the &quot;complexity cliff&quot; for frontend AI code generation:</p>
 <table>
 <thead>
@@ -1370,7 +1366,7 @@
 </tr>
 </tbody></table>
 <h3>3. Recommended Planifest Frontend Template Stack</h3>
-<pre><code>┌──────────────────────────────────────────────────────────┐
+<pre><code class="language-">┌──────────────────────────────────────────────────────────┐
 │                   Frontend Architecture                    │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
@@ -1406,12 +1402,10 @@
 │  └─────────────────────────────────────────────┘        │
 │                                                          │
 │  Shared contracts: OpenAPI spec (Zod derived from it)    │
-│  Container: Multi-stage Dockerfile -&gt; Nginx/Caddy         │
-│  Image size target: &lt; 30 MB                              │
-│  Bundle size target: &lt; 200 KB (gzipped, first load)      │
-└──────────────────────────────────────────────────────────┘
-</code></pre>
-<h3>4. Rationale - Why These Choices</h3>
+│  Container: Multi-stage Dockerfile -> Nginx/Caddy         │
+│  Image size target: < 30 MB                              │
+│  Bundle size target: < 200 KB (gzipped, first load)      │
+└──────────────────────────────────────────────────────────┘</code></pre><h3>4. Rationale - Why These Choices</h3>
 <p><strong>React + Vite as default frontend:</strong></p>
 <ul>
 <li>70-80% first-pass agent success rate is the highest evaluated for SPAs</li>

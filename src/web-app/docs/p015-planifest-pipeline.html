@@ -43,59 +43,57 @@
 <hr>
 <h2>Initiative Pipeline</h2>
 <p>Triggered when a human provides an Initiative Brief for new work.</p>
-<pre><code class="language-mermaid">flowchart TD
-    BRIEF([Initiative Brief]) --&gt; PHASE1
+<pre class="mermaid">flowchart TD
+    BRIEF([Initiative Brief]) --> PHASE1
 
-    subgraph PHASE1[&quot;Phase 1 - Specification&quot;]
-        ASSESS[&quot;Assess brief against\nartifact requirements&quot;]
-        COMPLETE{&quot;Complete?&quot;}
-        COACH[&quot;Surface gaps\nCoach human for answers&quot;]
-        SPEC[&quot;Produce specification\nartifacts&quot;]
-        ASSESS --&gt; COMPLETE
-        COMPLETE --&gt;|No| COACH
-        COACH --&gt;|Answers provided| ASSESS
-        COMPLETE --&gt;|Yes| SPEC
+    subgraph PHASE1["Phase 1 - Specification"]
+        ASSESS["Assess brief against\nartifact requirements"]
+        COMPLETE{"Complete?"}
+        COACH["Surface gaps\nCoach human for answers"]
+        SPEC["Produce specification\nartifacts"]
+        ASSESS --> COMPLETE
+        COMPLETE -->|No| COACH
+        COACH -->|Answers provided| ASSESS
+        COMPLETE -->|Yes| SPEC
     end
 
-    subgraph PHASE2[&quot;Phase 2 - Architecture Decisions&quot;]
-        ADR[&quot;Produce ADRs for every\nsignificant decision&quot;]
+    subgraph PHASE2["Phase 2 - Architecture Decisions"]
+        ADR["Produce ADRs for every\nsignificant decision"]
     end
 
-    subgraph PHASE3[&quot;Phase 3 - Code Generation&quot;]
-        CODE[&quot;Implement against the\nspec and ADRs&quot;]
+    subgraph PHASE3["Phase 3 - Code Generation"]
+        CODE["Implement against the\nspec and ADRs"]
     end
 
-    subgraph PHASE4[&quot;Phase 4 - Validate&quot;]
-        CHECK{&quot;CI passes?&quot;}
-        FIX[&quot;Self-correct&quot;]
-        RETRY{&quot;Retries left?&quot;}
-        HALT([&quot;Halt - report failure&quot;])
+    subgraph PHASE4["Phase 4 - Validate"]
+        CHECK{"CI passes?"}
+        FIX["Self-correct"]
+        RETRY{"Retries left?"}
+        HALT(["Halt - report failure"])
     end
 
-    subgraph PHASE5[&quot;Phase 5 - Security&quot;]
-        SEC[&quot;Security assessment&quot;]
+    subgraph PHASE5["Phase 5 - Security"]
+        SEC["Security assessment"]
     end
 
-    subgraph PHASE6[&quot;Phase 6 - Ship&quot;]
-        DOCS[&quot;Write all documentation&quot;]
-        RUN[&quot;Write pipeline-run.md&quot;]
+    subgraph PHASE6["Phase 6 - Ship"]
+        DOCS["Write all documentation"]
+        RUN["Write pipeline-run.md"]
     end
 
-    REVIEW([&quot;Human reviews PR&quot;])
+    REVIEW(["Human reviews PR"])
 
-    PHASE1 --&gt; PHASE2 --&gt; PHASE3 --&gt; PHASE4
-    CHECK --&gt;|Yes| PHASE5
-    CHECK --&gt;|No| RETRY
-    RETRY --&gt;|Yes| FIX --&gt; CHECK
-    RETRY --&gt;|No| HALT
-    PHASE5 --&gt; PHASE6 --&gt; REVIEW
+    PHASE1 --> PHASE2 --> PHASE3 --> PHASE4
+    CHECK -->|Yes| PHASE5
+    CHECK -->|No| RETRY
+    RETRY -->|Yes| FIX --> CHECK
+    RETRY -->|No| HALT
+    PHASE5 --> PHASE6 --> REVIEW
 
     style BRIEF fill:#d4edda,stroke:#28a745,color:#000
     style REVIEW fill:#d4edda,stroke:#28a745,color:#000
     style HALT fill:#f8d7da,stroke:#dc3545,color:#000
-    style PHASE1 fill:#fff8e1,stroke:#f0a500
-</code></pre>
-<hr>
+    style PHASE1 fill:#fff8e1,stroke:#f0a500</pre><hr>
 <h3>Phase 1 - Specification (hard gate)</h3>
 <p><strong>Purpose:</strong> Ensure the specification is complete before any development begins. This is a hard gate - you do not proceed to Phase 2 until the spec is confirmed complete.</p>
 <p><strong>Input:</strong> Initiative Brief (provided by human)</p>
@@ -181,9 +179,7 @@ Why this decision needed to be made.
 What was decided.
 
 ## Consequences
-What becomes easier, what becomes harder, what is deferred.
-</code></pre>
-<p><strong>Rules:</strong></p>
+What becomes easier, what becomes harder, what is deferred.</code></pre><p><strong>Rules:</strong></p>
 <ul>
 <li>Be specific. Vague ADRs are useless.</li>
 <li>Consequences must include at least one positive and one negative consequence.</li>
@@ -302,61 +298,57 @@ Tool: {agent tool used}
 (what should be reviewed before merging)
 
 ## Self-correct log
-(what failed during validation and how it was fixed)
-</code></pre>
-<hr>
+(what failed during validation and how it was fixed)</code></pre><hr>
 <h2>Change Pipeline</h2>
 <p>Triggered when a human requests a modification to an existing initiative.</p>
-<pre><code class="language-mermaid">flowchart TD
-    CHANGE([Change Request]) --&gt; PHASE1
+<pre class="mermaid">flowchart TD
+    CHANGE([Change Request]) --> PHASE1
 
-    subgraph PHASE1[&quot;Phase 1 - Domain Context&quot;]
-        READ[&quot;Read existing artifacts\nfor this initiative&quot;]
-        COMP[&quot;Identify affected\ncomponents&quot;]
+    subgraph PHASE1["Phase 1 - Domain Context"]
+        READ["Read existing artifacts\nfor this initiative"]
+        COMP["Identify affected\ncomponents"]
     end
 
-    subgraph PHASE2[&quot;Phase 2 - Targeted Change&quot;]
-        IMPL[&quot;Implement minimum\nnecessary change&quot;]
+    subgraph PHASE2["Phase 2 - Targeted Change"]
+        IMPL["Implement minimum\nnecessary change"]
     end
 
-    subgraph PHASE3[&quot;Phase 3 - Validate&quot;]
-        CHECK{&quot;CI passes?&quot;}
-        FIX[&quot;Self-correct&quot;]
-        RETRY{&quot;Retries left?&quot;}
-        HALT([&quot;Halt - report failure&quot;])
+    subgraph PHASE3["Phase 3 - Validate"]
+        CHECK{"CI passes?"}
+        FIX["Self-correct"]
+        RETRY{"Retries left?"}
+        HALT(["Halt - report failure"])
     end
 
-    subgraph PHASE4[&quot;Phase 4 - ADR &amp; Migration Check&quot;]
-        CONTRACT{&quot;Contract\nchanged?&quot;}
-        ADR[&quot;Write new ADR&quot;]
-        SCHEMA{&quot;Schema\nchanged?&quot;}
-        MIG[&quot;Write migration\nproposal - STOP\nfor human approval&quot;]
+    subgraph PHASE4["Phase 4 - ADR & Migration Check"]
+        CONTRACT{"Contract\nchanged?"}
+        ADR["Write new ADR"]
+        SCHEMA{"Schema\nchanged?"}
+        MIG["Write migration\nproposal - STOP\nfor human approval"]
     end
 
-    subgraph PHASE5[&quot;Phase 5 - Update&quot;]
-        DOCS[&quot;Update affected\ndocumentation&quot;]
-        RUN[&quot;Write pipeline-run.md&quot;]
+    subgraph PHASE5["Phase 5 - Update"]
+        DOCS["Update affected\ndocumentation"]
+        RUN["Write pipeline-run.md"]
     end
 
-    REVIEW([&quot;Human reviews PR&quot;])
+    REVIEW(["Human reviews PR"])
 
-    PHASE1 --&gt; PHASE2 --&gt; PHASE3
-    CHECK --&gt;|Yes| PHASE4
-    CHECK --&gt;|No| RETRY
-    RETRY --&gt;|Yes| FIX --&gt; CHECK
-    RETRY --&gt;|No| HALT
-    CONTRACT --&gt;|Yes| ADR --&gt; PHASE5
-    CONTRACT --&gt;|No| SCHEMA
-    SCHEMA --&gt;|Yes| MIG
-    SCHEMA --&gt;|No| PHASE5
-    PHASE5 --&gt; REVIEW
+    PHASE1 --> PHASE2 --> PHASE3
+    CHECK -->|Yes| PHASE4
+    CHECK -->|No| RETRY
+    RETRY -->|Yes| FIX --> CHECK
+    RETRY -->|No| HALT
+    CONTRACT -->|Yes| ADR --> PHASE5
+    CONTRACT -->|No| SCHEMA
+    SCHEMA -->|Yes| MIG
+    SCHEMA -->|No| PHASE5
+    PHASE5 --> REVIEW
 
     style CHANGE fill:#d4edda,stroke:#28a745,color:#000
     style REVIEW fill:#d4edda,stroke:#28a745,color:#000
     style HALT fill:#f8d7da,stroke:#dc3545,color:#000
-    style MIG fill:#f8d7da,stroke:#dc3545,color:#000
-</code></pre>
-<hr>
+    style MIG fill:#f8d7da,stroke:#dc3545,color:#000</pre><hr>
 <h3>Phase 1 - Domain Context</h3>
 <p><strong>Purpose:</strong> Understand the current state before changing anything.</p>
 <p><strong>Process:</strong></p>

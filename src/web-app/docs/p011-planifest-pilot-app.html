@@ -112,49 +112,47 @@
 <p>Pulumi with TypeScript. Consistent with the rest of the stack - one language for application code and infrastructure. The Pulumi stack will be parameterised for environment (dev / staging / prod) from day one.</p>
 <hr>
 <h2>3. GCP Architecture</h2>
-<pre><code class="language-mermaid">flowchart TD
-    subgraph INTERNET[&quot;Public&quot;]
-        USER[&quot;👤 User&quot;]
+<pre class="mermaid">flowchart TD
+    subgraph INTERNET["Public"]
+        USER["👤 User"]
     end
 
-    subgraph GCP[&quot;GCP Project&quot;]
-        subgraph CR[&quot;Cloud Run Services&quot;]
-            WEB[&quot;web\nReact frontend\n(containerised)&quot;]
-            API[&quot;api\nFastify backend&quot;]
-            REG[&quot;registry\nPlanifest registry&quot;]
-            ORCH[&quot;orchestrator\nPlanifest pipeline&quot;]
+    subgraph GCP["GCP Project"]
+        subgraph CR["Cloud Run Services"]
+            WEB["web\nReact frontend\n(containerised)"]
+            API["api\nFastify backend"]
+            REG["registry\nPlanifest registry"]
+            ORCH["orchestrator\nPlanifest pipeline"]
         end
 
-        subgraph DATA[&quot;Data&quot;]
-            DB[&quot;Cloud SQL\nPostgreSQL&quot;]
-            Q[&quot;Cloud Tasks\nAsync job queue&quot;]
-            SEC[&quot;Secret Manager\nApp secrets&quot;]
+        subgraph DATA["Data"]
+            DB["Cloud SQL\nPostgreSQL"]
+            Q["Cloud Tasks\nAsync job queue"]
+            SEC["Secret Manager\nApp secrets"]
         end
 
-        subgraph REGISTRY[&quot;Artifact Registry&quot;]
-            IMGS[&quot;Container images\nweb / api / registry /\norchestrator&quot;]
+        subgraph REGISTRY["Artifact Registry"]
+            IMGS["Container images\nweb / api / registry /\norchestrator"]
         end
 
-        LB[&quot;Cloud Load Balancer\n+ Cloud Armor&quot;]
+        LB["Cloud Load Balancer\n+ Cloud Armor"]
     end
 
-    USER --&gt; LB
-    LB --&gt; WEB
-    LB --&gt; API
-    API --&gt; DB
-    API --&gt; Q
-    API --&gt; SEC
-    REG --&gt; DB
-    ORCH --&gt; Q
-    ORCH --&gt; API
-    CR --&gt; IMGS
+    USER --> LB
+    LB --> WEB
+    LB --> API
+    API --> DB
+    API --> Q
+    API --> SEC
+    REG --> DB
+    ORCH --> Q
+    ORCH --> API
+    CR --> IMGS
 
     style GCP fill:#f0f4ff,stroke:#6c8ebf
     style CR fill:#fff8e1,stroke:#f0a500
     style DATA fill:#f9f0ff,stroke:#9b59b6
-    style INTERNET fill:#d4edda,stroke:#28a745
-</code></pre>
-<h3>Service decisions</h3>
+    style INTERNET fill:#d4edda,stroke:#28a745</pre><h3>Service decisions</h3>
 <p><strong>Cloud Run</strong> is the right choice for this pilot for three reasons: no cluster management (no GKE overhead at this stage), scales to zero when idle (cost-efficient while usage is low), and the containerised deployment model is portable - if the pilot outgrows Cloud Run, migrating to GKE is a container re-target, not a rewrite.</p>
 <p><strong>Cloud SQL</strong> over a managed serverless option (Firestore, Spanner) because the stack is PostgreSQL + Drizzle throughout Planifest&#39;s architecture. Consistency matters more than marginal operational savings at pilot scale.</p>
 <p><strong>Cloud Tasks</strong> for async work - background jobs, long-running pipeline steps, webhook processing. Keeps the API response times predictable.</p>
@@ -191,7 +189,7 @@
 <hr>
 <h2>4. Monorepo Structure</h2>
 <p>The pilot app lives inside the Planifest monorepo as its first initiative - eating our own cooking from day one.</p>
-<pre><code>monorepo/
+<pre><code class="language-">monorepo/
 ├── planifest/
 │   ├── skills/                # Agent Skills - the Planifest pipeline
 │   │   ├── orchestrator/SKILL.md
@@ -248,41 +246,37 @@
 ├── infra/
 │   └── platform/
 │       └── gcp/               # Shared Pulumi modules - Cloud Run, Cloud SQL, Artifact Registry
-└── README.md
-</code></pre>
-<hr>
+└── README.md</code></pre><hr>
 <h2>5. CI/CD Pipeline</h2>
 <p>The pilot uses GitHub Actions as the CI/CD platform - Planifest&#39;s reference implementation. Both the initiative pipeline (used once to bootstrap the pilot) and the change pipeline (used for every subsequent change) are stamped from Planifest&#39;s core templates.</p>
-<pre><code class="language-mermaid">flowchart LR
-    subgraph TRIGGER[&quot;Triggers&quot;]
-        T1[&quot;initiative-brief.md\ncommitted&quot;]
-        T2[&quot;Issue / change\nbrief raised&quot;]
-        T3[&quot;Local Claude Code\nsession&quot;]
+<pre class="mermaid">flowchart LR
+    subgraph TRIGGER["Triggers"]
+        T1["initiative-brief.md\ncommitted"]
+        T2["Issue / change\nbrief raised"]
+        T3["Local Claude Code\nsession"]
     end
 
-    subgraph PIPELINE[&quot;Planifest Pipeline&quot;]
-        P1[&quot;Initiative pipeline\n(GitHub Actions)\nBootstraps pilot app&quot;]
-        P2[&quot;Change pipeline\n(GitHub Actions)\nMaintains pilot app&quot;]
-        P3[&quot;Local pipeline\n(Claude Code)\nDev iteration&quot;]
+    subgraph PIPELINE["Planifest Pipeline"]
+        P1["Initiative pipeline\n(GitHub Actions)\nBootstraps pilot app"]
+        P2["Change pipeline\n(GitHub Actions)\nMaintains pilot app"]
+        P3["Local pipeline\n(Claude Code)\nDev iteration"]
     end
 
-    subgraph GCP2[&quot;GCP Deployment&quot;]
-        D1[&quot;Artifact Registry\nContainer images&quot;]
-        D2[&quot;Cloud Run\nDeploy on merge&quot;]
+    subgraph GCP2["GCP Deployment"]
+        D1["Artifact Registry\nContainer images"]
+        D2["Cloud Run\nDeploy on merge"]
     end
 
-    T1 --&gt; P1
-    T2 --&gt; P2
-    T3 --&gt; P3
-    P1 --&gt; D1
-    P2 --&gt; D1
-    D1 --&gt; D2
+    T1 --> P1
+    T2 --> P2
+    T3 --> P3
+    P1 --> D1
+    P2 --> D1
+    D1 --> D2
 
     style TRIGGER fill:#d4edda,stroke:#28a745
     style PIPELINE fill:#f0f4ff,stroke:#6c8ebf
-    style GCP2 fill:#fff8e1,stroke:#f0a500
-</code></pre>
-<h3>GitHub Actions workflow summary</h3>
+    style GCP2 fill:#fff8e1,stroke:#f0a500</pre><h3>GitHub Actions workflow summary</h3>
 <p>The pilot&#39;s CI jobs run in this order on every PR:</p>
 <ol>
 <li><strong>lint + typecheck</strong> - both <code>apps/web</code> and <code>apps/api</code>, scoped via Nx affected</li>
@@ -309,24 +303,22 @@
 </ol>
 <p>The <code>component.json</code> for the pilot will be pre-seeded with the confirmed technical decisions from this document - stack, cloud provider, CI platform - so the agents don&#39;t need to derive them from the brief.</p>
 <pre><code class="language-json">{
-  &quot;id&quot;: &quot;pilot&quot;,
-  &quot;type&quot;: &quot;initiative&quot;,
-  &quot;initiative_mode&quot;: &quot;greenfield&quot;,
-  &quot;status&quot;: &quot;in-progress&quot;,
-  &quot;stack&quot;: {
-    &quot;frontend&quot;: &quot;react19+typescript+vite+tailwind+shadcn-ui&quot;,
-    &quot;backend&quot;: &quot;fastify+typescript&quot;,
-    &quot;database&quot;: &quot;postgresql&quot;,
-    &quot;orm&quot;: &quot;drizzle&quot;,
-    &quot;iac&quot;: &quot;pulumi&quot;,
-    &quot;cloud&quot;: &quot;gcp&quot;,
-    &quot;compute&quot;: &quot;cloud-run&quot;,
-    &quot;ci&quot;: &quot;github-actions&quot;
+  "id": "pilot",
+  "type": "initiative",
+  "initiative_mode": "greenfield",
+  "status": "in-progress",
+  "stack": {
+    "frontend": "react19+typescript+vite+tailwind+shadcn-ui",
+    "backend": "fastify+typescript",
+    "database": "postgresql",
+    "orm": "drizzle",
+    "iac": "pulumi",
+    "cloud": "gcp",
+    "compute": "cloud-run",
+    "ci": "github-actions"
   },
-  &quot;domain_knowledge_path&quot;: &quot;initiatives/pilot/docs&quot;
-}
-</code></pre>
-<p>This pre-seeded manifest ensures the codegen-agent generates Cloud Run-compatible Dockerfiles and Pulumi stacks targeting GCP from the first run - without those decisions appearing in the brief itself.</p>
+  "domain_knowledge_path": "initiatives/pilot/docs"
+}</code></pre><p>This pre-seeded manifest ensures the codegen-agent generates Cloud Run-compatible Dockerfiles and Pulumi stacks targeting GCP from the first run - without those decisions appearing in the brief itself.</p>
 <hr>
 <p><em>This document will be updated when the pilot purpose is confirmed.</em></p>
 <p><em><a href="vault-index.html">← All Components</a> | <a href="p001-planifest-master-plan.html">← Architecture</a> | <a href="p002-planifest-product-concept.html">← Concept</a></em></p>

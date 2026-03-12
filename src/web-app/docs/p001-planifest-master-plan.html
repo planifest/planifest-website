@@ -64,68 +64,64 @@
 <p><strong>MCP is the nervous system. Planifest is the brain.</strong> MCP provides agent capabilities and connections. Planifest provides the knowledge, requirements, standards, and procedure that give those capabilities purpose and direction. They are complementary, not overlapping.</p>
 <hr>
 <h2>2. System Overview</h2>
-<pre><code class="language-mermaid">flowchart TD
-    A([👤 Initiative Brief]) --&gt; ORCH[Orchestrator]
-    Z([👤 Adjustment / Bug Report]) --&gt; ORCH
+<pre class="mermaid">flowchart TD
+    A([👤 Initiative Brief]) --> ORCH[Orchestrator]
+    Z([👤 Adjustment / Bug Report]) --> ORCH
 
-    ORCH --&gt; SA[spec-agent]
-    SA --&gt;|spec complete?| GATE1{Hard gate}
-    GATE1 --&gt;|No - surface gaps| SA
-    GATE1 --&gt;|Yes| AA[adr-agent]
-    AA --&gt; CA[codegen-agent]
-    CA --&gt; VA[validate-loop]
-    VA --&gt; SEC[security-agent]
-    SEC --&gt; PRA[pr-agent]
-    PRA --&gt; HGATE([👤 PR Review])
-    HGATE --&gt; DA[docs-agent]
-    DA --&gt; DKS[(Domain Knowledge Store)]
+    ORCH --> SA[spec-agent]
+    SA -->|spec complete?| GATE1{Hard gate}
+    GATE1 -->|No - surface gaps| SA
+    GATE1 -->|Yes| AA[adr-agent]
+    AA --> CA[codegen-agent]
+    CA --> VA[validate-loop]
+    VA --> SEC[security-agent]
+    SEC --> PRA[pr-agent]
+    PRA --> HGATE([👤 PR Review])
+    HGATE --> DA[docs-agent]
+    DA --> DKS[(Domain Knowledge Store)]
 
-    subgraph MCP[&quot;MCP Servers&quot;]
-        M1[&quot;domain-knowledge-server&quot;]
-        M2[&quot;filesystem-server&quot;]
-        M3[&quot;ci-server&quot;]
-        M4[&quot;vcs-server&quot;]
-        M5[&quot;docs-server&quot;]
+    subgraph MCP["MCP Servers"]
+        M1["domain-knowledge-server"]
+        M2["filesystem-server"]
+        M3["ci-server"]
+        M4["vcs-server"]
+        M5["docs-server"]
     end
 
-    SA &lt;--&gt;|tool calls| MCP
-    AA &lt;--&gt;|tool calls| MCP
-    CA &lt;--&gt;|tool calls| MCP
-    VA &lt;--&gt;|tool calls| MCP
-    SEC &lt;--&gt;|tool calls| MCP
-    PRA &lt;--&gt;|tool calls| MCP
-    DA &lt;--&gt;|tool calls| MCP
+    SA <-->|tool calls| MCP
+    AA <-->|tool calls| MCP
+    CA <-->|tool calls| MCP
+    VA <-->|tool calls| MCP
+    SEC <-->|tool calls| MCP
+    PRA <-->|tool calls| MCP
+    DA <-->|tool calls| MCP
 
     style A fill:#d4edda,stroke:#28a745,color:#000
     style Z fill:#d4edda,stroke:#28a745,color:#000
     style HGATE fill:#d4edda,stroke:#28a745,color:#000
     style GATE1 fill:#fff8e1,stroke:#f0a500
     style MCP fill:#fff3cd,stroke:#ffc107
-    style DKS fill:#cce5ff,stroke:#0066cc
-</code></pre>
-<blockquote>
+    style DKS fill:#cce5ff,stroke:#0066cc</pre><blockquote>
 <p>Planifest runs in two modes: any <strong>CI/CD platform</strong> (GitHub Actions, GitLab CI, Bitbucket Pipelines, CircleCI, etc.) using an LLM API, and any <strong>agentic coding tool</strong> (Claude Code, Cursor, Codex, Antigravity, GitHub Copilot, etc.) locally on a dev machine. See <a href="p010-planifest-agentic-tool-runbook.html">Agentic Tool Runbook</a>.</p>
 </blockquote>
 <hr>
 <h2>3. The Domain Knowledge Store</h2>
 <p>The Domain Knowledge Store is the most critical component in Planifest. It is a structured, versioned document store that captures everything Planifest knows about a system - per initiative, per component, and system-wide. Agents query it before building anything. It is the mechanism by which the domain is made available to agents that cannot acquire it implicitly.</p>
-<pre><code class="language-mermaid">flowchart LR
-    subgraph DKS[&quot;Domain Knowledge Store&quot;]
-        Q[&quot;domain_query&quot;]
-        GC[&quot;get_component&quot;]
-        GDG[&quot;get_dependency_graph&quot;]
-        GR[&quot;get_risk&quot;]
-        GG[&quot;get_glossary&quot;]
-        GDC[&quot;get_data_contract&quot;]
+<pre class="mermaid">flowchart LR
+    subgraph DKS["Domain Knowledge Store"]
+        Q["domain_query"]
+        GC["get_component"]
+        GDG["get_dependency_graph"]
+        GR["get_risk"]
+        GG["get_glossary"]
+        GDC["get_data_contract"]
     end
 
-    AG[&quot;Agents&quot;] --&gt;|MCP tool calls| DKS
-    DKS --&gt; STORE[(git docs/ or MCP service)]
+    AG["Agents"] -->|MCP tool calls| DKS
+    DKS --> STORE[(git docs/ or MCP service)]
 
     style DKS fill:#fff3cd,stroke:#ffc107
-    style STORE fill:#cce5ff,stroke:#0066cc
-</code></pre>
-<h3>Two access paths</h3>
+    style STORE fill:#cce5ff,stroke:#0066cc</pre><h3>Two access paths</h3>
 <p><strong>MCP-enabled service</strong> - agents call tools and receive scoped, purposeful responses. Keeps agent context tight. Better suited to larger teams, multiple initiatives, or complex domains.</p>
 <p><strong>Git <code>docs/</code> folder</strong> - documents colocated with code. No additional infrastructure. Better suited to smaller teams, single initiatives, or local development.</p>
 <p>Both paths produce and consume the same document structure and honour the same default rules. The choice is operational, not architectural.</p>
@@ -143,80 +139,78 @@
 <hr>
 <h2>4. Human and Agent Responsibilities</h2>
 <p>Planifest is not zero human-in-the-loop. It is zero human-in-the-loop <em>for building</em>. Humans retain approval authority over anything that changes intent or carries irreversible consequences.</p>
-<pre><code class="language-mermaid">flowchart LR
-    subgraph HUMAN[&quot;👤 Humans&quot;]
-        H1[&quot;Author Initiative Briefs&quot;]
-        H2[&quot;Review &amp; approve PRs\n(code + docs together)&quot;]
-        H3[&quot;Approve schema changes\n&amp; migrations&quot;]
-        H4[&quot;Review high/critical\nrisk items&quot;]
-        H5[&quot;Decide on agent-raised\nimprovements&quot;]
+<pre class="mermaid">flowchart LR
+    subgraph HUMAN["👤 Humans"]
+        H1["Author Initiative Briefs"]
+        H2["Review & approve PRs\n(code + docs together)"]
+        H3["Approve schema changes\n& migrations"]
+        H4["Review high/critical\nrisk items"]
+        H5["Decide on agent-raised\nimprovements"]
     end
 
-    subgraph AGENT[&quot;🤖 Agents&quot;]
-        A1[&quot;Build, test, document\n&amp; raise PRs&quot;]
-        A2[&quot;Self-heal bugs that\ndon&#39;t break requirements&quot;]
-        A3[&quot;Raise issues, quirks\n&amp; tech debt&quot;]
-        A4[&quot;Propose migrations -\nnever apply unilaterally&quot;]
+    subgraph AGENT["🤖 Agents"]
+        A1["Build, test, document\n& raise PRs"]
+        A2["Self-heal bugs that\ndon't break requirements"]
+        A3["Raise issues, quirks\n& tech debt"]
+        A4["Propose migrations -\nnever apply unilaterally"]
     end
 
     style HUMAN fill:#d4edda,stroke:#28a745
-    style AGENT fill:#f0f4ff,stroke:#6c8ebf
-</code></pre>
-<h3>Default rules</h3>
+    style AGENT fill:#f0f4ff,stroke:#6c8ebf</pre><h3>Default rules</h3>
 <p>Conservative by default. Autonomy is earned progressively. Hard limits cannot be overridden under any circumstance. Rules can be relaxed per initiative as confidence grows - except hard limits, which are non-negotiable.</p>
 <p>See <a href="p003-planifest-functional-decisions.md#fd-007--default-rules-are-conservative-autonomy-is-earned-progressively">FD-007 - Default rules</a> for the full default rules table.</p>
 <hr>
 <h2>5. Pipeline Architecture - New Initiatives</h2>
 <p>Triggered when a new Initiative Brief is committed to the document store or vault.</p>
 <p><strong>Specification is a hard gate.</strong> The spec-agent and adr-agent surface every gap, ambiguity, or unresolved decision before passing work to the codegen-agent. The pipeline does not proceed until the specification is complete.</p>
-<pre><code class="language-mermaid">flowchart TD
+<pre class="mermaid">flowchart TD
     BRIEF([👤 Initiative Brief])
 
-    subgraph PHASE1[&quot;① Specification - hard gate&quot;]
-        S[&quot;spec-agent&quot;]
-        SG{&quot;Spec complete?&quot;}
-        S --&gt; SG
-        SG --&gt;|No - surface gaps| S
+    subgraph PHASE1["① Specification - hard gate"]
+        S["spec-agent"]
+        SG{"Spec complete?"}
+        S --> SG
+        SG -->|No - surface gaps| S
     end
 
-    subgraph PHASE2[&quot;② Architecture Decisions&quot;]
-        A[&quot;adr-agent&quot;]
+    subgraph PHASE2["② Architecture Decisions"]
+        A["adr-agent"]
     end
 
-    subgraph PHASE3[&quot;③ Code Generation&quot;]
-        C[&quot;codegen-agent&quot;]
+    subgraph PHASE3["③ Code Generation"]
+        C["codegen-agent"]
     end
 
-    subgraph PHASE4[&quot;④ Validate &amp; Self-Correct&quot;]
-        V{&quot;CI passes?&quot;}
-        FIX[&quot;Self-correct&quot;]
-        FAIL([&quot;❌ Halt&quot;])
-        RETRY([&quot;Retries left?&quot;])
+    subgraph PHASE4["④ Validate & Self-Correct"]
+        V{"CI passes?"}
+        FIX["Self-correct"]
+        FAIL(["❌ Halt"])
+        RETRY(["Retries left?"])
     end
 
-    subgraph PHASE5[&quot;⑤ Security&quot;]
-        SEC[&quot;security-agent&quot;]
+    subgraph PHASE5["⑤ Security"]
+        SEC["security-agent"]
     end
 
-    subgraph PHASE6[&quot;⑥ Ship &amp; Document&quot;]
-        PR[&quot;pr-agent&quot;]
-        DOCS[&quot;docs-agent&quot;]
-        DKS[&quot;Update Domain Knowledge Store&quot;]
+    subgraph PHASE6["⑥ Ship & Document"]
+        PR["pr-agent"]
+        DOCS["docs-agent"]
+        DKS["Update Domain Knowledge Store"]
     end
 
     HGATE([👤 PR Review])
     DONE([✅ Merged · Domain updated])
 
-    BRIEF --&gt; PHASE1
-    SG --&gt;|Yes| PHASE2
-    PHASE2 --&gt; PHASE3
-    PHASE3 --&gt; PHASE4
-    V --&gt;|Yes| PHASE5
-    V --&gt;|No| RETRY
-    RETRY --&gt;|Yes| FIX --&gt; V
-    RETRY --&gt;|No| FAIL
-    PHASE5 --&gt; PHASE6
-    PR --&gt; DOCS --&gt; DKS --&gt; HGATE --&gt; DONE
+    BRIEF --> PHASE1
+    SG -->|Yes| PHASE2
+    PHASE2 --> PHASE3
+    PHASE3 --> PHASE4
+    V -->|Yes| PHASE5
+    V -->|No| RETRY
+    RETRY -->|Yes| FIX --> V
+    RETRY -->|No| FAIL
+    PHASE5 --> PHASE6
+    PR --> DOCS --> DKS --> HGATE --> DONE
 
     style BRIEF fill:#d4edda,stroke:#28a745,color:#000
     style HGATE fill:#d4edda,stroke:#28a745,color:#000
@@ -227,9 +221,7 @@
     style PHASE3 fill:#f0f4ff,stroke:#6c8ebf
     style PHASE4 fill:#fff8e1,stroke:#f0a500
     style PHASE5 fill:#f0f4ff,stroke:#6c8ebf
-    style PHASE6 fill:#f0f4ff,stroke:#6c8ebf
-</code></pre>
-<h3>Agent responsibilities</h3>
+    style PHASE6 fill:#f0f4ff,stroke:#6c8ebf</pre><h3>Agent responsibilities</h3>
 <table>
 <thead>
 <tr>
@@ -271,66 +263,64 @@
 </tbody></table>
 <hr>
 <h2>6. Pipeline Architecture - Change &amp; Maintenance</h2>
-<pre><code class="language-mermaid">flowchart TD
+<pre class="mermaid">flowchart TD
     TRIGGER([👤 Adjustment / Bug Report])
 
-    subgraph PHASE1[&quot;① Domain Context&quot;]
-        DKS[&quot;domain_query + get_component&lt;br/&gt;get_dependency_graph + get_risk&quot;]
+    subgraph PHASE1["① Domain Context"]
+        DKS["domain_query + get_component<br/>get_dependency_graph + get_risk"]
     end
 
-    subgraph PHASE2[&quot;② Targeted Change&quot;]
-        C[&quot;change-codegen-agent&quot;]
+    subgraph PHASE2["② Targeted Change"]
+        C["change-codegen-agent"]
     end
 
-    subgraph PHASE3[&quot;③ Validate &amp; Self-Correct&quot;]
-        V{&quot;CI passes?&quot;}
-        FIX[&quot;Self-correct&quot;]
-        FAIL([&quot;❌ Halt&quot;])
-        RETRY([&quot;Retries left?&quot;])
+    subgraph PHASE3["③ Validate & Self-Correct"]
+        V{"CI passes?"}
+        FIX["Self-correct"]
+        FAIL(["❌ Halt"])
+        RETRY(["Retries left?"])
     end
 
-    subgraph PHASE4[&quot;④ ADR &amp; Migration Check&quot;]
-        ADR{&quot;Contract changed?&quot;}
-        NEWADR[&quot;adr-agent&quot;]
-        SCHEMA{&quot;Schema changed?&quot;}
-        MIG[&quot;propose_migration\nFlag for human review&quot;]
+    subgraph PHASE4["④ ADR & Migration Check"]
+        ADR{"Contract changed?"}
+        NEWADR["adr-agent"]
+        SCHEMA{"Schema changed?"}
+        MIG["propose_migration\nFlag for human review"]
     end
 
-    subgraph PHASE5[&quot;⑤ Security&quot;]
-        SEC[&quot;security-agent&quot;]
+    subgraph PHASE5["⑤ Security"]
+        SEC["security-agent"]
     end
 
-    subgraph PHASE6[&quot;⑥ Ship &amp; Update&quot;]
-        PR[&quot;pr-agent&quot;]
-        DOCS[&quot;docs-agent&quot;]
-        UPDK[&quot;Update Domain Knowledge Store&quot;]
+    subgraph PHASE6["⑥ Ship & Update"]
+        PR["pr-agent"]
+        DOCS["docs-agent"]
+        UPDK["Update Domain Knowledge Store"]
     end
 
     HGATE([👤 PR Review])
     DONE([✅ Merged · Domain updated])
 
-    TRIGGER --&gt; PHASE1
-    PHASE1 --&gt; PHASE2
-    PHASE2 --&gt; PHASE3
-    V --&gt;|Yes| PHASE4
-    V --&gt;|No| RETRY
-    RETRY --&gt;|Yes| FIX --&gt; V
-    RETRY --&gt;|No| FAIL
-    ADR --&gt;|Yes| NEWADR --&gt; PHASE5
-    ADR --&gt;|No| SCHEMA
-    SCHEMA --&gt;|Yes| MIG --&gt; PHASE5
-    SCHEMA --&gt;|No| PHASE5
-    PHASE5 --&gt; PHASE6
-    PR --&gt; DOCS --&gt; UPDK --&gt; HGATE --&gt; DONE
+    TRIGGER --> PHASE1
+    PHASE1 --> PHASE2
+    PHASE2 --> PHASE3
+    V -->|Yes| PHASE4
+    V -->|No| RETRY
+    RETRY -->|Yes| FIX --> V
+    RETRY -->|No| FAIL
+    ADR -->|Yes| NEWADR --> PHASE5
+    ADR -->|No| SCHEMA
+    SCHEMA -->|Yes| MIG --> PHASE5
+    SCHEMA -->|No| PHASE5
+    PHASE5 --> PHASE6
+    PR --> DOCS --> UPDK --> HGATE --> DONE
 
     style TRIGGER fill:#d4edda,stroke:#28a745,color:#000
     style HGATE fill:#d4edda,stroke:#28a745,color:#000
     style DONE fill:#d4edda,stroke:#28a745,color:#000
     style FAIL fill:#f8d7da,stroke:#dc3545,color:#000
     style PHASE1 fill:#fff8e1,stroke:#f0a500
-    style PHASE4 fill:#f9f0ff,stroke:#9b59b6
-</code></pre>
-<hr>
+    style PHASE4 fill:#f9f0ff,stroke:#9b59b6</pre><hr>
 <h2>7. Agent Orchestration Layer</h2>
 <p>A single containerised orchestrator service (TypeScript, Fastify) that:</p>
 <ul>
@@ -341,15 +331,13 @@
 </ul>
 <h3>MCP write model</h3>
 <p>The domain-knowledge-server is the <strong>sole writer</strong> to the document store and git repository. Agents never write directly. All writes are posted to the MCP service and queued for serial processing - one write at a time, in order. This eliminates merge conflicts by design.</p>
-<pre><code class="language-mermaid">flowchart LR
-    AG[&quot;Agent&quot;] --&gt;|propose write| Q[&quot;Write queue\n(serial)&quot;]
-    Q --&gt; L[&quot;Listener&quot;]
-    L --&gt;|atomic commit\ncode + docs together| GIT[&quot;Git repo&quot;]
+<pre class="mermaid">flowchart LR
+    AG["Agent"] -->|propose write| Q["Write queue\n(serial)"]
+    Q --> L["Listener"]
+    L -->|atomic commit\ncode + docs together| GIT["Git repo"]
 
     style Q fill:#fff8e1,stroke:#f0a500
-    style GIT fill:#f0f4ff,stroke:#6c8ebf
-</code></pre>
-<p>Code and docs are always committed together in a single atomic operation. Neither is ever committed without the other.</p>
+    style GIT fill:#f0f4ff,stroke:#6c8ebf</pre><p>Code and docs are always committed together in a single atomic operation. Neither is ever committed without the other.</p>
 <h3>Agent interface</h3>
 <pre><code class="language-typescript">type AgentContext = {
   runId: string
@@ -359,12 +347,10 @@
 }
 
 type AgentResult = {
-  status: &quot;complete&quot; | &quot;blocked&quot; | &quot;failed&quot;
+  status: "complete" | "blocked" | "failed"
   blockedReason?: string    // surfaces a spec gap if blocked
   outputPaths: string[]     // files written via MCP
-}
-</code></pre>
-<hr>
+}</code></pre><hr>
 <h2>8. Artifact Types</h2>
 <p>Planifest defines distinct artifact types. No artifact bleeds into another. Each is maintained and versioned independently.</p>
 <p><strong>Per Initiative:</strong></p>
@@ -530,7 +516,7 @@ type AgentResult = {
 </tbody></table>
 <hr>
 <h2>10. Monorepo Structure</h2>
-<pre><code>monorepo/
+<pre><code class="language-">monorepo/
 ├── planifest/
 │   ├── skills/
 │   │   ├── orchestrator/SKILL.md   # Entry point - coaching + sequencing
@@ -590,40 +576,38 @@ type AgentResult = {
 │       │       ├── component-registry.md
 │       │       └── dependency-graph.md
 │       └── pipeline-run.md         # Audit trail for the latest run
-└── README.md
-</code></pre>
-<hr>
+└── README.md</code></pre><hr>
 <h2>11. Documentation Sync</h2>
 <p>Every agent output is a markdown document, written to <code>initiatives/{initiative-id}/docs/</code>. The git repository is the documentation system - markdown and Mermaid render natively on GitHub, GitLab, and Bitbucket. No additional sync infrastructure is required for v1.0.</p>
 <p>Teams that want a richer documentation experience (Obsidian, Notion, Confluence) can integrate at the documentation provider level - see <a href="p014-planifest-roadmap.html">RC-005 - Pluggable Documentation Provider</a> in the roadmap.</p>
 <hr>
 <h2>12. Build Sequence</h2>
-<pre><code class="language-mermaid">flowchart LR
-    subgraph M1[&quot;Milestone 1&quot;]
-        A1[&quot;Domain Knowledge\nMCP server&quot;]
+<pre class="mermaid">flowchart LR
+    subgraph M1["Milestone 1"]
+        A1["Domain Knowledge\nMCP server"]
     end
-    subgraph M2[&quot;Milestone 2&quot;]
-        A2[&quot;Orchestrator\nskeleton&quot;]
+    subgraph M2["Milestone 2"]
+        A2["Orchestrator\nskeleton"]
     end
-    subgraph M3[&quot;Milestone 3&quot;]
-        A3[&quot;CI templates\nVCS-MCP\nPulumi modules&quot;]
+    subgraph M3["Milestone 3"]
+        A3["CI templates\nVCS-MCP\nPulumi modules"]
     end
-    subgraph M4[&quot;Milestone 4&quot;]
-        B1[&quot;spec-agent\nadr-agent&quot;]
+    subgraph M4["Milestone 4"]
+        B1["spec-agent\nadr-agent"]
     end
-    subgraph M5[&quot;Milestone 5&quot;]
-        B2[&quot;codegen-agent\nvalidate loop&quot;]
+    subgraph M5["Milestone 5"]
+        B2["codegen-agent\nvalidate loop"]
     end
-    subgraph M6[&quot;Milestone 6&quot;]
-        B3[&quot;security-agent\npr-agent\ndocs-agent&quot;]
+    subgraph M6["Milestone 6"]
+        B3["security-agent\npr-agent\ndocs-agent"]
     end
-    subgraph M7[&quot;Milestone 7+&quot;]
-        C1[&quot;First initiative\nend-to-end&quot;]
-        C2[&quot;Prompt tuning&quot;]
+    subgraph M7["Milestone 7+"]
+        C1["First initiative\nend-to-end"]
+        C2["Prompt tuning"]
     end
 
-    M1 --&gt; M2 --&gt; M3 --&gt; M4 --&gt; M5 --&gt; M6 --&gt; M7
-    C1 --&gt; C2
+    M1 --> M2 --> M3 --> M4 --> M5 --> M6 --> M7
+    C1 --> C2
 
     style M1 fill:#f0f4ff,stroke:#6c8ebf
     style M2 fill:#f0f4ff,stroke:#6c8ebf
@@ -631,9 +615,7 @@ type AgentResult = {
     style M4 fill:#fff8e1,stroke:#f0a500
     style M5 fill:#fff8e1,stroke:#f0a500
     style M6 fill:#fff8e1,stroke:#f0a500
-    style M7 fill:#d4edda,stroke:#28a745
-</code></pre>
-<p><strong>Milestone 1 - Domain Knowledge MCP server.</strong> The new foundation. Build <code>apps/domain-knowledge-mcp</code> first: document schema, all query and write tools, the serial write queue. Everything downstream reads from and writes to this service.</p>
+    style M7 fill:#d4edda,stroke:#28a745</pre><p><strong>Milestone 1 - Domain Knowledge MCP server.</strong> The new foundation. Build <code>apps/domain-knowledge-mcp</code> first: document schema, all query and write tools, the serial write queue. Everything downstream reads from and writes to this service.</p>
 <p><strong>Milestone 2 - Orchestrator skeleton.</strong> State machine with stubbed agents. Prove pipeline wiring, state persistence, retry logic, and idempotency.</p>
 <p><strong>Milestone 3 - Templates.</strong> CI pipeline templates, VCS-MCP, Pulumi modules. Prove a manual scaffold works end-to-end.</p>
 <p><strong>Milestone 4 - spec-agent and adr-agent.</strong> Highest leverage. Implement the hard gate: spec must be complete before proceeding.</p>

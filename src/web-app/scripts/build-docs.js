@@ -44,6 +44,16 @@ const template = fs.existsSync(TEMPLATE_FILE)
   </body>
 </html>`;
 
+const renderer = new marked.Renderer();
+renderer.code = function({text, lang, escaped}) {
+  if (lang === 'mermaid') {
+    return `<pre class="mermaid">${text}</pre>`;
+  }
+  return `<pre><code class="language-${lang}">${escaped ? text : text}</code></pre>`;
+};
+
+marked.use({ renderer });
+
 function stripMetadata(markdown) {
   // Strip lines starting with `> Planifest - ` to remove raw file IDs/redundant doc titles if heavily present
   // Also strip the Version Log table strictly

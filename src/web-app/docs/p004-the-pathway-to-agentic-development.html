@@ -69,17 +69,15 @@
 <p>The Initiative Brief is the initiating input - the point at which a human starts the pipeline. Everything from that point is executed by a set of agent skills, each operating against the verified outputs of the skills before it. Humans retain approval authority at defined gates: the Planifest confirmation, the PR review, schema changes and migrations, high/critical risk items, and decisions about agent-raised improvements.</p>
 <hr>
 <h2>The Pipeline: End-to-End Flow</h2>
-<pre><code class="language-mermaid">flowchart TD
-    A[Initiative Brief\nHuman-led discovery] --&gt; B[spec-agent\nDesign Specification]
-    B --&gt; C[adr-agent\nArchitecture Decision Records]
-    C --&gt; D[codegen-agent\nImplementation on feature branch]
-    D --&gt; E{CI Validation}
-    E --&gt;|Fail| D
-    E --&gt;|Pass| F[security-agent\nSecurity Report]
-    F --&gt; G[Auto PR to main]
-    G --&gt; H[docs-agent\nDomain Knowledge Store sync]
-</code></pre>
-<h3>Phase 1 - Human-Led Discovery <em>(the initiating step)</em></h3>
+<pre class="mermaid">flowchart TD
+    A[Initiative Brief\nHuman-led discovery] --> B[spec-agent\nDesign Specification]
+    B --> C[adr-agent\nArchitecture Decision Records]
+    C --> D[codegen-agent\nImplementation on feature branch]
+    D --> E{CI Validation}
+    E -->|Fail| D
+    E -->|Pass| F[security-agent\nSecurity Report]
+    F --> G[Auto PR to main]
+    G --> H[docs-agent\nDomain Knowledge Store sync]</pre><h3>Phase 1 - Human-Led Discovery <em>(the initiating step)</em></h3>
 <p>A product owner or tech lead writes an <strong>Initiative Brief</strong> - a structured markdown document covering: problem statement, user stories, acceptance criteria, constraints, and known integrations. This is the seed that initiates the pipeline. Everything downstream is autonomous in execution, but humans retain approval authority at defined gates: the PR review, schema changes and migrations, high/critical risk items, and agent-raised improvements.</p>
 <h3>Phase 2 - Agentic Specification Generation</h3>
 <p>A <code>spec-agent</code> ingests the Initiative Brief and produces the full initiative artifact set:</p>
@@ -122,12 +120,10 @@
 <hr>
 <h2>Adoption Patterns</h2>
 <p>Not all teams start from the same position. Where you enter the Planifest pipeline depends on the state of your system and the complexity of your domain.</p>
-<pre><code class="language-mermaid">flowchart LR
-    A[Initiative Brief] --&gt;|New system| B[Greenfield\nSpec to Build]
-    C[Existing codebase] --&gt;|No docs| D[Retrofit\nIngest to Spec to Build]
-    E[Complex domain\nor component library] --&gt;|High complexity| F[Agent Interface Layer\nAbstract to Spec to Build]
-</code></pre>
-<h3>Greenfield</h3>
+<pre class="mermaid">flowchart LR
+    A[Initiative Brief] -->|New system| B[Greenfield\nSpec to Build]
+    C[Existing codebase] -->|No docs| D[Retrofit\nIngest to Spec to Build]
+    E[Complex domain\nor component library] -->|High complexity| F[Agent Interface Layer\nAbstract to Spec to Build]</pre><h3>Greenfield</h3>
 <p>The simplest entry point. You have a problem to solve and no prior system to contend with. The Initiative Brief is the sole input - the <code>spec-agent</code> generates the Design Specification from scratch, and the pipeline runs from there.</p>
 <p><code>initiative_mode: greenfield</code></p>
 <h3>Retrofit <em>(Existing Codebases)</em></h3>

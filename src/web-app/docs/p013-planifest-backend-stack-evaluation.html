@@ -2112,7 +2112,7 @@
 </tr>
 </tbody></table>
 <h3>Trade-Off Matrix</h3>
-<pre><code>                    Correctness ←-&gt; Iteration Speed
+<pre><code class="language-">                    Correctness ←-> Iteration Speed
                     ┌─────────────────────────────────┐
           High      │ Rust        Scala               │
       Correctness   │   ↑           ↑                 │
@@ -2126,9 +2126,7 @@
       Correctness   │                                 │
                     └─────────────────────────────────┘
                     Slow                          Fast
-                    Iteration                 Iteration
-</code></pre>
-<pre><code>                    Correctness ←-&gt; Integration Coverage
+                    Iteration                 Iteration</code></pre><pre><code class="language-">                    Correctness ←-> Integration Coverage
                     ┌─────────────────────────────────┐
           High      │                     Node/TS     │
       Integration   │                  Java  Python   │
@@ -2140,9 +2138,7 @@
       Integration   │                                 │
                     └─────────────────────────────────┘
                     Low                          High
-                    Correctness           Correctness
-</code></pre>
-<h3>Red Flag Summary</h3>
+                    Correctness           Correctness</code></pre><h3>Red Flag Summary</h3>
 <table>
 <thead>
 <tr>
@@ -2448,7 +2444,7 @@
 </tbody></table>
 <h3>3. Polyglot Architecture Recommendation</h3>
 <p>For a complete Planifest-managed system with agent-generated microservices:</p>
-<pre><code>┌──────────────────────────────────────────────────────────┐
+<pre><code class="language-">┌──────────────────────────────────────────────────────────┐
 │                   Service Architecture                    │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
@@ -2468,11 +2464,9 @@
 │  └─────────────┘  └─────────────┘  └─────────────┘     │
 │                                                          │
 │  Shared contracts: OpenAPI + protobuf                    │
-│  Shared observability: OpenTelemetry -&gt; DataDog/Grafana   │
+│  Shared observability: OpenTelemetry -> DataDog/Grafana   │
 │  Orchestration: Kubernetes / ECS Fargate                 │
-└──────────────────────────────────────────────────────────┘
-</code></pre>
-<table>
+└──────────────────────────────────────────────────────────┘</code></pre><table>
 <thead>
 <tr>
 <th>Layer</th>

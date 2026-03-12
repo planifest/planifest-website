@@ -418,6 +418,15 @@ code {
 [data-theme="dark"] .doc-container a { color: var(--color-brand-400); }
 .doc-container a:hover { text-decoration: underline; }
 
+/* Mermaid Styling */
+.mermaid {
+  background: transparent !important;
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+  overflow-x: auto;
+}
+
 /* ---------- Footer ---------- */
 .footer {
   padding: 4rem 2rem;

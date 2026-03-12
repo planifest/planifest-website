@@ -10,17 +10,37 @@ const getPreferredTheme = () => {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 };
 
+import mermaid from 'mermaid';
+
 // Initialize Theme
 setTheme(getPreferredTheme());
 
+// Initialize Mermaid
+mermaid.initialize({
+  startOnLoad: true,
+  theme: getPreferredTheme() === 'dark' ? 'dark' : 'default',
+  securityLevel: 'loose',
+});
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Re-run theme check for mermaid if needed
+  const theme = getPreferredTheme();
+  mermaid.initialize({ theme: theme === 'dark' ? 'dark' : 'default' });
+  mermaid.run();
   // Theme Toggle Button Logic
   const toggleBtn = document.getElementById('theme-toggle');
   
   if (toggleBtn) {
     toggleBtn.addEventListener('click', () => {
       const current = document.documentElement.getAttribute('data-theme');
-      setTheme(current === 'light' ? 'dark' : 'light');
+      const newTheme = current === 'light' ? 'dark' : 'light';
+      setTheme(newTheme);
+      
+      // Update mermaid theme
+      mermaid.initialize({ theme: newTheme === 'dark' ? 'dark' : 'default' });
+      // We often need a page reload or a manual re-render of SVGs for Mermaid
+      // but simple site usually just force re-render
+      location.reload(); // Simplest way to ensure all SVGs re-render with the correct theme
     });
   }
 

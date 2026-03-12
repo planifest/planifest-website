@@ -126,21 +126,17 @@
 <p>The adapter file is loaded automatically when Claude Code opens the project root. No MCP servers are required for v1.0 - the agent reads and writes files directly.</p>
 <h3>Running the initiative pipeline</h3>
 <p>Paste this instruction into Claude Code:</p>
-<pre><code>Load the Planifest orchestrator skill at planifest-framework/skills/orchestrator/SKILL.md and execute the Initiative Pipeline.
+<pre><code class="language-">Load the Planifest orchestrator skill at planifest-framework/skills/orchestrator/SKILL.md and execute the Initiative Pipeline.
 
 Initiative brief: initiatives/{{initiative_id}}/initiative-brief.md
 Initiative ID: {{initiative_id}}
-Adoption mode: greenfield | retrofit | agent-interface
-</code></pre>
-<p>The orchestrator will assess the brief, coach you through any gaps, produce the Planifest, and then sequence through the phase skills.</p>
+Adoption mode: greenfield | retrofit | agent-interface</code></pre><p>The orchestrator will assess the brief, coach you through any gaps, produce the Planifest, and then sequence through the phase skills.</p>
 <h3>Running the change pipeline</h3>
-<pre><code>Load the Planifest orchestrator skill at planifest-framework/skills/orchestrator/SKILL.md and execute the Change Pipeline.
+<pre><code class="language-">Load the Planifest orchestrator skill at planifest-framework/skills/orchestrator/SKILL.md and execute the Change Pipeline.
 
 Initiative ID: {{initiative_id}}
 Component ID: {{component_id}}
-Change request: {{description}}
-</code></pre>
-<h3>pipeline-run.md</h3>
+Change request: {{description}}</code></pre><h3>pipeline-run.md</h3>
 <p>Claude Code writes <code>pipeline-run.md</code> at the component root after every local run. This replaces the PR description for local sessions and serves as the audit trail.</p>
 <pre><code class="language-markdown"># Pipeline Run - {{initiative_id}}
 Date: {{timestamp}}
@@ -164,16 +160,12 @@ Tool: Claude Code (local)
 (what should be reviewed before the PR)
 
 ## Next step
-git push origin initiative/{{initiative_id}}
-</code></pre>
-<hr>
+git push origin initiative/{{initiative_id}}</code></pre><hr>
 <h2>4. Cursor</h2>
 <p>Cursor loads the Planifest framework via <code>planifest-framework/adapters/cursor/.cursorrules</code>, which points it at the orchestrator skill and encodes the hard limits.</p>
 <h3>Setup</h3>
 <p>Copy or symlink the adapter file to the monorepo root:</p>
-<pre><code class="language-bash">cp planifest-framework/adapters/cursor/.cursorrules .cursorrules
-</code></pre>
-<p>Cursor loads <code>.cursorrules</code> automatically. No MCP servers are required for v1.0.</p>
+<pre><code class="language-bash">cp planifest-framework/adapters/cursor/.cursorrules .cursorrules</code></pre><p>Cursor loads <code>.cursorrules</code> automatically. No MCP servers are required for v1.0.</p>
 <h3>Running the pipeline</h3>
 <p>Open Cursor at the monorepo root. The <code>.cursorrules</code> file is loaded automatically. Give the same instruction as Claude Code - the orchestrator skill will guide the process.</p>
 <hr>
@@ -194,9 +186,7 @@ git push origin initiative/{{initiative_id}}
 </ul>
 <h3>Setup</h3>
 <p>Copy or symlink the adapter file:</p>
-<pre><code class="language-bash">cp planifest-framework/adapters/copilot/copilot-instructions.md .github/copilot-instructions.md
-</code></pre>
-<h3>Running the pipeline</h3>
+<pre><code class="language-bash">cp planifest-framework/adapters/copilot/copilot-instructions.md .github/copilot-instructions.md</code></pre><h3>Running the pipeline</h3>
 <p>With Copilot, the pipeline phases are run manually - prompt Copilot for each phase in sequence, referencing the orchestrator skill for the correct inputs, outputs, and instructions. The hard limits in the instructions file constrain what Copilot will do, but enforcement is prompt-level rather than structural.</p>
 <hr>
 <h2>7. Hard Limits - all tools</h2>
@@ -236,16 +226,14 @@ git push origin initiative/{{initiative_id}}
 <hr>
 <h2>8. Context Limit Strategy</h2>
 <p>Applies to all local tools. The file system is the memory - write outputs to disk after each phase and reference them by path rather than holding everything in context.</p>
-<pre><code class="language-mermaid">flowchart TD
-    A{Phase complete?} --&gt;|Yes| B[Write outputs to disk\nvia filesystem MCP]
-    B --&gt; C[Log to pipeline-run.md]
-    C --&gt; D[Reference by path\nin next phase]
-    D --&gt; E[Next phase reads\nonly what it needs]
-    A --&gt;|No| F[Continue in session]
+<pre class="mermaid">flowchart TD
+    A{Phase complete?} -->|Yes| B[Write outputs to disk\nvia filesystem MCP]
+    B --> C[Log to pipeline-run.md]
+    C --> D[Reference by path\nin next phase]
+    D --> E[Next phase reads\nonly what it needs]
+    A -->|No| F[Continue in session]
 
-    style B fill:#fff8e1,stroke:#f0a500
-</code></pre>
-<p><strong>Practical rules:</strong></p>
+    style B fill:#fff8e1,stroke:#f0a500</pre><p><strong>Practical rules:</strong></p>
 <ul>
 <li>Write and reference, don&#39;t repeat - outputs go to disk after each phase; the next phase reads by path</li>
 <li>Chunk large codegen - scaffold first, then implement routes, then tests, then IaC</li>
@@ -263,13 +251,11 @@ npm run ci:full --workspace=initiatives/{{initiative_id}}
 
 # Push and open PR - GitHub
 git push origin initiative/{{initiative_id}}
-gh pr create --title &quot;feat: {{initiative_id}}&quot; --body &quot;$(cat initiatives/{{initiative_id}}/pipeline-run.md)&quot;
+gh pr create --title "feat: {{initiative_id}}" --body "$(cat initiatives/{{initiative_id}}/pipeline-run.md)"
 
 # Push and open MR - GitLab
 git push origin initiative/{{initiative_id}}
-glab mr create --title &quot;feat: {{initiative_id}}&quot; --description &quot;$(cat initiatives/{{initiative_id}}/pipeline-run.md)&quot;
-</code></pre>
-<p>The CI platform runs the same checks on the PR. If they pass, the output is identical in quality to a full CI platform run. If they fail, the change pipeline self-corrects on the runner as normal.</p>
+glab mr create --title "feat: {{initiative_id}}" --description "$(cat initiatives/{{initiative_id}}/pipeline-run.md)"</code></pre><p>The CI platform runs the same checks on the PR. If they pass, the output is identical in quality to a full CI platform run. If they fail, the change pipeline self-corrects on the runner as normal.</p>
 
       </main>
     </div>
