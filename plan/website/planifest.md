@@ -23,7 +23,6 @@
   - `web-app`: static site displaying the Planifest landing page
 - Data ownership: none
 - Deployment: GitHub Actions workflow deploying to `gh-pages` branch
-- Repository conventions: Tool-specific AI agent config directories (`.claude/`, `.gemini/`, `.agent/`, `.cursor/`, `.windsurf/`, `.copilot/`) are excluded via `.gitignore`. Generic configuration lives in `planifest-framework/`.
 
 ## Scope
 - In: Beautiful hero section, technical overview, light/dark mode, static site generation, GitHub Actions workflow, dynamic rendering of `planifest-docs` files directly during build, removal of metadata/IDs for cleaner reading, linking documentation pages automatically.

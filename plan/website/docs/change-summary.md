@@ -57,5 +57,3 @@ Blast radius: repository structure only — no product code, contracts, or schem
 - 436 files removed from git tracking across `.claude/skills/`, `.gemini/skills/`, and `.agent/workflows/`
 - Files remain on disk; `.gitignore` prevents re-commitment
 
-### plan/website/planifest.md
-- Engineering Layer: added `Repository conventions` note documenting the `.gitignore` policy

@@ -87,9 +87,8 @@
 ### Files changed
 - `.gitignore` (new) — excludes `.claude/`, `.gemini/`, `.agent/`, `.cursor/`, `.windsurf/`, `.copilot/`
 - `.claude/`, `.gemini/`, `.agent/` — 436 files removed from git index (untracked, not deleted)
-- `plan/website/planifest.md` — Engineering Layer updated with repository conventions note
 
 ### Contract changed: no
 ### Schema changed: no
 ### ADR required: no
-### Artifacts produced: `plan/website/docs/change-summary.md`, `plan/website/planifest.md`
+### Artifacts produced: `plan/website/docs/change-summary.md`
