@@ -1,0 +1,8 @@
+# Tool-specific AI agent configuration directories
+# Generic configuration lives in planifest-framework/
+.claude/
+.gemini/
+.agent/
+.cursor/
+.windsurf/
+.copilot/
