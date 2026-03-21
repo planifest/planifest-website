@@ -25,7 +25,7 @@ mkdir plan plan/changelog src docs
 
 These are the core working directories:
 - `plan/` - The current change being planned (briefs, specs, planifest).
-  - `plan/<initiative-id>/` - Historical changes filed here after human review and acceptance.
+  - `plan/_archive/<initiative-id>/` - Historical changes filed here after human review and acceptance.
   - `plan/changelog/` - A log of all changes; each change is a separate file (`[initiative-id]-[YYYY-MM-DD].md`).
 - `src/` - Component source code, tests, and component manifests (`component.json`).
 - `docs/` - Living repository documentation (always current, no change records). Includes component registry and dependency graph.

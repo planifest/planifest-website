@@ -46,4 +46,4 @@ Execute the full Planifest pipeline for a new initiative.
    - **Gate:** All living artifacts produced, ready for human review
 9. **Phase 7 - Human Review and Filing** (Post-Review Action)
    - The human reviews the changes and the active plan.
-   - Upon acceptance, the active plan (brief, spec, ADRs) is moved from `plan/current/` to `plan/{initiative-id}/` for historical tracking.
+   - Upon acceptance, the active plan (brief, spec, ADRs) is moved from `plan/current/` to `plan/_archive/{initiative-id}/` for historical tracking.
