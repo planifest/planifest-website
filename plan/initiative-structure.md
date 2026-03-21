@@ -48,29 +48,37 @@ Organized by initiative. Each initiative gets a subfolder. This is where humans 
 
 ```
 plan/
-└── {initiative-id}/
-    ├── initiative-brief.md          ← Human input (start here)
-    ├── planifest.md                 ← Validated plan (orchestrator output)
-    ├── pipeline-run.md              ← Audit trail (per run)
-    │
-    └── docs/
-        ├── design-spec.md           ← Functional & non-functional requirements
-        ├── openapi-spec.yaml        ← API contract
-        ├── scope.md                 ← In / Out / Deferred
-        ├── risk-register.md         ← Risk items with likelihood & impact
-        ├── domain-glossary.md       ← Ubiquitous language
-        ├── security-report.md       ← Security review findings
-        ├── operational-model.md     ← Runbook triggers, alerting thresholds
-        ├── slo-definitions.md       ← Error budgets, SLIs/SLOs
-        ├── cost-model.md            ← Compute, storage, egress cost estimates
-        ├── recommendations.md       ← Improvement suggestions
-        ├── quirks.md                ← Initiative-level quirks and workarounds
-        ├── change-summary.md        ← Written by the change-agent per run
-        │
-        └── adr/
-            ├── ADR-001-{title}.md   ← Architecture decision records
-            ├── ADR-002-{title}.md
-            └── ...
+├── current/                         ← The active initiative
+│   ├── initiative-brief.md          ← Human input (start here)
+│   ├── planifest.md                 ← Validated plan (orchestrator output)
+│   ├── pipeline-run.md              ← Audit trail (per run)
+│   │
+│   └── docs/
+│       ├── design-spec.md           ← Functional & non-functional requirements
+│       ├── openapi-spec.yaml        ← API contract
+│       ├── scope.md                 ← In / Out / Deferred
+│       ├── risk-register.md         ← Risk items with likelihood & impact
+│       ├── domain-glossary.md       ← Ubiquitous language
+│       ├── security-report.md       ← Security review findings
+│       ├── operational-model.md     ← Runbook triggers, alerting thresholds
+│       ├── slo-definitions.md       ← Error budgets, SLIs/SLOs
+│       ├── cost-model.md            ← Compute, storage, egress cost estimates
+│       ├── recommendations.md       ← Improvement suggestions
+│       ├── quirks.md                ← Initiative-level quirks and workarounds
+│       ├── change-summary.md        ← Written by the change-agent per run
+│       │
+│       └── adr/
+│           ├── ADR-001-{title}.md   ← Architecture decision records
+│           ├── ADR-002-{title}.md
+│           └── ...
+│
+├── _archive/
+│   ├── {initiative-id}/             ← Historical initiatives (moved here upon completion)
+│   │   └── ...                      ← Same structure as current/
+│
+└── changelog/                       ← Log of all changes
+    └── [initiative-id]-[date].md    ← A single change record
+
 ```
 
 ### Path Rules - plan/
@@ -117,7 +125,7 @@ src/
 1. **Component ID** is kebab-case, matches the `id` in `component.json`.
 2. **`component.json` is mandatory** - every component has one. Read it before any work; update it after every build.
 3. **Component-specific docs** live with the component at `src/{component-id}/docs/`. These describe the component's data contract, interface, dependencies, risk, and technical specifics.
-4. **Initiative-level docs** live in `plan/{initiative-id}/docs/`. The component's `component.json` references the initiative via the `initiative` field and points to its domain knowledge via `pipeline.domainKnowledgePath`.
+4. **Initiative-level docs** live in `plan/_archive/{initiative-id}/docs/`. The component's `component.json` references the initiative via the `initiative` field and points to its domain knowledge via `pipeline.domainKnowledgePath`.
 5. **Existing components** that predate Planifest are retrofitted by adding a `component.json` at their root.
 
 ---
@@ -136,7 +144,7 @@ The docs-agent writes to this folder at the end of each pipeline run. It accumul
 
 ### Path Rules - docs/
 
-1. **Cross-initiative only** - nothing in `docs/` belongs to a specific initiative. Initiative-scoped docs go in `plan/{initiative-id}/docs/`.
+1. **Cross-initiative only** - nothing in `docs/` belongs to a specific initiative. Initiative-scoped docs go in `plan/_archive/{initiative-id}/docs/`.
 2. **Written by the docs-agent** - humans may annotate, but agents own the component registry and dependency graph.
 3. **Always current** - the docs-agent updates these files at the end of every pipeline run, not just on initial creation.
 
@@ -145,18 +153,18 @@ The docs-agent writes to this folder at the end of each pipeline run. It accumul
 ## How the Folders Connect
 
 ```
-plan/{initiative-id}/planifest.md
+plan/_archive/{initiative-id}/planifest.md
     └── lists component IDs -> src/{component-id}/component.json
-                                    └── references initiative -> plan/{initiative-id}/
-                                    └── domainKnowledgePath  -> plan/{initiative-id}/docs/
+                                    └── references initiative -> plan/_archive/{initiative-id}/
+                                    └── domainKnowledgePath  -> plan/_archive/{initiative-id}/docs/
 
-plan/{initiative-id}/docs/design-spec.md
+plan/_archive/{initiative-id}/docs/design-spec.md
     └── functional requirements -> implemented in -> src/{component-id}/src/
 
-plan/{initiative-id}/docs/adr/ADR-001-*.md
+plan/_archive/{initiative-id}/docs/adr/ADR-001-*.md
     └── decisions -> followed by -> src/{component-id}/src/
 
-plan/{initiative-id}/docs/openapi-spec.yaml
+plan/_archive/{initiative-id}/docs/openapi-spec.yaml
     └── API contract -> implemented in -> src/{component-id}/src/
 
 src/{component-id}/docs/data-contract.md

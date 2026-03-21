@@ -1,4 +1,5 @@
 {
+    "$comment": "Planifest Component Manifest - written by agents after build, read by agents before change. See p007 for the full Domain Knowledge Service schema.",
     "id": "web-app",
     "name": "Planifest Website",
     "initiative": "website",
@@ -88,7 +89,7 @@
     "pipeline": {
         "templateVersion": "1.0.0",
         "initiativeMode": "greenfield",
-        "domainKnowledgePath": "plan/website/docs"
+        "domainKnowledgePath": "plan/_archive/website/docs"
     },
     "metadata": {
         "createdAt": "2026-03-11T23:21:00Z",
