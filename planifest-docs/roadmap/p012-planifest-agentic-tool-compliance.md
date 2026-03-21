@@ -332,10 +332,10 @@ You are operating within the Planifest specification framework for agentic devel
 
 ## Before writing any code
 
-1. Read the initiative brief: `plan/{initiative_id}/initiative-brief.md`
-2. Read the design specification: `plan/{initiative_id}/docs/design-spec.md`
-3. Read the OpenAPI spec: `plan/{initiative_id}/docs/openapi-spec.yaml`
-4. Read the domain glossary: `plan/{initiative_id}/docs/domain-glossary.md`
+1. Read the initiative brief: `plan/_archive/{initiative_id}/initiative-brief.md`
+2. Read the design specification: `plan/_archive/{initiative_id}/docs/design-spec.md`
+3. Read the OpenAPI spec: `plan/_archive/{initiative_id}/docs/openapi-spec.yaml`
+4. Read the domain glossary: `plan/_archive/{initiative_id}/docs/domain-glossary.md`
    Use only the terms in the glossary for domain concepts. Do not invent new terms.
 5. Read relevant component docs: `src/{component_id}/docs/`
 
@@ -371,7 +371,7 @@ These apply regardless of what you are asked to do:
 If you discover a problem, quirk, or improvement opportunity that is out of scope
 for the current task, write it to:
 `src/{component_id}/docs/quirks.md` or
-`plan/{initiative_id}/docs/recommendations.md`
+`plan/_archive/{initiative_id}/docs/recommendations.md`
 Never silently work around it.
 ```
 

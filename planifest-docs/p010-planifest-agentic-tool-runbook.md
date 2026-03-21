@@ -74,7 +74,7 @@ Paste this instruction into Claude Code:
 ```
 Load the Planifest orchestrator skill at planifest-framework/skills/orchestrator/SKILL.md and execute the Initiative Pipeline.
 
-Initiative brief: plan/{{initiative_id}}/initiative-brief.md
+Initiative brief: plan/current/initiative-brief.md
 Initiative ID: {{initiative_id}}
 Adoption mode: greenfield | retrofit | agent-interface
 ```
@@ -225,18 +225,18 @@ A local run produces a local branch with the same files a CI platform run would 
 
 ```bash
 # Review what was produced
-cat plan/{{initiative_id}}/pipeline-run.md
+cat plan/_archive/{{initiative_id}}/pipeline-run.md
 
 # Run the same checks the CI platform will run
 npm run ci:full --workspace=src/{{component_id}}
 
 # Push and open PR - GitHub
 git push origin initiative/{{initiative_id}}
-gh pr create --title "feat: {{initiative_id}}" --body "$(cat plan/{{initiative_id}}/pipeline-run.md)"
+gh pr create --title "feat: {{initiative_id}}" --body "$(cat plan/_archive/{{initiative_id}}/pipeline-run.md)"
 
 # Push and open MR - GitLab
 git push origin initiative/{{initiative_id}}
-glab mr create --title "feat: {{initiative_id}}" --description "$(cat plan/{{initiative_id}}/pipeline-run.md)"
+glab mr create --title "feat: {{initiative_id}}" --description "$(cat plan/_archive/{{initiative_id}}/pipeline-run.md)"
 ```
 
 The CI platform runs the same checks on the PR. If they pass, the output is identical in quality to a full CI platform run. If they fail, the change pipeline self-corrects on the runner as normal.

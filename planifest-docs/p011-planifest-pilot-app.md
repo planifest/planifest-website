@@ -295,7 +295,7 @@ The `component.json` for the pilot will be pre-seeded with the confirmed technic
     "compute": "cloud-run",
     "ci": "github-actions"
   },
-  "domain_knowledge_path": "plan/pilot/docs"
+  "domain_knowledge_path": "plan/_archive/pilot/docs"
 }
 ```
 

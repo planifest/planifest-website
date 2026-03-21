@@ -105,9 +105,9 @@ jobs:
           git config user.email "pipeline@internal"
           git checkout -b initiative/${{ inputs.component_id }}
           echo "${{ steps.spec.outputs.design_spec }}" | base64 -d \
-            > plan/${{ inputs.component_id }}/docs/design-spec.md
+            > plan/_archive/${{ inputs.component_id }}/docs/design-spec.md
           echo "${{ steps.spec.outputs.openapi }}" | base64 -d \
-            > plan/${{ inputs.component_id }}/docs/openapi.yaml
+            > plan/_archive/${{ inputs.component_id }}/docs/openapi.yaml
           echo "${{ steps.spec.outputs.component_json }}" | base64 -d \
             > src/${{ inputs.component_id }}/component.json
           git add . && git commit -m "feat({{component_id}}): add design spec and openapi"
@@ -137,7 +137,7 @@ jobs:
         run: |
           echo "${{ steps.adrs.outputs.adrs }}" | base64 -d \
             | node .github/scripts/write-adrs.js \
-                --output plan/${{ inputs.component_id }}/docs/adr/
+                --output plan/_archive/${{ inputs.component_id }}/docs/adr/
           git add . && git commit -m "feat({{component_id}}): add ADRs"
           git push origin initiative/${{ inputs.component_id }}
 
@@ -238,7 +238,7 @@ jobs:
 
       - name: Commit security report
         run: |
-          git add plan/${{ inputs.component_id }}/docs/security-report.md
+          git add plan/_archive/${{ inputs.component_id }}/docs/security-report.md
           git commit -m "docs({{component_id}}): add security report"
           git push origin initiative/${{ inputs.component_id }}
 

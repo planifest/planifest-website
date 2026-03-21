@@ -102,8 +102,8 @@ RULES:
 - Do not include implementation detail in the design spec. That is for the codegen-agent.
 
 OUTPUT PATHS:
-- plan/{{component_id}}/docs/design-spec.md
-- plan/{{component_id}}/docs/openapi.yaml
+- plan/_archive/{{component_id}}/docs/design-spec.md
+- plan/_archive/{{component_id}}/docs/openapi.yaml
 - src/{{component_id}}/component.json
 ```
 
@@ -111,7 +111,7 @@ OUTPUT PATHS:
 
 ```
 Execute the spec-agent for a new initiative.
-Brief path: plan/{{component_id}}/initiative-brief.md
+Brief path: plan/current/initiative-brief.md
 Component ID: {{component_id}}
 Cloud provider: {{cloud_provider}} (gcp | aws | azure)
 Stack: {{stack_declaration}}
@@ -230,7 +230,7 @@ RULES:
 Execute the codegen-agent for component {{component_id}}.
 Component ID: {{component_id}}
 Cloud provider: {{cloud_provider}} (gcp | aws | azure)
-All spec documents are at plan/{{component_id}}/docs/
+All spec documents are at plan/_archive/{{component_id}}/docs/
 ```
 
 ---
@@ -396,7 +396,7 @@ RULES:
 ```
 Execute the docs-agent for component {{component_id}}.
 Component ID: {{component_id}}
-All pipeline outputs are committed at plan/{{component_id}}/docs/ (initiative artifacts) and src/{{component_id}}/docs/ (component artifacts)
+All pipeline outputs are committed at plan/_archive/{{component_id}}/docs/ (initiative artifacts) and src/{{component_id}}/docs/ (component artifacts)
 ```
 
 ---
