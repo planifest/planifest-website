@@ -310,7 +310,7 @@ MCP will eventually provide the infrastructure layer - typed tool calls, credent
 
 ## FD-021 - A Planifest is the plan and the manifest
 
-**Decision:** For every initiative, the orchestrator agent produces a **Planifest** - the plan is what will be built, the manifest is what it builds against. The human confirms the Planifest before the pipeline proceeds. It is written to `plan/{initiative-id}/planifest.md`.
+**Decision:** For every initiative, the orchestrator agent produces a **Planifest** - the plan is what will be built, the manifest is what it builds against. The human confirms the Planifest before the pipeline proceeds. It is written to `plan/current/planifest.md`.
 
 The Planifest records: the problem, the adoption mode, the confirmed product layer (user stories, acceptance criteria, constraints), the architecture layer (NFRs, security, cost), the engineering layer (stack, components, data ownership, deployment), the scope boundaries (in, out, deferred), and the risks and dependencies.
 

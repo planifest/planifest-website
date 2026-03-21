@@ -65,8 +65,8 @@ Across all three layers, Scope, Risks, and Dependencies are first-class concerns
 
 ```mermaid
 flowchart TD
-    A([👤 Initiative Brief]) --> ORCH[Orchestrator]
-    Z([👤 Adjustment / Bug Report]) --> ORCH
+    A([ðŸ‘¤ Initiative Brief]) --> ORCH[Orchestrator]
+    Z([ðŸ‘¤ Adjustment / Bug Report]) --> ORCH
 
     ORCH --> SA[spec-agent]
     SA -->|spec complete?| GATE1{Hard gate}
@@ -76,7 +76,7 @@ flowchart TD
     CA --> VA[validate-loop]
     VA --> SEC[security-agent]
     SEC --> PRA[pr-agent]
-    PRA --> HGATE([👤 PR Review])
+    PRA --> HGATE([ðŸ‘¤ PR Review])
     HGATE --> DA[docs-agent]
     DA --> DKS[(Domain Knowledge Store)]
 
@@ -141,7 +141,7 @@ Planifest is not zero human-in-the-loop. It is zero human-in-the-loop *for build
 
 ```mermaid
 flowchart LR
-    subgraph HUMAN["👤 Humans"]
+    subgraph HUMAN["ðŸ‘¤ Humans"]
         H1["Author Initiative Briefs"]
         H2["Review & approve PRs\n(code + docs together)"]
         H3["Approve schema changes\n& migrations"]
@@ -149,7 +149,7 @@ flowchart LR
         H5["Decide on agent-raised\nimprovements"]
     end
 
-    subgraph AGENT["🤖 Agents"]
+    subgraph AGENT["ðŸ¤– Agents"]
         A1["Build, test, document\n& raise PRs"]
         A2["Self-heal bugs that\ndon't break requirements"]
         A3["Raise issues, quirks\n& tech debt"]
@@ -176,42 +176,42 @@ Triggered when a new Initiative Brief is committed to the document store or vaul
 
 ```mermaid
 flowchart TD
-    BRIEF([👤 Initiative Brief])
+    BRIEF([ðŸ‘¤ Initiative Brief])
 
-    subgraph PHASE1["① Specification - hard gate"]
+    subgraph PHASE1["â‘  Specification - hard gate"]
         S["spec-agent"]
         SG{"Spec complete?"}
         S --> SG
         SG -->|No - surface gaps| S
     end
 
-    subgraph PHASE2["② Architecture Decisions"]
+    subgraph PHASE2["â‘¡ Architecture Decisions"]
         A["adr-agent"]
     end
 
-    subgraph PHASE3["③ Code Generation"]
+    subgraph PHASE3["â‘¢ Code Generation"]
         C["codegen-agent"]
     end
 
-    subgraph PHASE4["④ Validate & Self-Correct"]
+    subgraph PHASE4["â‘£ Validate & Self-Correct"]
         V{"CI passes?"}
         FIX["Self-correct"]
-        FAIL(["❌ Halt"])
+        FAIL(["âŒ Halt"])
         RETRY(["Retries left?"])
     end
 
-    subgraph PHASE5["⑤ Security"]
+    subgraph PHASE5["â‘¤ Security"]
         SEC["security-agent"]
     end
 
-    subgraph PHASE6["⑥ Ship & Document"]
+    subgraph PHASE6["â‘¥ Ship & Document"]
         PR["pr-agent"]
         DOCS["docs-agent"]
         DKS["Update Domain Knowledge Store"]
     end
 
-    HGATE([👤 PR Review])
-    DONE([✅ Merged · Domain updated])
+    HGATE([ðŸ‘¤ PR Review])
+    DONE([âœ… Merged Â· Domain updated])
 
     BRIEF --> PHASE1
     SG -->|Yes| PHASE2
@@ -253,42 +253,42 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    TRIGGER([👤 Adjustment / Bug Report])
+    TRIGGER([ðŸ‘¤ Adjustment / Bug Report])
 
-    subgraph PHASE1["① Domain Context"]
+    subgraph PHASE1["â‘  Domain Context"]
         DKS["domain_query + get_component<br/>get_dependency_graph + get_risk"]
     end
 
-    subgraph PHASE2["② Targeted Change"]
+    subgraph PHASE2["â‘¡ Targeted Change"]
         C["change-codegen-agent"]
     end
 
-    subgraph PHASE3["③ Validate & Self-Correct"]
+    subgraph PHASE3["â‘¢ Validate & Self-Correct"]
         V{"CI passes?"}
         FIX["Self-correct"]
-        FAIL(["❌ Halt"])
+        FAIL(["âŒ Halt"])
         RETRY(["Retries left?"])
     end
 
-    subgraph PHASE4["④ ADR & Migration Check"]
+    subgraph PHASE4["â‘£ ADR & Migration Check"]
         ADR{"Contract changed?"}
         NEWADR["adr-agent"]
         SCHEMA{"Schema changed?"}
         MIG["propose_migration\nFlag for human review"]
     end
 
-    subgraph PHASE5["⑤ Security"]
+    subgraph PHASE5["â‘¤ Security"]
         SEC["security-agent"]
     end
 
-    subgraph PHASE6["⑥ Ship & Update"]
+    subgraph PHASE6["â‘¥ Ship & Update"]
         PR["pr-agent"]
         DOCS["docs-agent"]
         UPDK["Update Domain Knowledge Store"]
     end
 
-    HGATE([👤 PR Review])
-    DONE([✅ Merged · Domain updated])
+    HGATE([ðŸ‘¤ PR Review])
+    DONE([âœ… Merged Â· Domain updated])
 
     TRIGGER --> PHASE1
     PHASE1 --> PHASE2
@@ -402,68 +402,69 @@ Planifest defines distinct artifact types. No artifact bleeds into another. Each
 
 ```
 monorepo/
-├── planifest-framework/
-│   ├── skills/
-│   │   ├── planifest-orchestrator/SKILL.md   # Entry point - coaching + sequencing
-│   │   ├── planifest-spec-agent/SKILL.md     # Produce specification artifacts
-│   │   ├── planifest-adr-agent/SKILL.md      # Produce ADRs
-│   │   ├── planifest-codegen-agent/SKILL.md  # Implement against spec
-│   │   ├── planifest-validate-agent/SKILL.md # Run checks, self-correct
-│   │   ├── planifest-security-agent/SKILL.md # Security assessment
-│   │   ├── planifest-docs-agent/SKILL.md     # Complete documentation
-│   │   └── planifest-change-agent/SKILL.md   # Change pipeline
-│   ├── adapters/
-│   │   ├── claude-code/CLAUDE.md
-│   │   ├── cursor/.cursorrules
-│   │   ├── copilot/copilot-instructions.md
-│   │   └── antigravity/planifest.yaml
-│   └── templates/                  # Artifact templates
-│       ├── initiative-brief.md
-│       ├── component-manifest.template.json
-│       ├── pipeline-run.template.md
-│       └── ...
-├── plan/
-│   └── {initiative-id}/
-│       ├── planifest.md            # The Planifest - plan for what will be built, manifest of what it builds against
-│       ├── initiative-brief.md
-│       ├── pipeline-run.md         # Audit trail for the latest run
-│       └── docs/                   # Initiative-level artifacts
-│           ├── design-spec.md
-│           ├── openapi-spec.yaml
-│           ├── domain-glossary.md
-│           ├── risk-register.md
-│           ├── scope.md
-│           ├── operational-model.md
-│           ├── slo-definitions.md
-│           ├── cost-model.md
-│           ├── security-report.md
-│           └── adr/
-│               └── ADR-001-*.md
-├── src/
-│   └── {component-id}/
-│       ├── component.json          # Component manifest
-│       ├── apps/ | packages/ | infra/   # Implementation
-│       └── docs/                   # Component-level artifacts
-│           ├── purpose.md
-│           ├── interface-contract.md
-│           ├── data-contract.md
-│           ├── dependencies.md
-│           ├── risk.md
-│           ├── scope.md
-│           ├── quirks.md
-│           ├── tech-debt.md
-│           └── migrations/
-├── docs/                           # Repo-wide state
-│   ├── component-registry.md
-│   └── dependency-graph.md
-└── README.md
+â”œâ”€â”€ planifest-framework/
+â”‚   â”œâ”€â”€ skills/
+â”‚   â”‚   â”œâ”€â”€ planifest-orchestrator/SKILL.md   # Entry point - coaching + sequencing
+â”‚   â”‚   â”œâ”€â”€ planifest-spec-agent/SKILL.md     # Produce specification artifacts
+â”‚   â”‚   â”œâ”€â”€ planifest-adr-agent/SKILL.md      # Produce ADRs
+â”‚   â”‚   â”œâ”€â”€ planifest-codegen-agent/SKILL.md  # Implement against spec
+â”‚   â”‚   â”œâ”€â”€ planifest-validate-agent/SKILL.md # Run checks, self-correct
+â”‚   â”‚   â”œâ”€â”€ planifest-security-agent/SKILL.md # Security assessment
+â”‚   â”‚   â”œâ”€â”€ planifest-docs-agent/SKILL.md     # Complete documentation
+â”‚   â”‚   â””â”€â”€ planifest-change-agent/SKILL.md   # Change pipeline
+â”‚   â”œâ”€â”€ adapters/
+â”‚   â”‚   â”œâ”€â”€ claude-code/CLAUDE.md
+â”‚   â”‚   â”œâ”€â”€ cursor/.cursorrules
+â”‚   â”‚   â”œâ”€â”€ copilot/copilot-instructions.md
+â”‚   â”‚   â””â”€â”€ antigravity/planifest.yaml
+â”‚   â””â”€â”€ templates/                  # Artifact templates
+â”‚       â”œâ”€â”€ initiative-brief.md
+â”‚       â”œâ”€â”€ component-manifest.template.json
+â”‚       â”œâ”€â”€ pipeline-run.template.md
+â”‚       â””â”€â”€ ...
+â”œâ”€â”€ plan/                           # Active and historical plans
+â”‚   â”œâ”€â”€ planifest.md            # The Planifest for the active change
+â”‚   â”œâ”€â”€ initiative-brief.md     # The brief for the active change
+â”‚   â”œâ”€â”€ design-spec.md          # Active initiative-level artifacts
+â”‚   â”œâ”€â”€ openapi-spec.yaml
+â”‚   â”œâ”€â”€ domain-glossary.md
+â”‚   â”œâ”€â”€ risk-register.md
+â”‚   â”œâ”€â”€ scope.md
+â”‚   â”œâ”€â”€ operational-model.md
+â”‚   â”œâ”€â”€ slo-definitions.md
+â”‚   â”œâ”€â”€ cost-model.md
+â”‚   â”œâ”€â”€ security-report.md
+â”‚   â”œâ”€â”€ adr/
+â”‚   â”‚   â””â”€â”€ ADR-001-*.md
+â”‚   â”œâ”€â”€ changelog/                  # Log of all pipeline/change runs
+â”‚   â”‚   â””â”€â”€ {initiative-id}-<YYYY-MM-DD>.md
+â”‚   â””â”€â”€ {initiative-id}/            # Historical plans, moved here post-review
+â”‚       â””â”€â”€ <historical active plan contents>
+â”œâ”€â”€ src/
+â”‚   â””â”€â”€ {component-id}/
+â”‚       â”œâ”€â”€ component.json          # Component manifest
+â”‚       â”œâ”€â”€ apps/ | packages/ | infra/   # Implementation
+â”‚       â””â”€â”€ docs/                   # Component-level artifacts
+â”‚           â”œâ”€â”€ purpose.md
+â”‚           â”œâ”€â”€ interface-contract.md
+â”‚           â”œâ”€â”€ data-contract.md
+â”‚           â”œâ”€â”€ dependencies.md
+â”‚           â”œâ”€â”€ risk.md
+â”‚           â”œâ”€â”€ scope.md
+â”‚           â”œâ”€â”€ quirks.md
+â”‚           â”œâ”€â”€ tech-debt.md
+â”‚           â””â”€â”€ migrations/
+â”œâ”€â”€ docs/                           # Repo-wide state
+â”‚   â”œâ”€â”€ component-registry.md
+â”‚   â””â”€â”€ dependency-graph.md
+â””â”€â”€ README.md
 ```
 
 ---
 
 ## 11. Documentation Sync
 
-Every agent output is a markdown document, written to `plan/{initiative-id}/docs/` (initiative-level artifacts) or `src/{component-id}/docs/` (component-level artifacts), with repo-wide state in `docs/`. The git repository is the documentation system - markdown and Mermaid render natively on GitHub, GitLab, and Bitbucket. No additional sync infrastructure is required for v1.0.
+Every agent output is a markdown document, written to `plan/current/` (initiative-level artifacts) or `src/{component-id}/docs/` (component-level artifacts), with repo-wide state in `docs/`. The git repository is the documentation system - markdown and Mermaid render natively on GitHub, GitLab, and Bitbucket. No additional sync infrastructure is required for v1.0.
 
 Teams that want a richer documentation experience (Obsidian, Notion, Confluence) can integrate at the documentation provider level - see [RC-005 - Pluggable Documentation Provider](p014-planifest-roadmap.md) in the roadmap.
 

@@ -37,7 +37,7 @@
 The orchestrator skill:
 - Assesses the Initiative Brief against what a complete Planifest specification requires
 - Coaches the human through gaps - one question at a time, in priority order
-- Produces the validated **Planifest** (`plan/{initiative-id}/planifest.md`) - the plan for what will be built and the manifest of what it builds against
+- Produces the validated **Planifest** (`plan/current/planifest.md`) - the plan for what will be built and the manifest of what it builds against
 - Sequences the phase skills: spec-agent -> adr-agent -> codegen-agent -> validate-agent -> security-agent -> docs-agent
 
 For changes to existing initiatives, the orchestrator invokes the change-agent skill instead of the full pipeline.

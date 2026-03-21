@@ -32,7 +32,7 @@ Regardless of which pipeline you are running:
 1. Read this document fully
 2. Read `planifest/hard-limits.md` - these are non-negotiable
 3. Read `planifest/default-rules.md` - these govern your behaviour unless overridden per initiative
-4. If an initiative already exists at `plan/{initiative-id}/docs/`, read the existing artifacts to understand the current state
+4. If an initiative already exists at `plan/`, read the existing artifacts to understand the current state
 
 ---
 
@@ -118,7 +118,7 @@ Wait for the human to provide the answers. Reassess. Repeat until complete.
 
 You may make documented assumptions for genuinely minor gaps - record these in the Risk Register with `likelihood: medium` and flag them. You must not assume away significant ambiguity.
 
-**Outputs - write each to `plan/{initiative-id}/docs/` as you complete it:**
+**Outputs - write each to `plan/current/` as you complete it:**
 
 | Artifact | Path |
 |---|---|
@@ -154,7 +154,7 @@ For every significant decision - framework choice, database selection, auth stra
 
 A significant decision is any choice that has consequences worth recording: what becomes easier, what becomes harder, what is deferred, what risk is introduced or mitigated.
 
-**Output:** One ADR per decision, written to `plan/{initiative-id}/docs/adr/ADR-{NNN}-{title}.md`
+**Output:** One ADR per decision, written to `plan/current/adr/ADR-{NNN}-{title}.md`
 
 **ADR format:**
 
@@ -245,7 +245,7 @@ If checks fail -> read the error output, identify the root cause, fix it, and re
 
 **Input:** Full implementation (from Phase 3, validated in Phase 4)
 
-**Output:** `plan/{initiative-id}/docs/security-report.md`
+**Output:** `plan/current/security-report.md`
 
 **The security report must cover:**
 
@@ -283,8 +283,8 @@ If checks fail -> read the error output, identify the root cause, fix it, and re
 3. Produce system-wide artifacts:
    - `docs/component-registry.md`
    - `docs/dependency-graph.md` (as a Mermaid diagram)
-4. Produce `plan/{initiative-id}/docs/recommendations.md` - suggested improvements for future iterations
-5. Write `plan/{initiative-id}/pipeline-run.md` - the audit trail for this run
+4. Produce `plan/current/recommendations.md` - suggested improvements for future iterations
+5. Write `plan/changelog/{initiative-id}-<YYYY-MM-DD>.md` - the audit trail for this run
 
 **`pipeline-run.md` format:**
 
@@ -382,11 +382,11 @@ flowchart TD
 
 Read the existing artifacts for this initiative:
 
-1. `plan/{initiative-id}/docs/design-spec.md` - understand the full specification
+1. `plan/current/design-spec.md` - understand the full specification
 2. `docs/component-registry.md` - understand what components exist
 3. `docs/dependency-graph.md` - understand how they relate
 4. `src/{affected-component}/docs/` - read the purpose, interface contract, dependencies, data contract, risk, and quirks for every component the change touches
-5. `plan/{initiative-id}/docs/domain-glossary.md` - confirm you are using the correct terms
+5. `plan/current/domain-glossary.md` - confirm you are using the correct terms
 
 Identify which components are affected by the change request. Identify the blast radius - which other components depend on the ones you're changing.
 
