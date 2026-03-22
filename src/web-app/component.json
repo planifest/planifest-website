@@ -13,7 +13,9 @@
         "responsibilities": [
             "Display landing page details and animations",
             "Render markdown files from planifest-docs at build time",
-            "Provide light/dark mode theme toggling"
+            "Provide light/dark mode theme toggling",
+            "Provide persistent site navigation",
+            "Provide direct links to the Planifest Framework GitHub repository"
         ],
         "notResponsibleFor": [
             "Backend server operations",
@@ -67,7 +69,9 @@
             "Linking documentation pages automatically",
             "Responsive persistent hamburger navigation",
             "Static sitemap generation",
-            "Dynamic parsing of active documentation links"
+            "Dynamic parsing of active documentation links",
+            "Linking out to the Planifest Framework GitHub repository",
+            "Top navigation bar for quick access to key resources and external links"
         ],
         "out": [
             "Backend APIs",
@@ -96,7 +100,7 @@
     },
     "metadata": {
         "createdAt": "2026-03-11T23:21:00Z",
-        "updatedAt": "2026-03-22T17:05:00Z",
+        "updatedAt": "2026-03-22T23:02:43Z",
         "createdBy": "agent",
         "lastModifiedBy": "agent",
         "skill": "planifest-codegen-agent",
