@@ -1,17 +1,5 @@
 # Planifest - Functional Decisions
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial Document | 05 MAR 2026 | Martin Mayer |
-| 2 | Corrected FD-003 - Initiative Brief is the initiating input, not the only point of human intervention | 05 MAR 2026 | Martin Mayer |
-| 3 | Added FQ-007 - should Planifest agents be packaged as Agent Skills | 05 MAR 2026 | Planifest Agent (instructed by Martin Mayer) |
-| 4 | Added FD-021 (Planifest as plan and manifest), FD-022 (delivered as Agent Skills); resolved FQ-007; updated FD-003 with coaching loop and Planifest confirmation gate; updated FD-004 with orchestrator reference | 07 MAR 2026 | Martin Mayer (via agent) |
-| 5 | Updated FD-015 with reference to Backend Stack Evaluation (p013) and agent-suitability guidance for stack selection | 07 MAR 2026 | Martin Mayer (via agent) |
-| 6 | Updated FD-015 with reference to Frontend Stack Evaluation (p016) for frontend stack selection guidance | 09 MAR 2026 | Martin Mayer (via agent) |
-| 7 | Updated FD-021 with reference to Strategic Intent vs Stochastic Execution (p017) | 11 MAR 2026 | Martin Mayer |
-| 8 | Removed MCP from v1.0 decisions - FD-010, FD-011, FD-012, FD-013, FD-020 updated to reflect agentskills.io as v1.0 delivery; MCP noted as roadmap | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 
@@ -128,7 +116,7 @@ Human intervention points are:
 
 ---
 
-## FD-009 - The Domain Knowledge Store is a first-class component
+## FD-009 - SDLC documentation folders are first-class components
 
 **Decision:** The domain Planifest builds is written to a structured, versioned document store as the system is built. Every component produces documentation as a first-class output, not an afterthought. Documents are granular, standard, and machine-readable. History is never destroyed - only superseded.
 
@@ -138,15 +126,15 @@ Agents query before generating. Before building any component, an agent must at 
 3. Understand what risk has already been identified for this domain
 4. Confirm it is using the correct ubiquitous language from the domain glossary
 
-**Rationale:** Without a queryable domain, agents work in isolation - producing output that is technically correct but architecturally wrong. The Domain Knowledge Store is what separates purposeful generation from plausible generation.
+**Rationale:** Without a queryable domain, agents work in isolation - producing output that is technically correct but architecturally wrong. The structured SDLC documentation is what separates purposeful generation from plausible generation.
 
 ---
 
-## FD-010 - The Domain Knowledge Store is accessed via the git `docs/` folder in v1.0
+## FD-010 - Domain context is accessed via the git `docs/`, `plan/`, and `manifest/` folders
 
-**Decision:** In v1.0, agents access the domain knowledge store by reading and writing the `docs/` folder directly via Agent Skills. Documents are colocated with the code they describe. No additional infrastructure is required - the store works locally and in CI.
+**Decision:** Agents access domain context by reading and writing the `docs/`, `plan/`, and `manifest/` folders directly via Agent Skills. Documents are colocated with the code they describe. No additional infrastructure is required - the documentation works locally and in CI.
 
-A queryable MCP service wrapping the Domain Knowledge Store is a roadmap item (see [RC-001](p014-planifest-roadmap.md)). It will provide tighter agent context and structured query responses suited to larger teams or complex domains.
+A dedicated queryable Domain Knowledge Store MCP service is a roadmap item (see [RC-001](p014-planifest-roadmap.md)). It will provide tighter agent context and structured query responses suited to larger teams or complex domains.
 
 **Rationale:** The git `docs/` folder provides sufficient queryability for single-agent, single-initiative work. The standardised file paths and artifact structure mean agents can navigate the store efficiently. The MCP service becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.
 

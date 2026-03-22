@@ -1,10 +1,5 @@
 # Research Report: Strategic Intent vs. Stochastic Execution
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---------|---------------------|------|-------------|
-| 1 | Initial Research Document | 11 MAR 2026 | Martin Mayer |
 
 ---
 

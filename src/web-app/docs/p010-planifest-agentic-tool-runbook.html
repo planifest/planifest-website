@@ -13,10 +13,20 @@
       <nav class="glass-nav">
         <div class="nav-content">
           <a href="../index.html" class="logo"><img src="../img/planifest-logo.svg" alt="Planifest Logo"></a>
-          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-          </button>
+          <div class="nav-links">
+            <a href="../index.html#about" class="nav-link">About</a>
+            <a href="../index.html#structure" class="nav-link">Structure</a>
+            <a href="p001-planifest-master-plan.html" class="nav-link">Master Plan</a>
+          </div>
+          <div class="nav-actions">
+            <button class="hamburger-btn" aria-label="Toggle menu" title="Menu">
+              <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none" class="menu-icon" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+              <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+              <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+          </div>
         </div>
       </nav>
       <main class="doc-container glass-panel">
@@ -46,7 +56,7 @@
 <ul>
 <li>Assesses the Initiative Brief against what a complete Planifest specification requires</li>
 <li>Coaches the human through gaps - one question at a time, in priority order</li>
-<li>Produces the validated <strong>Planifest</strong> (<code>initiatives/{initiative-id}/planifest.md</code>) - the plan for what will be built and the manifest of what it builds against</li>
+<li>Produces the validated <strong>Planifest</strong> (<code>plan/current/planifest.md</code>) - the plan for what will be built and the manifest of what it builds against</li>
 <li>Sequences the phase skills: spec-agent -&gt; adr-agent -&gt; codegen-agent -&gt; validate-agent -&gt; security-agent -&gt; docs-agent</li>
 </ul>
 <p>For changes to existing initiatives, the orchestrator invokes the change-agent skill instead of the full pipeline.</p>
@@ -64,10 +74,10 @@
 </thead>
 <tbody><tr>
 <td>MCP support</td>
-<td>Native - stdio (future, when MCP servers are built)</td>
-<td>Via MCP extension (future)</td>
-<td>Native (future)</td>
-<td>Limited / via extensions</td>
+<td>Native - stdio <em>(roadmap - see RC-001 to RC-004)</em></td>
+<td>Via MCP extension <em>(roadmap)</em></td>
+<td>Native <em>(roadmap)</em></td>
+<td>Limited / via extensions <em>(roadmap)</em></td>
 </tr>
 <tr>
 <td>Authentication</td>
@@ -84,10 +94,10 @@
 <td>Partial - prompt-driven per phase</td>
 </tr>
 <tr>
-<td>Domain Knowledge Store</td>
-<td>Reads <code>docs/</code> folder directly</td>
-<td>Reads <code>docs/</code> folder directly</td>
-<td>Reads <code>docs/</code> folder directly</td>
+<td>Domain Knowledge</td>
+<td>Reads <code>plan/</code> and <code>docs/</code> directly</td>
+<td>Reads <code>plan/</code> and <code>docs/</code> directly</td>
+<td>Reads <code>plan/</code> and <code>docs/</code> directly</td>
 <td>Reads <code>docs/</code> folder via workspace indexing</td>
 </tr>
 <tr>
@@ -128,7 +138,7 @@
 <p>Paste this instruction into Claude Code:</p>
 <pre><code class="language-">Load the Planifest orchestrator skill at planifest-framework/skills/orchestrator/SKILL.md and execute the Initiative Pipeline.
 
-Initiative brief: initiatives/{{initiative_id}}/initiative-brief.md
+Initiative brief: plan/current/initiative-brief.md
 Initiative ID: {{initiative_id}}
 Adoption mode: greenfield | retrofit | agent-interface</code></pre><p>The orchestrator will assess the brief, coach you through any gaps, produce the Planifest, and then sequence through the phase skills.</p>
 <h3>Running the change pipeline</h3>
@@ -181,7 +191,7 @@ git push origin initiative/{{initiative_id}}</code></pre><hr>
 <p>GitHub Copilot has more limited agent capabilities than the other tools in this set. The Planifest framework can be applied with Copilot, but with constraints:</p>
 <ul>
 <li>Hard limits are enforced via the instructions file and human discipline rather than structurally</li>
-<li>The Domain Knowledge Store is not queryable via tools - agents must read the <code>docs/</code> folder directly or rely on Copilot&#39;s workspace indexing</li>
+<li>Domain knowledge is not currently queryable via tools - agents must read the <code>plan/</code> and <code>docs/</code> folders directly or rely on Copilot&#39;s workspace indexing</li>
 <li>The pipeline runs phase by phase with explicit prompting per phase rather than skill-driven execution</li>
 </ul>
 <h3>Setup</h3>
@@ -227,7 +237,7 @@ git push origin initiative/{{initiative_id}}</code></pre><hr>
 <h2>8. Context Limit Strategy</h2>
 <p>Applies to all local tools. The file system is the memory - write outputs to disk after each phase and reference them by path rather than holding everything in context.</p>
 <pre class="mermaid">flowchart TD
-    A{Phase complete?} -->|Yes| B[Write outputs to disk\nvia filesystem MCP]
+    A{Phase complete?} -->|Yes| B[Write outputs to disk]
     B --> C[Log to pipeline-run.md]
     C --> D[Reference by path\nin next phase]
     D --> E[Next phase reads\nonly what it needs]
@@ -244,20 +254,31 @@ git push origin initiative/{{initiative_id}}</code></pre><hr>
 <h2>9. Reconciling a Local Run with your VCS</h2>
 <p>A local run produces a local branch with the same files a CI platform run would produce. The final step is pushing and opening a PR.</p>
 <pre><code class="language-bash"># Review what was produced
-cat initiatives/{{initiative_id}}/pipeline-run.md
+cat plan/_archive/{{initiative_id}}/pipeline-run.md
 
 # Run the same checks the CI platform will run
-npm run ci:full --workspace=initiatives/{{initiative_id}}
+npm run ci:full --workspace=src/{{component_id}}
 
 # Push and open PR - GitHub
 git push origin initiative/{{initiative_id}}
-gh pr create --title "feat: {{initiative_id}}" --body "$(cat initiatives/{{initiative_id}}/pipeline-run.md)"
+gh pr create --title "feat: {{initiative_id}}" --body "$(cat plan/_archive/{{initiative_id}}/pipeline-run.md)"
 
 # Push and open MR - GitLab
 git push origin initiative/{{initiative_id}}
-glab mr create --title "feat: {{initiative_id}}" --description "$(cat initiatives/{{initiative_id}}/pipeline-run.md)"</code></pre><p>The CI platform runs the same checks on the PR. If they pass, the output is identical in quality to a full CI platform run. If they fail, the change pipeline self-corrects on the runner as normal.</p>
+glab mr create --title "feat: {{initiative_id}}" --description "$(cat plan/_archive/{{initiative_id}}/pipeline-run.md)"</code></pre><p>The CI platform runs the same checks on the PR. If they pass, the output is identical in quality to a full CI platform run. If they fail, the change pipeline self-corrects on the runner as normal.</p>
 
       </main>
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-content">
+            <div class="brand"><img src="../img/planifest-logo.svg" alt="Planifest Logo" style="height: 32px;"></div>
+            <p>Generated via Agentic execution • Deployed with GitHub Actions</p>
+            <div class="footer-links">
+              <a href="sitemap.html">Sitemap</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   </body>
 </html>

@@ -1,15 +1,5 @@
 # Planifest - Agent Prompt Library
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial document | 02 MAR 2026 | Martin Mayer |
-| 2 | Updated all prompts to use domain-knowledge-server tools; added spec hard-gate; corrected human gate language; added data contract and migration awareness; added domain glossary requirement | 05 MAR 2026 | Martin Mayer |
-| 3 | Added Anthropic published skills reference section; renumbered sections 9-11 | 05 MAR 2026 | Planifest Agent (instructed by Martin Mayer) |
-| 4 | Added status marker - prompts are reference material for Agent Skills; v1.0 delivers the pipeline as skills, not API system prompts (see FD-022, RC-007) | 07 MAR 2026 | Martin Mayer (via agent) |
-| 5 | Replaced hardcoded stack values in prompt templates with {{stack_declaration}} placeholder; added p013 reference | 07 MAR 2026 | Martin Mayer (via agent) |
-| 6 | Added Frontend Stack Evaluation (p016) reference alongside p013 in stack selection note | 09 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

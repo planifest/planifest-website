@@ -1,17 +1,5 @@
 # Planifest - Master Plan
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial document | 02 MAR 2026 | Martin Mayer |
-| 2 | Added MCP architecture, dual-runtime model, CI platform agnosticism | 02 MAR 2026 | Martin Mayer |
-| 3 | Reframed as specification framework; added Domain Knowledge Store, adoption modes, human gates, data contracts, artifact types, default rules | 05 MAR 2026 | Martin Mayer |
-| 4 | Added Roadmap (p014) to related links | 07 MAR 2026 | Martin Mayer |
-| 5 | Deduplicated default rules table - now references canonical table in p003 FD-007 | 07 MAR 2026 | Martin Mayer (via agent) |
-| 6 | Added Planifest name etymology; replaced monorepo structure with v1.0 skills-based layout; replaced docs sync with v1.0 git-native framing | 07 MAR 2026 | Martin Mayer (via agent) |
-| 7 | Added Strategic Intent vs Stochastic Execution (p017) to related links | 11 MAR 2026 | Martin Mayer |
-| 8 | Removed MCP from v1.0 content - MCP is roadmap only; v1.0 uses agentskills.io; removed Build Sequence (MCP-first future plan) | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 
@@ -25,7 +13,7 @@
 
 - [1. What Planifest Is](#1-what-planifest-is)
 - [2. System Overview](#2-system-overview)
-- [3. The Domain Knowledge Store](#3-the-domain-knowledge-store)
+- [3. SDLC Documentation Architecture](#3-sdlc-documentation-architecture)
 - [4. Human and Agent Responsibilities](#4-human-and-agent-responsibilities)
 - [5. Pipeline Architecture - New Initiatives](#5-pipeline-architecture-new-initiatives)
 - [6. Pipeline Architecture - Change & Maintenance](#6-pipeline-architecture-change-maintenance)
@@ -78,26 +66,26 @@ flowchart TD
     SEC --> PRA[pr-agent]
     PRA --> HGATE([ðŸ‘¤ PR Review])
     HGATE --> DA[docs-agent]
-    DA --> DKS[(Domain Knowledge Store)]
+    DA --> DKS[(plan/, manifest/, docs/)]
 
-    style A fill:#d4edda,stroke:#28a745,color:#000
-    style Z fill:#d4edda,stroke:#28a745,color:#000
-    style HGATE fill:#d4edda,stroke:#28a745,color:#000
-    style GATE1 fill:#fff8e1,stroke:#f0a500
-    style DKS fill:#cce5ff,stroke:#0066cc
+    style A fill:transparent,stroke:#28a745,stroke-width:2px
+    style Z fill:transparent,stroke:#28a745,stroke-width:2px
+    style HGATE fill:transparent,stroke:#28a745,stroke-width:2px
+    style GATE1 fill:transparent,stroke:#f0a500,stroke-width:2px
+    style DKS fill:transparent,stroke:#0066cc,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
 > Planifest runs in two modes: any **CI/CD platform** (GitHub Actions, GitLab CI, Bitbucket Pipelines, CircleCI, etc.) using an LLM API, and any **agentic coding tool** (Claude Code, Cursor, Codex, Antigravity, GitHub Copilot, etc.) locally on a dev machine. See [Agentic Tool Runbook](p010-planifest-agentic-tool-runbook.md).
 
 ---
 
-## 3. The Domain Knowledge Store
+## 3. SDLC Documentation Architecture
 
-The Domain Knowledge Store is the most critical component in Planifest. It is a structured, versioned document store that captures everything Planifest knows about a system - per initiative, per component, and system-wide. Agents query it before building anything. It is the mechanism by which the domain is made available to agents that cannot acquire it implicitly.
+The overarching SDLC folder structure (consisting of the `plan/`, `manifest/`, and `docs/` folders) is the most critical concept in Planifest. It acts as a structured, versioned file tree that captures everything Planifest knows about a system - per initiative, per component, and system-wide. Agents query these files before building anything. It is the mechanism by which the domain is made available to agents that cannot acquire it implicitly.
 
 ```mermaid
 flowchart LR
-    subgraph DKS["Domain Knowledge Store"]
+    subgraph DKS["SDLC Collaboration Folders"]
         Q["domain_query"]
         GC["get_component"]
         GDG["get_dependency_graph"]
@@ -109,15 +97,15 @@ flowchart LR
     AG["Agents"] -->|read / write| DKS
     DKS --> STORE[(git docs/ folder)]
 
-    style DKS fill:#fff3cd,stroke:#ffc107
-    style STORE fill:#cce5ff,stroke:#0066cc
+    style DKS fill:transparent,stroke:#ffc107,stroke-width:2px,stroke-dasharray: 5 5
+    style STORE fill:transparent,stroke:#0066cc,stroke-width:2px
 ```
 
 ### Access path - v1.0
 
 **Git `docs/` folder** - agents read and write documents directly via Agent Skills. Documents are colocated with code. No additional infrastructure required. Works locally and in CI.
 
-A queryable MCP service wrapping the Domain Knowledge Store is a roadmap item - see [RC-001](p014-planifest-roadmap.md).
+A dedicated queryable Domain Knowledge Store MCP service is a roadmap item - see [RC-001](p014-planifest-roadmap.md).
 
 ### Agents query before generating
 
@@ -156,7 +144,7 @@ flowchart LR
         A4["Propose migrations -\nnever apply unilaterally"]
     end
 
-    style HUMAN fill:#d4edda,stroke:#28a745
+    style HUMAN fill:transparent,stroke:#28a745,stroke-width:2px
     style AGENT fill:#f0f4ff,stroke:#6c8ebf
 ```
 
@@ -207,7 +195,7 @@ flowchart TD
     subgraph PHASE6["â‘¥ Ship & Document"]
         PR["pr-agent"]
         DOCS["docs-agent"]
-        DKS["Update Domain Knowledge Store"]
+        DKS["Update plan/ and docs/"]
     end
 
     HGATE([ðŸ‘¤ PR Review])
@@ -224,16 +212,16 @@ flowchart TD
     PHASE5 --> PHASE6
     PR --> DOCS --> DKS --> HGATE --> DONE
 
-    style BRIEF fill:#d4edda,stroke:#28a745,color:#000
-    style HGATE fill:#d4edda,stroke:#28a745,color:#000
-    style DONE fill:#d4edda,stroke:#28a745,color:#000
-    style FAIL fill:#f8d7da,stroke:#dc3545,color:#000
-    style PHASE1 fill:#fff8e1,stroke:#f0a500
-    style PHASE2 fill:#f0f4ff,stroke:#6c8ebf
-    style PHASE3 fill:#f0f4ff,stroke:#6c8ebf
-    style PHASE4 fill:#fff8e1,stroke:#f0a500
-    style PHASE5 fill:#f0f4ff,stroke:#6c8ebf
-    style PHASE6 fill:#f0f4ff,stroke:#6c8ebf
+    style BRIEF fill:transparent,stroke:#28a745,stroke-width:2px,color:#000
+    style HGATE fill:transparent,stroke:#28a745,stroke-width:2px,color:#000
+    style DONE fill:transparent,stroke:#28a745,stroke-width:2px,color:#000
+    style FAIL fill:transparent,stroke:#dc3545,stroke-width:2px,color:#000
+    style PHASE1 fill:transparent,stroke:#f0a500,stroke-width:2px
+    style PHASE2 fill:transparent,stroke:#6c8ebf,stroke-width:2px
+    style PHASE3 fill:transparent,stroke:#6c8ebf,stroke-width:2px
+    style PHASE4 fill:transparent,stroke:#f0a500,stroke-width:2px
+    style PHASE5 fill:transparent,stroke:#6c8ebf,stroke-width:2px
+    style PHASE6 fill:transparent,stroke:#6c8ebf,stroke-width:2px
 ```
 
 ### Agent responsibilities
@@ -245,7 +233,7 @@ flowchart TD
 | codegen-agent | Reads component files; writes via filesystem | Full implementation + tests + IaC |
 | security-agent | Reads source files directly | security-report.md |
 | pr-agent | Via git push + CLI | PR with full description |
-| docs-agent | Writes to `docs/` and `plan/` folders directly | Domain Knowledge Store updated |
+| docs-agent | Writes to `docs/` and `plan/` folders directly | SDLC folders updated |
 
 ---
 
@@ -284,7 +272,7 @@ flowchart TD
     subgraph PHASE6["â‘¥ Ship & Update"]
         PR["pr-agent"]
         DOCS["docs-agent"]
-        UPDK["Update Domain Knowledge Store"]
+        UPDK["Update plan/ and docs/"]
     end
 
     HGATE([ðŸ‘¤ PR Review])
@@ -305,7 +293,7 @@ flowchart TD
     PR --> DOCS --> UPDK --> HGATE --> DONE
 
     style TRIGGER fill:#d4edda,stroke:#28a745,color:#000
-    style HGATE fill:#d4edda,stroke:#28a745,color:#000
+    style HGATE fill:transparent,stroke:#28a745,stroke-width:2px
     style DONE fill:#d4edda,stroke:#28a745,color:#000
     style FAIL fill:#f8d7da,stroke:#dc3545,color:#000
     style PHASE1 fill:#fff8e1,stroke:#f0a500

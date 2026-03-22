@@ -13,10 +13,20 @@
       <nav class="glass-nav">
         <div class="nav-content">
           <a href="../index.html" class="logo"><img src="../img/planifest-logo.svg" alt="Planifest Logo"></a>
-          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-          </button>
+          <div class="nav-links">
+            <a href="../index.html#about" class="nav-link">About</a>
+            <a href="../index.html#structure" class="nav-link">Structure</a>
+            <a href="p001-planifest-master-plan.html" class="nav-link">Master Plan</a>
+          </div>
+          <div class="nav-actions">
+            <button class="hamburger-btn" aria-label="Toggle menu" title="Menu">
+              <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none" class="menu-icon" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+              <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+              <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+          </div>
         </div>
       </nav>
       <main class="doc-container glass-panel">
@@ -154,7 +164,7 @@
 <p><strong>Decision:</strong> Planifest encodes functional and non-functional requirements, SDLC procedure, technical strategy, component purpose, domain knowledge, and standards. Implementation details - languages, frameworks, validation libraries - are below Planifest&#39;s concern. They are the codegen agent&#39;s domain, guided by stack configuration artifacts.</p>
 <p><strong>Rationale:</strong> Planifest&#39;s value is the discipline and repeatability it enforces, not the specific tools used to implement any given initiative. Coupling Planifest to implementation choices would limit its applicability and longevity.</p>
 <hr>
-<h2>FD-009 - The Domain Knowledge Store is a first-class component</h2>
+<h2>FD-009 - SDLC documentation folders are first-class components</h2>
 <p><strong>Decision:</strong> The domain Planifest builds is written to a structured, versioned document store as the system is built. Every component produces documentation as a first-class output, not an afterthought. Documents are granular, standard, and machine-readable. History is never destroyed - only superseded.</p>
 <p>Agents query before generating. Before building any component, an agent must at minimum:</p>
 <ol>
@@ -163,38 +173,26 @@
 <li>Understand what risk has already been identified for this domain</li>
 <li>Confirm it is using the correct ubiquitous language from the domain glossary</li>
 </ol>
-<p><strong>Rationale:</strong> Without a queryable domain, agents work in isolation - producing output that is technically correct but architecturally wrong. The Domain Knowledge Store is what separates purposeful generation from plausible generation.</p>
+<p><strong>Rationale:</strong> Without a queryable domain, agents work in isolation - producing output that is technically correct but architecturally wrong. The structured SDLC documentation is what separates purposeful generation from plausible generation.</p>
 <hr>
-<h2>FD-010 - The Domain Knowledge Store has two access paths</h2>
-<p><strong>Decision:</strong> Agents access the domain knowledge store via one of two paths. Both produce and consume the same document structure and honour the same default rules. The choice is operational, not architectural.</p>
-<ul>
-<li><strong>MCP service</strong> - a queryable service wrapping the document store. Agents ask targeted natural language questions and receive scoped, confident answers with source references. Better suited to larger teams, multiple initiatives, or complex domains.</li>
-<li><strong>Git <code>docs/</code> folder</strong> - documents colocated with the code they describe. No additional infrastructure. Works locally and in CI. Better suited to smaller teams, single initiatives, or environments where running an additional service is not desirable.</li>
-</ul>
-<p><strong>Rationale:</strong> Forcing all teams to run an MCP service creates unnecessary overhead for simpler deployments. Forcing large teams to navigate raw files creates noise and context bloat. Both paths are valid - the structure is identical either way.</p>
+<h2>FD-010 - Domain context is accessed via the git <code>docs/</code>, <code>plan/</code>, and <code>manifest/</code> folders</h2>
+<p><strong>Decision:</strong> Agents access domain context by reading and writing the <code>docs/</code>, <code>plan/</code>, and <code>manifest/</code> folders directly via Agent Skills. Documents are colocated with the code they describe. No additional infrastructure is required - the documentation works locally and in CI.</p>
+<p>A dedicated queryable Domain Knowledge Store MCP service is a roadmap item (see <a href="p014-planifest-roadmap.html">RC-001</a>). It will provide tighter agent context and structured query responses suited to larger teams or complex domains.</p>
+<p><strong>Rationale:</strong> The git <code>docs/</code> folder provides sufficient queryability for single-agent, single-initiative work. The standardised file paths and artifact structure mean agents can navigate the store efficiently. The MCP service becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.</p>
 <hr>
-<h2>FD-011 - The MCP service is the sole writer to the git repository</h2>
-<p><strong>Decision:</strong> When operating via the MCP path, the MCP service is the sole writer to the git monorepo - for both code and docs. Agents never write to git directly. All writes are posted to the MCP service and queued for serial processing. Code and docs are always committed atomically - never one without the other.</p>
-<p>Direct git pushes by humans or external systems during active pipeline operation are a process violation.</p>
-<p><strong>Rationale:</strong> Serial writes via a single service eliminate merge conflicts by design. Atomic commits ensure the repository is never in a state where code exists without documentation or vice versa.</p>
+<h2>FD-011 - Code and docs are always committed atomically</h2>
+<p><strong>Decision:</strong> Code and documentation are always committed together in a single atomic operation. Neither is ever committed without the other. In v1.0, this discipline is enforced by the pipeline skill instructions and reviewed at the PR gate.</p>
+<p>A serial write queue where the domain-knowledge-server is the sole writer to the git repository - structurally eliminating merge conflicts from concurrent agents - is a roadmap item (see <a href="p014-planifest-roadmap.html">RC-003</a>).</p>
+<p><strong>Rationale:</strong> Atomic commits ensure the repository is never in a state where code exists without documentation or vice versa. The serial write queue model becomes important when multiple agents operate concurrently; v1.0 runs one agent session at a time.</p>
 <hr>
 <h2>FD-012 - Credentials are never present in agent context</h2>
-<p><strong>Decision:</strong> Agents are never given credentials directly. The agent is given a capability - it can commit to git - not a credential. Authentication is handled natively by the environment:</p>
-<ul>
-<li><strong>MCP path</strong> - the MCP service holds credentials; agents post writes to the service</li>
-<li><strong>Non-MCP path</strong> - credentials are managed by the OS (macOS Keychain, Windows Credential Manager, Linux git credential store) or injected as masked environment variables in CI</li>
-</ul>
-<p>Credentials are never present in the agent&#39;s context window regardless of how the agent is prompted.</p>
+<p><strong>Decision:</strong> Agents are never given credentials directly. The agent is given a capability - it can commit to git - not a credential. In v1.0, credentials are managed by the OS (macOS Keychain, Windows Credential Manager, Linux git credential store) or injected as masked environment variables in CI. Agents interact with the filesystem and git via Agent Skills, never via credentials in their context window.</p>
 <p><strong>Rationale:</strong> An agent that holds credentials can leak them. An agent that holds a capability cannot. This is a security boundary, not a convenience.</p>
 <hr>
 <h2>FD-013 - The artifacts are the product; the destination is pluggable</h2>
-<p><strong>Decision:</strong> Planifest produces structured markdown artifacts. Where they are stored and rendered is an integration concern. The artifacts are the source of truth. Document store integration uses one of three delivery paths:</p>
-<ol>
-<li><strong>Existing MCP server + override skill</strong> - destination has an MCP server but requires Planifest-specific behaviour for artifact structure, naming, cross-linking, or tagging</li>
-<li><strong>Override skill only</strong> - the interface is trivially simple and no MCP server is required (e.g. git repo, filesystem)</li>
-<li><strong>Build an MCP server</strong> - no MCP server exists and the destination interface is sufficiently complex to warrant one</li>
-</ol>
-<p>The git repository is the default - artifacts land alongside the code, no additional integration required, and a git repo is already in scope for every initiative.</p>
+<p><strong>Decision:</strong> Planifest produces structured markdown artifacts. Where they are stored and rendered is an integration concern. The artifacts are the source of truth.</p>
+<p>In v1.0, the git repository is the default - artifacts land alongside the code via Agent Skills, no additional integration required. A git repo is already in scope for every initiative.</p>
+<p>Teams that want a richer documentation experience (Obsidian, Notion, Confluence) can integrate at the documentation provider level - see <a href="p014-planifest-roadmap.html">RC-005 - Pluggable Documentation Provider</a>.</p>
 <p><strong>Rationale:</strong> Tying Planifest to a specific document store constrains adoption. The artifacts themselves are the source of truth - the destination is a delivery detail.</p>
 <hr>
 <h2>FD-014 - OpenAPI is the canonical contract</h2>
@@ -379,12 +377,13 @@
 </tbody></table>
 <p><strong>Rationale:</strong> Clean separation of artifacts keeps each concern focused, makes the pipeline predictable, and allows any artifact to be updated without invalidating others.</p>
 <hr>
-<h2>FD-020 - MCP is the nervous system; Planifest is the brain</h2>
-<p><strong>Decision:</strong> MCP provides agent capabilities and connections. Planifest provides the knowledge, requirements, standards, and procedure that give those capabilities purpose and direction. They are complementary, not overlapping.</p>
-<p><strong>Rationale:</strong> Without Planifest, an MCP-connected agent is capable but undirected. Without MCP, Planifest has no means of execution. The two layers must be understood and maintained separately.</p>
+<h2>FD-020 - agentskills.io is the delivery mechanism; Planifest is the brain</h2>
+<p><strong>Decision:</strong> In v1.0, Agent Skills (delivered via agentskills.io) are the execution mechanism. Planifest provides the knowledge, requirements, standards, and procedure that give those capabilities purpose and direction. They are complementary, not overlapping.</p>
+<p>MCP will eventually provide the infrastructure layer - typed tool calls, credential isolation, structured query responses - see <a href="p014-planifest-roadmap.html">RC-001</a> through <a href="p014-planifest-roadmap.html">RC-004</a>.</p>
+<p><strong>Rationale:</strong> Without Planifest, an agent is capable but undirected. Without a delivery mechanism, Planifest has no means of execution. The specification and the execution layer must be understood and maintained separately.</p>
 <hr>
 <h2>FD-021 - A Planifest is the plan and the manifest</h2>
-<p><strong>Decision:</strong> For every initiative, the orchestrator agent produces a <strong>Planifest</strong> - the plan is what will be built, the manifest is what it builds against. The human confirms the Planifest before the pipeline proceeds. It is written to <code>initiatives/{initiative-id}/planifest.md</code>.</p>
+<p><strong>Decision:</strong> For every initiative, the orchestrator agent produces a <strong>Planifest</strong> - the plan is what will be built, the manifest is what it builds against. The human confirms the Planifest before the pipeline proceeds. It is written to <code>plan/current/planifest.md</code>.</p>
 <p>The Planifest records: the problem, the adoption mode, the confirmed product layer (user stories, acceptance criteria, constraints), the architecture layer (NFRs, security, cost), the engineering layer (stack, components, data ownership, deployment), the scope boundaries (in, out, deferred), and the risks and dependencies.</p>
 <p><strong>Rationale:</strong> You cannot plan what to build without recording what you&#39;re building against. The Planifest is the contract between human and agent - the hard gate before development begins. See <a href="p017-research-report-strategic-intent-vs-stochastic-execution.html">Strategic Intent vs Stochastic Execution</a> for the technical evaluation of this sequential intent-mapping logic.</p>
 <hr>
@@ -432,6 +431,17 @@
 </tbody></table>
 
       </main>
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-content">
+            <div class="brand"><img src="../img/planifest-logo.svg" alt="Planifest Logo" style="height: 32px;"></div>
+            <p>Generated via Agentic execution • Deployed with GitHub Actions</p>
+            <div class="footer-links">
+              <a href="sitemap.html">Sitemap</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   </body>
 </html>

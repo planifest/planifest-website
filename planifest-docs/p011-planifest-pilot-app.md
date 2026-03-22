@@ -1,14 +1,5 @@
 # Planifest Pilot App
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial document | 02 MAR 2026 | Martin Mayer |
-| 2 | Updated to reflect specification framework framing; updated monorepo structure to full artifact taxonomy; added adoption mode; added domain-knowledge-mcp to services | 05 MAR 2026 | Martin Mayer |
-| 3 | Updated monorepo structure for v1.0 skills-based delivery; removed MCP server apps; added planifest.md per initiative | 07 MAR 2026 | Martin Mayer (via agent) |
-| 4 | Added Backend Stack Evaluation (p013) context to backend choice - pilot decision, not a Planifest default | 07 MAR 2026 | Martin Mayer (via agent) |
-| 5 | Added Frontend Stack Evaluation (p016) context to frontend choice; upgraded target to React 19 + shadcn/ui per p016 recommendations | 09 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

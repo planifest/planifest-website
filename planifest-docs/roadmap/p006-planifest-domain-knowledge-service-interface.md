@@ -1,12 +1,5 @@
 # Planifest - Domain Knowledge Service Interface
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial Document | 05 MAR 2026 | Martin Mayer |
-| 2 | Deduplicated default rules table - now references canonical table in p003 FD-007 | 07 MAR 2026 | Martin Mayer (via agent) |
-| 3 | Added future-state status marker - v1.0 operates with git docs/ path; this interface specification applies when RC-001 is implemented | 07 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

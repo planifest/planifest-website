@@ -1,11 +1,5 @@
 # Planifest - Agentic Tool Compliance
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial document | 05 MAR 2026 | Planifest Agent (instructed by Martin Mayer) |
-| 2 | Reframed for v1.0 skills-based delivery - MCP-level enforcement is future state; v1.0 enforcement is prompt-level via skills and adapters + PR gate for all tools | 07 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

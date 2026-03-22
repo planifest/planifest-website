@@ -1,13 +1,5 @@
 # Planifest - MCP Architecture
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial document | 02 MAR 2026 | Martin Mayer |
-| 2 | Added serial write queue, credential security model, sole-writer principle; expanded tool set to full DKS interface | 05 MAR 2026 | Martin Mayer |
-| 3 | Added future-state status marker - v1.0 operates without MCP services; this document describes the target architecture for RC-001 through RC-004 on the roadmap | 07 MAR 2026 | Martin Mayer (via agent) |
-| 4 | Removed TypeScript assumptions - MCP server implementation language is a stack decision, not an architectural one. Schemas defined in JSON Schema (see p007) | 09 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

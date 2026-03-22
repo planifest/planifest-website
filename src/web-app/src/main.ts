@@ -81,4 +81,40 @@ document.addEventListener('DOMContentLoaded', () => {
   revealOnScroll();
 
   // Highlight active nav based on scroll position - Optional generic logic
+  // --- MOBILE NAV TOGGLE LOGIC ---
+  const hamburgerBtns = document.querySelectorAll('.hamburger-btn');
+  const navLinks = document.querySelector('.nav-links');
+
+  const toggleMenu = async () => {
+    if (navLinks) {
+      if (!navLinks.hasAttribute('data-loaded')) {
+        await loadDocsIntoNav();
+        navLinks.setAttribute('data-loaded', 'true');
+      }
+      navLinks.classList.toggle('show');
+    }
+  };
+
+  async function loadDocsIntoNav() {
+    try {
+      const isInDocsDir = window.location.pathname.includes('/docs/');
+      const fetchPath = isInDocsDir ? '../src/sitemap-data.json' : './src/sitemap-data.json';
+      const res = await fetch(fetchPath);
+      const data = await res.json();
+
+      let extraLinksHTML = '<hr style="border:0; height:1px; background:var(--glass-border); width:100%; margin: 0.5rem 0;">';
+      data.forEach((item: any) => {
+        // Skip Master Plan if it's already hardcoded
+        if (item.file.includes('p001')) return; 
+        const href = isInDocsDir ? `./${item.file}` : `./docs/${item.file}`;
+        extraLinksHTML += `<a href="${href}" class="nav-link">${item.title}</a>`;
+      });
+      if (navLinks) navLinks.innerHTML += extraLinksHTML;
+    } catch(e) {
+      console.error("Failed to load nav docs:", e);
+    }
+  }
+
+  hamburgerBtns.forEach(btn => btn.addEventListener('click', toggleMenu));
+
 });

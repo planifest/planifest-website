@@ -1,27 +1,9 @@
-import fs from 'fs';
-import path from 'path';
-import { resolve } from 'path';
-import { marked } from 'marked';
-
-import { fileURLToPath } from 'url';
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const DOCS_DIR = path.resolve(__dirname, '../../../planifest-docs');
-const OUT_DIR = path.resolve(__dirname, '../docs');
-const TEMPLATE_FILE = path.resolve(__dirname, '../doc-template.html');
-
-if (!fs.existsSync(OUT_DIR)) {
-  fs.mkdirSync(OUT_DIR, { recursive: true });
-}
-
-const template = fs.existsSync(TEMPLATE_FILE)
-  ? fs.readFileSync(TEMPLATE_FILE, 'utf-8')
-  : `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{TITLE}} - Planifest Docs</title>
+    <title>Sitemap - Planifest Docs</title>
     <!-- We reference main CSS here; Vite will resolve and built it -->
     <link rel="stylesheet" href="../src/style.css">
     <script type="module" src="../src/main.ts"></script>
@@ -48,7 +30,20 @@ const template = fs.existsSync(TEMPLATE_FILE)
         </div>
       </nav>
       <main class="doc-container glass-panel">
-        {{CONTENT}}
+        <h1>Planifest Document Sitemap</h1>
+<ul>
+<li><a href="p001-planifest-master-plan.html">Planifest - Master Plan</a></li>
+<li><a href="p002-planifest-product-concept.html">Planifest - Product Concept</a></li>
+<li><a href="p003-planifest-functional-decisions.html">Planifest - Functional Decisions</a></li>
+<li><a href="p004-the-pathway-to-agentic-development.html">The Pathway to Agentic Development for Real-World Systems</a></li>
+<li><a href="p010-planifest-agentic-tool-runbook.html">Planifest - Agentic Tool Runbook</a></li>
+<li><a href="p011-planifest-pilot-app.html">Planifest Pilot App</a></li>
+<li><a href="p013-planifest-backend-stack-evaluation.html">Planifest - Backend Stack Evaluation</a></li>
+<li><a href="p014-planifest-roadmap.html">Planifest - Roadmap</a></li>
+<li><a href="p015-planifest-pipeline.html">Planifest Pipeline</a></li>
+<li><a href="p016-planifest-frontend-stack-evaluation.html">Planifest Frontend Stack Evaluation</a></li>
+<li><a href="p017-research-report-strategic-intent-vs-stochastic-execution.html">Research Report: Strategic Intent vs. Stochastic Execution</a></li>
+</ul>
       </main>
       <footer class="footer">
         <div class="container">
@@ -63,67 +58,4 @@ const template = fs.existsSync(TEMPLATE_FILE)
       </footer>
     </div>
   </body>
-</html>`;
-
-const renderer = new marked.Renderer();
-renderer.code = function({text, lang, escaped}) {
-  if (lang === 'mermaid') {
-    return `<pre class="mermaid">${text}</pre>`;
-  }
-  return `<pre><code class="language-${lang}">${escaped ? text : text}</code></pre>`;
-};
-
-marked.use({ renderer });
-
-function stripMetadata(markdown) {
-  // Replace .md cross-references with .html references
-  let cleaned = markdown.replace(/href="([^"]+)\.md"/g, 'href="$1.html"');
-  cleaned = cleaned.replace(/\]\(([^)]+)\.md\)/g, ']($1.html)');
-  
-  return cleaned;
-}
-
-const files = fs.readdirSync(DOCS_DIR).filter(file => file.endsWith('.md'));
-
-const sitemapData = [];
-
-files.forEach(file => {
-  const mdPath = path.join(DOCS_DIR, file);
-  const rawMarkdown = fs.readFileSync(mdPath, 'utf-8');
-  const cleanedMarkdown = stripMetadata(rawMarkdown);
-  const htmlContent = marked.parse(cleanedMarkdown);
-
-  const titleMatch = cleanedMarkdown.match(/^#\s+(.+)$/m);
-  let title = titleMatch ? titleMatch[1] : file.replace('.md', '');
-  
-  // Clean off the ID prefix if present (e.g., "p015-planifest-pipeline - ")
-  title = title.replace(/^p\d{3}[-\w]*\s*-\s*/, '').trim();
-  
-  sitemapData.push({ file: file.replace('.md', '.html'), title });
-
-  const finalHtml = template
-    .replace('{{TITLE}}', title)
-    .replace('{{CONTENT}}', htmlContent);
-
-  const outHtmlPath = path.join(OUT_DIR, file.replace('.md', '.html'));
-  fs.writeFileSync(outHtmlPath, finalHtml, 'utf-8');
-  console.log(`Generated: ${outHtmlPath}`);
-});
-
-const sitemapPath = path.resolve(__dirname, '../src/sitemap-data.json');
-fs.writeFileSync(sitemapPath, JSON.stringify(sitemapData, null, 2), 'utf-8');
-console.log(`Generated Sitemap Data to: ${sitemapPath}`);
-
-// Generate Sitemap HTML
-let sitemapContent = '<h1>Planifest Document Sitemap</h1>\n<ul>\n';
-sitemapData.forEach(item => {
-  sitemapContent += `<li><a href="${item.file}">${item.title}</a></li>\n`;
-});
-sitemapContent += '</ul>';
-
-const sitemapHtml = template
-  .replace('{{TITLE}}', 'Sitemap')
-  .replace('{{CONTENT}}', sitemapContent);
-
-fs.writeFileSync(path.join(OUT_DIR, 'sitemap.html'), sitemapHtml, 'utf-8');
-console.log('Generated Sitemap HTML.');
+</html>

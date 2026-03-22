@@ -1,13 +1,5 @@
 # Planifest - Domain Knowledge Service Reference Implementation
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial Document | 05 MAR 2026 | Martin Mayer |
-| 2 | Deduplicated default rules table - now references canonical table in p003 FD-007 | 07 MAR 2026 | Martin Mayer (via agent) |
-| 3 | Added future-state status marker; fixed wikilinks to standard markdown | 07 MAR 2026 | Martin Mayer (via agent) |
-| 4 | Replaced all TypeScript interfaces with JSON Schema definitions - Planifest schemas are language-neutral | 09 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

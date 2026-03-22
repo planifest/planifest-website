@@ -1,11 +1,5 @@
 # p016-planifest-frontend-stack-evaluation - Planifest Frontend Stack Evaluation
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial document - comprehensive evaluation of 10 frontend stacks for agent-generated code | 09 MAR 2026 | Martin Mayer (via agent) |
-| 2 | Corrected Zod/backend-language assumptions - OpenAPI is the language-agnostic contract; Zod on the frontend is derived from it, not shared directly with a presumed TS backend | 09 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

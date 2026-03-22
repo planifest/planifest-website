@@ -3,7 +3,7 @@
 ```mermaid
 graph TD
     subgraph Build Phase
-        md["Markdown Content\n(planifest-framework/)"]
+        md["Markdown Content\n(planifest-docs/)"]
         builder["Node.js Scripts\n(build-docs.js)"]
     end
     

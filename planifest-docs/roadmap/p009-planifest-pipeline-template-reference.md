@@ -1,12 +1,5 @@
 # Planifest - Pipeline Template Reference
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial document | 02 MAR 2026 | Martin Mayer |
-| 2 | Added spec hard-gate job; added migration check phase; corrected human gate language | 05 MAR 2026 | Martin Mayer |
-| 3 | Added future-state status marker - v1.0 uses standard CI (lint, typecheck, test, build); MCP sidecar and template stamping infrastructure are roadmap items RC-004 and RC-006 | 07 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

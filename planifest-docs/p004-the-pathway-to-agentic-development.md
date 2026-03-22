@@ -1,17 +1,5 @@
 # The Pathway to Agentic Development for Real-World Systems
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial Document | 05 MAR 2026 | Martin Mayer |
-| 2 | Corrected "only manual step" language - Initiative Brief initiates the pipeline; humans retain approval authority at defined gates throughout | 05 MAR 2026 | Martin Mayer |
-| 3 | Deduplicated default rules table - now references canonical table in p003 FD-007 | 07 MAR 2026 | Martin Mayer (via agent) |
-| 4 | Added Planifest name etymology; updated Specification Before Development with orchestrator coaching concept and Planifest confirmation gate | 07 MAR 2026 | Martin Mayer (via agent) |
-| 5 | Updated Stack Configuration section with Backend Stack Evaluation (p013) reference and polyglot guidance | 07 MAR 2026 | Martin Mayer (via agent) |
-| 6 | Updated Stack Configuration section with Frontend Stack Evaluation (p016) reference | 09 MAR 2026 | Martin Mayer (via agent) |
-| 7 | Added Research Report: Strategic Intent vs Stochastic Execution (p017) reference | 11 MAR 2026 | Martin Mayer |
-| 8 | Removed MCP from v1.0 content - accessing the domain section updated to git docs/ only; MCP service noted as roadmap | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 
@@ -99,7 +87,7 @@ flowchart TD
     E -->|Fail| D
     E -->|Pass| F[security-agent\nSecurity Report]
     F --> G[Auto PR to main]
-    G --> H[docs-agent\nDomain Knowledge Store sync]
+    G --> H[docs-agent\nUpdate SDLC Folders]
 ```
 
 ### Phase 1 - Human-Led Discovery *(the initiating step)*
@@ -149,7 +137,7 @@ Once CI is green, the pipeline auto-creates a PR from the feature branch to main
 
 ### Phase 8 - Documentation Sync
 
-All artifacts - Design Spec, ADRs, Security Report, Quirks, Recommendations, Domain Glossary, Data Contracts, SLO Definitions, Cost Model - are written to the Domain Knowledge Store and synced to the configured documentation provider. The documentation destination is pluggable: git `docs/` is the default, with Obsidian, Notion, and Confluence as supported alternatives.
+All artifacts - Design Spec, ADRs, Security Report, Quirks, Recommendations, Domain Glossary, Data Contracts, SLO Definitions, Cost Model - are written to the `plan/` and `docs/` folders as part of the SDLC and synced to the configured documentation provider. The documentation destination is pluggable: git `docs/` is the default, with Obsidian, Notion, and Confluence as supported alternatives.
 
 ---
 
@@ -204,7 +192,7 @@ Worth considering when: your component library is extensive enough that agents k
 
 ---
 
-## The Domain Knowledge Store
+## The SDLC Collaboration Folders
 
 The domain Planifest builds isn't held in memory - it's written to a structured document store as the system is built. Every component produces documentation as a first-class output, not an afterthought. The documents are granular, standard, and machine-readable. Agents querying the domain get consistent, predictable answers.
 
@@ -266,9 +254,9 @@ Schema changes follow a strict path regardless of other configuration:
 
 ### Accessing the Domain
 
-In v1.0, agents access the domain knowledge store by reading the `docs/` folder directly via Agent Skills. Documents are colocated with the code they describe. No additional infrastructure is required - works locally and in CI.
+In the SDLC, agents access domain context by reading the `docs/`, `plan/`, and `manifest/` folders directly via Agent Skills. Documents are colocated with the code they describe. No additional infrastructure is required - works locally and in CI.
 
-A queryable MCP service wrapping the Domain Knowledge Store - allowing agents to ask targeted questions and receive scoped, structured responses - is a roadmap item. See [RC-001](p014-planifest-roadmap.md). It becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.
+A dedicated Domain Knowledge Store MCP service - allowing agents to ask targeted questions and receive scoped, structured responses - is a roadmap item. See [RC-001](p014-planifest-roadmap.md). It becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.
 
 ---
 
@@ -332,7 +320,7 @@ A single orchestrator service (TypeScript, containerised) that:
 | **Initiative Brief** | The human-authored seed document. The initiating input to the pipeline. |
 | **Design Specification** | Agent-generated document derived from the Initiative Brief. The contract for everything downstream. |
 | **ADR** | Architecture Decision Record. One per significant decision. Lives in `docs/adr/`. |
-| **Domain Knowledge Store** | The structured, versioned document store that captures everything Planifest knows about a system - per initiative, per component, and system-wide. |
+| **SDLC Folders** | The structured, versioned file tree that captures everything Planifest knows about a system - per initiative, per component, and system-wide. |
 | **Component Registry** | A system-wide index of every component: what it is, what it does, and how it relates to others. |
 | **Data Contract** | The canonical schema definition, invariants, and migration history owned by a single component. |
 | **Retrofit** | Adoption mode for existing codebases with no prior spec. |

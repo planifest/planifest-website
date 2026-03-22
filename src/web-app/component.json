@@ -64,7 +64,10 @@
             "Static site generation via Vite",
             "Dynamic rendering of planifest-docs files during build",
             "Removal of metadata/IDs for cleaner reading",
-            "Linking documentation pages automatically"
+            "Linking documentation pages automatically",
+            "Responsive persistent hamburger navigation",
+            "Static sitemap generation",
+            "Dynamic parsing of active documentation links"
         ],
         "out": [
             "Backend APIs",
@@ -89,11 +92,11 @@
     "pipeline": {
         "templateVersion": "1.0.0",
         "initiativeMode": "greenfield",
-        "domainKnowledgePath": "plan/_archive/website/docs"
+        "domainKnowledgePath": "plan/_archive/website-nav-sitemap/docs"
     },
     "metadata": {
         "createdAt": "2026-03-11T23:21:00Z",
-        "updatedAt": "2026-03-11T23:36:00Z",
+        "updatedAt": "2026-03-22T17:05:00Z",
         "createdBy": "agent",
         "lastModifiedBy": "agent",
         "skill": "planifest-codegen-agent",

@@ -192,7 +192,7 @@ If the repo already has code:
 2. Create `plan/`, `docs/` directories
 3. Move existing components under `src/` (or leave them if they're already there)
 4. Add a `component.json` to each existing component
-5. Tell the orchestrator to use **retrofit** adoption mode - it will read the codebase and infer the existing architecture
+5. Tell the orchestrator to use **retrofit** adoption mode - it will read the codebase and infer the existing structure
 
 ---
 

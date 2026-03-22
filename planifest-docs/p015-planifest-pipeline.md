@@ -1,11 +1,5 @@
 # p015-planifest-pipeline - Planifest Pipeline
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial document - v1.0 pipeline specification | 07 MAR 2026 | Martin Mayer (via agent) |
-| 2 | Added Planifest-as-plan-and-manifest concept; noted relationship to skill set delivery | 07 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

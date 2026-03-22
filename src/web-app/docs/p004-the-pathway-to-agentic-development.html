@@ -13,10 +13,20 @@
       <nav class="glass-nav">
         <div class="nav-content">
           <a href="../index.html" class="logo"><img src="../img/planifest-logo.svg" alt="Planifest Logo"></a>
-          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-          </button>
+          <div class="nav-links">
+            <a href="../index.html#about" class="nav-link">About</a>
+            <a href="../index.html#structure" class="nav-link">Structure</a>
+            <a href="p001-planifest-master-plan.html" class="nav-link">Master Plan</a>
+          </div>
+          <div class="nav-actions">
+            <button class="hamburger-btn" aria-label="Toggle menu" title="Menu">
+              <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none" class="menu-icon" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+              <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+              <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+          </div>
         </div>
       </nav>
       <main class="doc-container glass-panel">
@@ -77,7 +87,7 @@
     E -->|Fail| D
     E -->|Pass| F[security-agent\nSecurity Report]
     F --> G[Auto PR to main]
-    G --> H[docs-agent\nDomain Knowledge Store sync]</pre><h3>Phase 1 - Human-Led Discovery <em>(the initiating step)</em></h3>
+    G --> H[docs-agent\nUpdate SDLC Folders]</pre><h3>Phase 1 - Human-Led Discovery <em>(the initiating step)</em></h3>
 <p>A product owner or tech lead writes an <strong>Initiative Brief</strong> - a structured markdown document covering: problem statement, user stories, acceptance criteria, constraints, and known integrations. This is the seed that initiates the pipeline. Everything downstream is autonomous in execution, but humans retain approval authority at defined gates: the PR review, schema changes and migrations, high/critical risk items, and agent-raised improvements.</p>
 <h3>Phase 2 - Agentic Specification Generation</h3>
 <p>A <code>spec-agent</code> ingests the Initiative Brief and produces the full initiative artifact set:</p>
@@ -110,7 +120,7 @@
 <h3>Phase 7 - PR to Main</h3>
 <p>Once CI is green, the pipeline auto-creates a PR from the feature branch to main. The PR description includes: summary of changes, links to Design Spec, ADRs, and security report, a &quot;quirks&quot; section (known oddities, workarounds, tech debt), and recommendations for improvement.</p>
 <h3>Phase 8 - Documentation Sync</h3>
-<p>All artifacts - Design Spec, ADRs, Security Report, Quirks, Recommendations, Domain Glossary, Data Contracts, SLO Definitions, Cost Model - are written to the Domain Knowledge Store and synced to the configured documentation provider. The documentation destination is pluggable: git <code>docs/</code> is the default, with Obsidian, Notion, and Confluence as supported alternatives.</p>
+<p>All artifacts - Design Spec, ADRs, Security Report, Quirks, Recommendations, Domain Glossary, Data Contracts, SLO Definitions, Cost Model - are written to the <code>plan/</code> and <code>docs/</code> folders as part of the SDLC and synced to the configured documentation provider. The documentation destination is pluggable: git <code>docs/</code> is the default, with Obsidian, Notion, and Confluence as supported alternatives.</p>
 <hr>
 <h2>Stack Configuration</h2>
 <p>Planifest does not default a stack. Per FD-015, stack is a requirement - declared explicitly at system or initiative level, traceable to an ADR, never assumed by the pipeline. Agents implement against whatever is declared; any deviation requires a justification.</p>
@@ -137,9 +147,9 @@
 <p>Worth considering when: your component library is extensive enough that agents keep making redundant or conflicting choices, or your domain logic is complex enough that a full codebase spec creates more noise than signal.</p>
 <p><code>initiative_mode: agent-interface</code></p>
 <hr>
-<h2>The Domain Knowledge Store</h2>
+<h2>The SDLC Collaboration Folders</h2>
 <p>The domain Planifest builds isn&#39;t held in memory - it&#39;s written to a structured document store as the system is built. Every component produces documentation as a first-class output, not an afterthought. The documents are granular, standard, and machine-readable. Agents querying the domain get consistent, predictable answers.</p>
-<p>Documents are versioned. Updates create new versions rather than overwriting. History is never destroyed - only superseded. This mirrors how the git <code>docs/</code> fallback works naturally via version control, and the MCP service follows the same principle.</p>
+<p>Documents are versioned. Updates create new versions rather than overwriting. History is never destroyed - only superseded. This is enforced naturally by version control in the git <code>docs/</code> folder.</p>
 <p>Three concerns appear at every level - initiative, component, and system-wide:</p>
 <ul>
 <li><strong>Risk</strong> - what could go wrong, and how likely/severe</li>
@@ -192,10 +202,8 @@
 <li>Destructive operations (drop column, drop table, rename) require human approval with no override</li>
 </ol>
 <h3>Accessing the Domain</h3>
-<p>Agents access the domain knowledge store in one of two ways:</p>
-<p><strong>MCP-enabled service</strong> - a queryable service wrapping the document store, allowing agents to ask targeted questions: <em>&quot;what components handle authentication?&quot;</em>, <em>&quot;what are the SLO constraints for this service?&quot;</em>, <em>&quot;what risk has already been identified for this domain?&quot;</em>. Keeps agent context tight. Better suited to larger teams, multiple initiatives, or complex domains where file-based navigation would be unwieldy.</p>
-<p><strong>Git <code>docs/</code> folder</strong> - documents are colocated with the code they describe. No additional infrastructure, works locally and in CI. Better suited to smaller teams, single initiatives, or environments where running an additional service is not desirable.</p>
-<p>Both paths produce and consume the same document structure and honour the same default rules. The choice is operational, not architectural.</p>
+<p>In the SDLC, agents access domain context by reading the <code>docs/</code>, <code>plan/</code>, and <code>manifest/</code> folders directly via Agent Skills. Documents are colocated with the code they describe. No additional infrastructure is required - works locally and in CI.</p>
+<p>A dedicated Domain Knowledge Store MCP service - allowing agents to ask targeted questions and receive scoped, structured responses - is a roadmap item. See <a href="p014-planifest-roadmap.html">RC-001</a>. It becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.</p>
 <hr>
 <h2>Component Granularity</h2>
 <p>The granularity of a component is defined in the specification - it is a design decision, not a framework constraint. Planifest supports three component types:</p>
@@ -260,8 +268,8 @@
 <td>Architecture Decision Record. One per significant decision. Lives in <code>docs/adr/</code>.</td>
 </tr>
 <tr>
-<td><strong>Domain Knowledge Store</strong></td>
-<td>The structured, versioned document store that captures everything Planifest knows about a system - per initiative, per component, and system-wide.</td>
+<td><strong>SDLC Folders</strong></td>
+<td>The structured, versioned file tree that captures everything Planifest knows about a system - per initiative, per component, and system-wide.</td>
 </tr>
 <tr>
 <td><strong>Component Registry</strong></td>
@@ -301,6 +309,17 @@
 <p><em>Part of the Planifest project. See also: <a href="p001-planifest-master-plan.html">Master Plan</a> | <a href="p003-planifest-functional-decisions.html">Functional Decisions</a> | <a href="p017-research-report-strategic-intent-vs-stochastic-execution.html">Strategic Intent vs Stochastic Execution</a></em></p>
 
       </main>
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-content">
+            <div class="brand"><img src="../img/planifest-logo.svg" alt="Planifest Logo" style="height: 32px;"></div>
+            <p>Generated via Agentic execution • Deployed with GitHub Actions</p>
+            <div class="footer-links">
+              <a href="sitemap.html">Sitemap</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   </body>
 </html>

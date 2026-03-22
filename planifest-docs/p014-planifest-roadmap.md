@@ -1,12 +1,5 @@
 # Planifest - Roadmap
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial document - created roadmap with first deferred item | 07 MAR 2026 | Martin Mayer |
-| 2 | Updated doc references - future-state docs moved to docs/roadmap/; removed TypeScript assumption from RC-002 | 09 MAR 2026 | Martin Mayer (via agent) |
-| 2 | Added RC-001 through RC-007 as Under Consideration - service infrastructure deferred from v1.0; added RC-009 and RC-010 as Candidate items; RC-008 (Agent Skills) promoted to v1.0 scope | 07 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 
