@@ -68,9 +68,9 @@
 
     D --> PR(["✅ Production-ready component"])
 
-    style H fill:#d4edda,stroke:#28a745,color:#000
-    style PR fill:#d4edda,stroke:#28a745,color:#000
-    style S fill:#f0f4ff,stroke:#6c8ebf</pre><hr>
+    style H fill:transparent,stroke:#28a745,stroke-width:2px
+    style PR fill:transparent,stroke:#28a745,stroke-width:2px
+    style S fill:transparent,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray: 5 5</pre><hr>
 <h2>The USP</h2>
 <p><strong>Most agentic coding tools make agents smarter at writing code. Planifest makes agents smarter about the system they are writing code for.</strong></p>
 <p>The differentiating layer is the structured SDLC documentation architecture (plan, manifest, and docs folders) covering every initiative, component, and system-level concern. It answers the questions a human engineer would ask before touching anything: what does this component exist to do, who depends on it, what data does it own, what decisions have been made about it, and what is the blast radius of a mistake.</p>
@@ -90,8 +90,8 @@
         C2 --> D2["✅ Safe, targeted change"]
     end
 
-    style WITHOUT fill:#f8d7da,stroke:#dc3545
-    style WITH fill:#d4edda,stroke:#28a745</pre><p>The second differentiator is the coaching conversation. The orchestrator agent does not accept a vague brief and start building. It assesses the brief against what a complete specification requires, identifies gaps, and coaches the human through them - one question at a time, scientifically, without allowing corners to be cut. The specification is the standard against which everything downstream is assessed. Planifest insists on completeness first.</p>
+    style WITHOUT fill:transparent,stroke:#dc3545,stroke-width:2px,stroke-dasharray: 5 5
+    style WITH fill:transparent,stroke:#28a745,stroke-width:2px,stroke-dasharray: 5 5</pre><p>The second differentiator is the coaching conversation. The orchestrator agent does not accept a vague brief and start building. It assesses the brief against what a complete specification requires, identifies gaps, and coaches the human through them - one question at a time, scientifically, without allowing corners to be cut. The specification is the standard against which everything downstream is assessed. Planifest insists on completeness first.</p>
 <p>The third differentiator is documentation as a first-class output. Every pipeline run produces a rich set of versioned artifacts - design specs, ADRs, security reports, data contracts, migration history, domain glossary, SLO definitions, cost models - written alongside the code they describe. The artifacts are the source of truth, stored as markdown in the git repository.</p>
 <hr>
 <h2>What This Could Become</h2>

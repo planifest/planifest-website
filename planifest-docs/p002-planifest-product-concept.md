@@ -58,9 +58,9 @@ flowchart LR
 
     D --> PR(["✅ Production-ready component"])
 
-    style H fill:#d4edda,stroke:#28a745,color:#000
-    style PR fill:#d4edda,stroke:#28a745,color:#000
-    style S fill:#f0f4ff,stroke:#6c8ebf
+    style H fill:transparent,stroke:#28a745,stroke-width:2px
+    style PR fill:transparent,stroke:#28a745,stroke-width:2px
+    style S fill:transparent,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
 ---
@@ -89,8 +89,8 @@ flowchart LR
         C2 --> D2["✅ Safe, targeted change"]
     end
 
-    style WITHOUT fill:#f8d7da,stroke:#dc3545
-    style WITH fill:#d4edda,stroke:#28a745
+    style WITHOUT fill:transparent,stroke:#dc3545,stroke-width:2px,stroke-dasharray: 5 5
+    style WITH fill:transparent,stroke:#28a745,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
 The second differentiator is the coaching conversation. The orchestrator agent does not accept a vague brief and start building. It assesses the brief against what a complete specification requires, identifies gaps, and coaches the human through them - one question at a time, scientifically, without allowing corners to be cut. The specification is the standard against which everything downstream is assessed. Planifest insists on completeness first.

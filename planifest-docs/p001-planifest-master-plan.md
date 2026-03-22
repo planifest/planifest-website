@@ -80,11 +80,11 @@ flowchart TD
     HGATE --> DA[docs-agent]
     DA --> DKS[(plan/, manifest/, docs/)]
 
-    style A fill:#d4edda,stroke:#28a745,color:#000
-    style Z fill:#d4edda,stroke:#28a745,color:#000
-    style HGATE fill:#d4edda,stroke:#28a745,color:#000
-    style GATE1 fill:#fff8e1,stroke:#f0a500
-    style DKS fill:#cce5ff,stroke:#0066cc
+    style A fill:transparent,stroke:#28a745,stroke-width:2px
+    style Z fill:transparent,stroke:#28a745,stroke-width:2px
+    style HGATE fill:transparent,stroke:#28a745,stroke-width:2px
+    style GATE1 fill:transparent,stroke:#f0a500,stroke-width:2px
+    style DKS fill:transparent,stroke:#0066cc,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
 > Planifest runs in two modes: any **CI/CD platform** (GitHub Actions, GitLab CI, Bitbucket Pipelines, CircleCI, etc.) using an LLM API, and any **agentic coding tool** (Claude Code, Cursor, Codex, Antigravity, GitHub Copilot, etc.) locally on a dev machine. See [Agentic Tool Runbook](p010-planifest-agentic-tool-runbook.md).
@@ -109,8 +109,8 @@ flowchart LR
     AG["Agents"] -->|read / write| DKS
     DKS --> STORE[(git docs/ folder)]
 
-    style DKS fill:#fff3cd,stroke:#ffc107
-    style STORE fill:#cce5ff,stroke:#0066cc
+    style DKS fill:transparent,stroke:#ffc107,stroke-width:2px,stroke-dasharray: 5 5
+    style STORE fill:transparent,stroke:#0066cc,stroke-width:2px
 ```
 
 ### Access path - v1.0
@@ -224,16 +224,16 @@ flowchart TD
     PHASE5 --> PHASE6
     PR --> DOCS --> DKS --> HGATE --> DONE
 
-    style BRIEF fill:#d4edda,stroke:#28a745,color:#000
-    style HGATE fill:#d4edda,stroke:#28a745,color:#000
-    style DONE fill:#d4edda,stroke:#28a745,color:#000
-    style FAIL fill:#f8d7da,stroke:#dc3545,color:#000
-    style PHASE1 fill:#fff8e1,stroke:#f0a500
-    style PHASE2 fill:#f0f4ff,stroke:#6c8ebf
-    style PHASE3 fill:#f0f4ff,stroke:#6c8ebf
-    style PHASE4 fill:#fff8e1,stroke:#f0a500
-    style PHASE5 fill:#f0f4ff,stroke:#6c8ebf
-    style PHASE6 fill:#f0f4ff,stroke:#6c8ebf
+    style BRIEF fill:transparent,stroke:#28a745,stroke-width:2px,color:#000
+    style HGATE fill:transparent,stroke:#28a745,stroke-width:2px,color:#000
+    style DONE fill:transparent,stroke:#28a745,stroke-width:2px,color:#000
+    style FAIL fill:transparent,stroke:#dc3545,stroke-width:2px,color:#000
+    style PHASE1 fill:transparent,stroke:#f0a500,stroke-width:2px
+    style PHASE2 fill:transparent,stroke:#6c8ebf,stroke-width:2px
+    style PHASE3 fill:transparent,stroke:#6c8ebf,stroke-width:2px
+    style PHASE4 fill:transparent,stroke:#f0a500,stroke-width:2px
+    style PHASE5 fill:transparent,stroke:#6c8ebf,stroke-width:2px
+    style PHASE6 fill:transparent,stroke:#6c8ebf,stroke-width:2px
 ```
 
 ### Agent responsibilities
