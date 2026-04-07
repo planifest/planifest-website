@@ -1,6 +1,16 @@
-# Initiative Brief - {{initiative-name}}
+---
+title: "Feature Brief - {{initiative-name}}"
+summary: "The business case, scope, and product requirements for the initiative."
+status: "draft | approved"
+version: "0.1.0"
+---
+# Feature Brief - {{initiative-name}}
 
-> Written by a human. This is the input document that kicks off the Planifest pipeline. The orchestrator reads this and coaches you through any gaps before passing it to the spec-agent.
+**Initiative ID:** {{0000000}}-{{kebab-case-name}}
+
+> Written by a human. This is the input document that kicks off the Planifest Agentic Iteration Loop. The orchestrator reads this and coaches you through any gaps before passing it to the spec-agent.
+>
+> **Initiative ID format:** A 7-digit zero-padded number followed by a kebab-case name (e.g., `0000001-user-auth`, `0000002-payment-gateway`). The numeric prefix keeps initiatives in chronological order when sorted alphabetically. Choose the next available number.
 
 ---
 
@@ -30,7 +40,7 @@ Break the initiative into discrete features. Each feature should be small enough
 
 ## Phases
 
-If the initiative has more than 5-6 features, split it into phases. Each phase becomes a separate pipeline run with its own design spec, ADRs, and codegen pass. Earlier phases ship before later phases begin.
+If the initiative has more than 5-6 features, split it into phases. Each phase becomes a separate iteration of the Agentic Iteration Loop with its own execution plan, ADRs, and codegen pass. Earlier phases ship before later phases begin.
 
 > **Why phases matter:** An agent working on phase 2 only needs the context from phase 2's brief plus the component manifests from phase 1. It doesn't need to hold the entire initiative in context. This is how Planifest manages context at scale.
 

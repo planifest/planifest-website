@@ -10,25 +10,4 @@ TOOL_WORKFLOWS_DIR=""
 
 TOOL_BOOT_FILE=".cursor/rules/planifest.mdc"
 
-TOOL_BOOT_CONTENT='---
-description: Planifest framework for agentic development
-globs: ["**/*"]
----
-
-This project uses the Planifest framework. Load the orchestrator skill for any initiative or change.
-
-## Workflows
-
-- **Initiative Pipeline**: Load the orchestrator skill. Provide an initiative brief at plan/current/initiative-brief.md
-- **Change Pipeline**: Load the orchestrator skill. Provide initiative ID, component ID, and change request.
-- **Retrofit**: Load the orchestrator skill with retrofit adoption mode.
-
-## Key paths
-
-- planifest-framework/README.md    - framework overview and getting started
-- plan/                            - current initiative specifications
-  plan/changelog/                  - change audit logs
-  docs/                            - living repository documentation
-- src/                             - component code
-- planifest-framework/templates/   - artifact templates
-- planifest-framework/standards/   - code quality standards'
+TOOL_BOOT_TEMPLATE="planifest-framework/templates/cursor-boot.md"

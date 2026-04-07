@@ -1,3 +1,9 @@
+---
+title: "Risk Register - {{initiative-name}}"
+summary: "Technical, operational, and security risks with their mitigations."
+status: "draft | active"
+version: "0.1.0"
+---
 # Risk Register - {{initiative-name}}
 
 **Skill:** [spec-agent](../skills/spec-agent-SKILL.md) (updated by any agent that identifies a new risk)

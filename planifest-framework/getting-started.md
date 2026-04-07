@@ -6,7 +6,7 @@
 
 ## Prerequisites
 
-- An agentic coding tool: Claude Code, Cursor, Codex, Antigravity, or GitHub Copilot
+- An agentic coding tool: Claude Code, Cursor, Codex, Antigravity, GitHub Copilot, Windsurf, or Cline / Roo Code
 - A terminal with Bash (macOS/Linux) or PowerShell (Windows)
 
 ---
@@ -27,7 +27,7 @@ These are the core working directories:
 - `plan/` - The current change being planned (briefs, specs, planifest).
   - `plan/_archive/<initiative-id>/` - Historical changes filed here after human review and acceptance.
   - `plan/changelog/` - A log of all changes; each change is a separate file (`[initiative-id]-[YYYY-MM-DD].md`).
-- `src/` - Component source code, tests, and component manifests (`component.json`).
+- `src/` - Component source code, tests, and component manifests (`component.yml`).
 - `docs/` - Living repository documentation (always current, no change records). Includes component registry and dependency graph.
 
 See [initiative-structure.md](../plan/initiative-structure.md) for the full layout.
@@ -39,44 +39,59 @@ This copies skills into the directory your agentic tool expects:
 **macOS / Linux:**
 ```bash
 chmod +x planifest-framework/setup.sh
-./planifest-framework/setup.sh claude-code      # or cursor, codex, antigravity, copilot, all
+./planifest-framework/setup.sh claude-code      # or cursor, codex, antigravity, copilot, windsurf, cline, all
 ```
 
 **Windows (PowerShell):**
 ```powershell
-.\planifest-framework\setup.ps1 claude-code     # or cursor, codex, antigravity, copilot, all
+.\planifest-framework\setup.ps1 claude-code     # or cursor, codex, antigravity, copilot, windsurf, cline, all
 ```
 
 The script creates:
 - Skill folders with YAML frontmatter (so the tool auto-discovers them)
 - Supporting files (templates, standards, schemas) alongside the skills
 - A boot file for your tool (e.g., `CLAUDE.md`, `AGENTS.md`)
+- Git guardrails (see below)
 
 See [tool-setup-reference.md](tool-setup-reference.md) for what each tool expects.
 
-### 4. Write your first initiative brief
+### 3a. Git Guardrails (activated automatically)
+
+The setup script also activates Planifest's **Progressive Guardrail System** — a three-tier enforcement model that protects `main` without blocking atomic commits:
+
+| Tier | When | What happens |
+|------|------|--------------|
+| **1 — Advisory pre-commit** | Every local commit | Prints a warning if code was staged without docs. Commit **succeeds**. |
+| **2 — Branch pre-push** | Every `git push` | Checks the *cumulative branch diff*. Push **fails** if `src/` was changed with no updates to `plan/`, `docs/`, or `component.yml` — **unless** all commits use the `fix(fast-path):` prefix, in which case only `component.yml` or `plan/changelog/` is required. |
+| **3 — CI/CD pipeline** | Every Pull Request | Same check in GitHub Actions. Recognises the `fix(fast-path):` prefix and applies the same relaxed rule. Blocks the merge button if the rule is violated. |
+
+The hooks live in `planifest-framework/hooks/` and are wired via `git config core.hooksPath` — no `.git/` modifications required.
+
+The CI workflow is copied to `.github/workflows/planifest.yml` on first setup.
+
+### 4. Write your first feature brief
 
 Use the template:
 ```
-cp planifest-framework/templates/initiative-brief.template.md plan/current/initiative-brief.md
+cp planifest-framework/templates/feature-brief.template.md plan/current/feature-brief.md
 ```
 
-Fill it in. The [initiative brief guide](templates/initiative-brief-guide.md) walks you through each section.
+Fill it in. The [feature brief guide](templates/feature-brief-guide.md) walks you through each section.
 
 ### 5. Start the orchestrator
 
 Open your agentic tool. The orchestrator skill is now auto-discovered. Tell it:
 
 ```
-Execute the Planifest Initiative Pipeline.
-Initiative brief: plan/current/initiative-brief.md
+Execute the Planifest Agentic Iteration Loop.
+Feature brief: plan/current/feature-brief.md
 ```
 
 The orchestrator will:
 1. Assess your brief against the three layers (Product, Architecture, Engineering)
 2. Coach you through any gaps - one question at a time
-3. Produce the validated Planifest at `plan/current/planifest.md`
-4. Execute the pipeline: Spec -> ADRs -> Code -> Validate -> Security -> Docs
+3. Produce the validated design at `plan/current/design.md`
+4. Execute the Agentic Iteration Loop: Spec → ADRs → Code → Validate → Security → Docs
 
 ---
 
@@ -85,15 +100,36 @@ The orchestrator will:
 1. Copy `planifest-framework/` into your repo root
 2. Run the setup script for your tool
 3. Create `docs/` if it doesn't exist
-4. Add a `component.json` manifest to each existing component in `src/` - use the [component manifest template](templates/component-manifest.template.json) and [guide](templates/component-manifest-guide.md)
+4. Add a `component.yml` manifest to each existing component in `src/` - use the [component manifest template](templates/component.template.yml) and [guide](templates/component-guide.md)
 5. Tell the orchestrator to use **retrofit** adoption mode:
 
 ```
-Execute the Planifest Initiative Pipeline in retrofit mode.
-Initiative brief: plan/current/initiative-brief.md
+Execute the Planifest Agentic Iteration Loop in retrofit mode.
+Feature brief: plan/current/feature-brief.md
 ```
 
 The orchestrator will read your codebase, infer the existing architecture, and reconcile the brief against reality.
+
+---
+
+## Trivial Fixes (Fast Path)
+
+For trivial changes — styling tweaks, copy corrections, isolated pure-function bugs — the orchestrator can route to the Fast Path, bypassing the spec and ADR overhead:
+
+```
+fix(fast-path): updated button colour to match brand guidelines
+```
+
+The orchestrator evaluates four criteria before allowing Fast Path:
+1. No new external dependencies
+2. No schema or data model changes
+3. No changes to security, auth, or routing logic
+4. Change is confined to UI styling, copy, or isolated pure-function bugs
+
+If all criteria pass: implement → validate → update `component.yml` (patch bump) → log in `plan/changelog/`.
+If any criterion fails: route to Change Pipeline instead.
+
+Fast Path commits use the `fix(fast-path):` prefix — the pre-push hook and CI recognise this and only require `component.yml` or a changelog update, not full `plan/` or `docs/` changes.
 
 ---
 
@@ -108,7 +144,7 @@ Component ID: auth-service
 Change request: Add refresh token rotation
 ```
 
-The change-agent handles it - no need to re-run the full pipeline.
+The change-agent handles it — no need to re-run the full Agentic Iteration Loop.
 
 ---
 
@@ -130,7 +166,9 @@ The setup script overwrites the generated copies. The source of truth is always 
 | Path | Commit? | Why |
 |------|:-------:|-----|
 | `planifest-framework/` | ✅ | Source of truth - shared with team |
-| `plan/` | ✅ | Initiative specs, ADRs, scope docs |
+| `planifest-framework/hooks/` | ✅ | Git hooks and CI workflow — applied by `setup.sh` / `setup.ps1` |
+| `.github/workflows/planifest.yml` | ✅ | CI/CD strict gate — deployed by setup, must be committed to take effect |
+| `plan/` | ✅ | Feature briefs, execution plans, ADRs, scope docs |
 | `src/` | ✅ | Component code and manifests |
 | `docs/` | ✅ | Repo-wide registry and dependency graph |
 | `.claude/`, `.cursor/`, `.agents/`, `.gemini/`, `.github/skills/` | Optional | Generated copies - can be `.gitignore`d and regenerated |

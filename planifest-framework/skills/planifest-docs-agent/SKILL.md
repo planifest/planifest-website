@@ -1,11 +1,13 @@
 ---
 name: planifest-docs-agent
-description: Produces complete per-component documentation, system-wide registry, dependency graph, and pipeline-run audit trail. Invoked during Phase 6.
+description: Produces complete per-component documentation, system-wide registry, dependency graph, and iteration log audit trail. Invoked during the Documentation step.
+bundle_templates: [iteration-log.template.md, recommendations.template.md]
+bundle_standards: []
 ---
 
 # Planifest - docs-agent
 
-> You ensure every artifact defined by Planifest has been produced, is consistent, and is complete. You produce per-component documentation, the system-wide registry and dependency graph, and the pipeline run audit trail.
+> You ensure every artifact defined by Planifest has been produced, is consistent, and is complete. You produce per-component documentation, the system-wide registry and dependency graph, and the iteration log audit trail.
 
 ---
 
@@ -24,7 +26,7 @@ description: Produces complete per-component documentation, system-wide registry
 
 - All artifacts produced by prior phases at `plan/`
 - The implementation at `src/{component-id}/` (all components in the initiative)
-- The Planifest at `plan/current/planifest.md`
+- The design at `plan/current/design.md`
 
 ---
 
@@ -59,8 +61,8 @@ Write to `docs/` at the repository root:
 
 Confirm the following exist at `plan/` and are consistent:
 
-- Design Specification (from spec-agent)
-- OpenAPI Specification (from spec-agent)
+- Execution Plan (from spec-agent)
+- OpenAPI Specification (from spec-agent, if applicable)
 - Scope (from spec-agent)
 - Risk Register (from spec-agent)
 - Domain Glossary (from spec-agent)
@@ -76,12 +78,12 @@ Confirm the following exist at `plan/` and are consistent:
 Write `plan/changelog/{initiative-id}-<YYYY-MM-DD>.md`:
 
 ```markdown
-# Pipeline Run - {initiative-id}
+# Iteration Log - {initiative-id}
 
 Date: {timestamp}
 Tool: {agent tool used}
 
-## Phases completed
+## Iteration Steps completed
 - [x] Specification
 - [x] Architecture Decisions ({n} ADRs)
 - [x] Code Generation
@@ -108,7 +110,29 @@ Tool: {agent tool used}
 
 - **Every artifact must be accounted for.** If one is missing, produce it. If one cannot be produced (e.g. no data contract because the component owns no data), note its absence explicitly - do not leave a silent gap.
 - **Cross-references.** The component registry must link to each component's purpose document. The dependency graph must be consistent with the dependency files in each component folder.
-- **Consistency check.** The domain glossary terms should match what appears in the code. The OpenAPI spec endpoints should match what was implemented. Flag any drift you find - do not silently fix it.
+- **Consistency check.** The domain glossary terms should match what appears in the code. The OpenAPI spec endpoints (if applicable) should match what was implemented. Flag any drift you find - do not silently fix it.
+
+### Drift Detection
+
+Perform these specific drift checks:
+
+| Check | Source of Truth | Verify Against | Action if Drift Found |
+|-------|----------------|---------------|----------------------|
+| API endpoints (if applicable) | OpenAPI spec | Implemented routes | Flag: missing or extra endpoints |
+| Domain terms | Domain glossary | Code variable/function names | Flag: non-glossary terms in code |
+| Component boundaries | Planifest component list | `src/` directories with `component.yml` | Flag: missing or extra components |
+| Data ownership | Component manifests (`data.ownsData`) | Database connection/query patterns | Flag: cross-component data writes |
+| ADR compliance | ADR decisions | Implementation patterns | Flag: code that contradicts an accepted ADR |
+| Dependency direction | Dependency graph | Import/require statements | Flag: undeclared dependencies |
+
+**Legitimate absences:** Not every artifact applies to every component. These are valid reasons an artifact may not exist:
+- No `data-contract.md` if `component.yml` has `ownsData: false`
+- No `quirks.md` if no quirks were discovered
+- No `tech-debt.md` if no debt was identified
+- No E2E tests if the component has no user-facing endpoints
+
+Do not flag legitimate absences as drift. Do flag missing artifacts that should exist based on the component's manifest.
+
 - **Recommendations.** Produce `plan/current/recommendations.md` - suggested improvements for future iterations. Be constructive and specific. Reference concrete files or decisions.
 
 ---

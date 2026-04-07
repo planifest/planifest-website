@@ -9,29 +9,5 @@
     SkillsDir    = '.claude\skills'
     WorkflowsDir = '.claude\commands'
     BootFile     = 'CLAUDE.md'
-    BootContent  = @(
-        '# Planifest'
-        ''
-        'This project uses the Planifest framework for agentic development.'
-        ''
-        'To start a new initiative:'
-        '  Load the orchestrator skill and execute the Initiative Pipeline.'
-        '  Or use the /initiative-pipeline command.'
-        ''
-        'To make a change:'
-        '  Load the orchestrator skill and execute the Change Pipeline.'
-        '  Or use the /change-pipeline command.'
-        ''
-        'To retrofit an existing codebase:'
-        '  Use the /retrofit command.'
-        ''
-        'Key paths:'
-        '  planifest-framework/README.md    - framework overview and getting started'
-        '  plan/                            - current initiative specifications
-  plan/changelog/                  - change audit logs
-  docs/                            - living repository documentation'
-        '  src/                             - component code'
-        '  planifest-framework/templates/   - artifact templates'
-        '  planifest-framework/standards/   - code quality standards'
-    ) -join "`n"
+    BootTemplate = "planifest-framework/templates/standard-boot.md"
 }

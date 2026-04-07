@@ -1,6 +1,8 @@
 ---
 name: planifest-validate-agent
 description: Runs CI checks (lint, typecheck, test, build) and self-corrects up to 5 times. Invoked during Phase 4.
+bundle_templates: []
+bundle_standards: [code-quality-standards.md, testing-standards.md, api-design-standards.md, database-standards.md]
 ---
 
 # Planifest - validate-agent
@@ -29,14 +31,15 @@ description: Runs CI checks (lint, typecheck, test, build) and self-corrects up 
 
 ## Process
 
-Run the project's CI checks in this order:
+Run the project's CI checks in this strict order:
 
-1. **Lint** - code style and static analysis
-2. **Type-check** - type system verification
-3. **Test** - unit tests, integration tests, contract tests
-4. **Build** - confirm the project compiles and builds cleanly
+1. **Semantic Correctness** - Verify that every functional requirement from `plan/current/requirements/` has a mapped, executing test case identifiable by its req-ID. If logic exists without a covering test, semantic validation fails.
+2. **Lint** - code style and static analysis
+3. **Type-check** - type system verification
+4. **Test** - unit tests, integration tests, contract tests (MUST pass and report the tracked req-IDs)
+5. **Build** - confirm the project compiles and builds cleanly
 
-If all checks pass -> report success, proceed to the next phase.
+If all checks pass (including semantic traceability) -> report success, proceed to the next phase.
 
 If any check fails -> self-correct:
 
@@ -46,12 +49,36 @@ If any check fails -> self-correct:
 4. Re-run the failing check
 5. If the fix introduces new failures, address those too
 
-Maximum **5 self-correct cycles**. If the issue persists after 5 attempts, halt and report:
+Maximum **5 self-correct cycles**. Track each cycle:
 
-- What failed (exact error)
-- What you tried (each attempt)
-- Why it's not resolving (your assessment of the root cause)
-- Whether the issue is in the generated code, the spec, or the test itself
+```
+Cycle N:
+  Check: lint | typecheck | test | build
+  Error: <exact error message>
+  Root cause: <your diagnosis>
+  Fix: <what you changed and why>
+  Result: pass | new-failure | same-failure
+```
+
+If the issue persists after 5 attempts, **halt and escalate to the human** with this format:
+
+```
+VALIDATION BLOCKED — human intervention required
+
+Failing check: <lint | typecheck | test | build>
+Error: <exact error message>
+Attempts: 5/5 exhausted
+
+Cycle summary:
+  1. <diagnosis> → <fix> → <result>
+  2. <diagnosis> → <fix> → <result>
+  ...
+
+Root cause assessment: <code | spec-ambiguity | test-bug | environment | dependency>
+Recommended action: <what the human should do>
+```
+
+Do NOT proceed to the next pipeline phase if any check is failing. The pipeline is blocked until validation passes or the human overrides.
 
 ---
 
@@ -61,6 +88,19 @@ Maximum **5 self-correct cycles**. If the issue persists after 5 attempts, halt 
 - **Do not widen scope.** Fix the failure. Do not refactor adjacent code, improve test coverage beyond what failed, or restructure the project.
 - **If a test failure reveals a spec ambiguity**, record it in `src/{component-id}/docs/quirks.md` and note it for the human. Fix the test to match your best interpretation of the spec, but flag the ambiguity.
 - **Track every cycle.** Record what failed and how you fixed it - this goes into `pipeline-run.md`.
+
+---
+
+## Standards References
+
+When validating, check fixes against these standards:
+
+- [Code Quality Standards](../standards/code-quality-standards.md) — module structure, naming, error handling
+- [Testing Standards](../standards/testing-standards.md) — test structure, coverage, mocking rules
+- [API Design Standards](../standards/api-design-standards.md) — endpoint naming, error responses, status codes
+- [Database Standards](../standards/database-standards.md) — query patterns, connection management
+
+Do not refactor code to meet standards during validation — only fix actual failures. If you notice a standards violation that isn't causing a test/lint/build failure, record it in recommendations for the docs-agent.
 
 ---
 

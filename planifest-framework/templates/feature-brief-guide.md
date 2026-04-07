@@ -1,6 +1,6 @@
-# Initiative Brief - Guide
+# Feature Brief - Guide
 
-> How to write an Initiative Brief that gives the orchestrator everything it needs to coach you and build your system.
+> How to write a Feature Brief that gives the orchestrator everything it needs to coach you and build your system.
 
 *Related: [Orchestrator Skill](../skills/planifest-orchestrator/SKILL.md) | [Initiative Structure](../../plan/initiative-structure.md)*
 
@@ -8,7 +8,7 @@
 
 ## Purpose
 
-The Initiative Brief is the **only human-authored input** to the Planifest pipeline. Everything the agent builds - specs, ADRs, code, tests, docs - derives from this document. If it's vague, everything downstream is vague. If it's specific, the agent has a fighting chance.
+The Feature Brief is the **only human-authored input** to the Planifest Agentic Iteration Loop. Everything the agent builds — execution plans, ADRs, code, tests, docs — derives from this document. If it's vague, everything downstream is vague. If it's specific, the agent has a fighting chance.
 
 You are the Product Owner and Technical Architect. This brief is where you exercise both roles.
 
@@ -46,7 +46,7 @@ The Priority column uses MoSCoW: must-have, should-have, could-have. The orchest
 
 ### Phases
 
-Only needed if you have more than 5-6 features. Phases are sequential pipeline runs:
+Only needed if you have more than 5-6 features. Phases are sequential iterations of the Agentic Iteration Loop:
 - Phase 1 ships before Phase 2 begins
 - Phase 2's agent reads Phase 1's component manifests for context
 - This is how Planifest manages context at scale
@@ -101,11 +101,11 @@ How you know the initiative is done. These become the orchestrator's exit criter
 
 ## What Happens Next
 
-1. You write the brief and save it to `plan/current/initiative-brief.md`
+1. You write the brief and save it to `plan/current/feature-brief.md`
 2. You tell the orchestrator to load it
 3. The orchestrator assesses it against the three layers (Product, Architecture, Engineering) and coaches you through any gaps - one question at a time
-4. Once complete, the orchestrator produces the Planifest (the validated plan) and begins the pipeline
+4. Once complete, the orchestrator produces the Planifest (the validated design) and begins the Agentic Iteration Loop
 
 ---
 
-*Template: [initiative-brief.template.md](initiative-brief.template.md)*
+*Template: [feature-brief.template.md](feature-brief.template.md)*
