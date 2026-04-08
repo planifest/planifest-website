@@ -24,11 +24,14 @@ mkdir plan plan/changelog src docs
 ```
 
 These are the core working directories:
-- `plan/` - The current change being planned (briefs, specs, planifest).
-  - `plan/_archive/<initiative-id>/` - Historical changes filed here after human review and acceptance.
-  - `plan/changelog/` - A log of all changes; each change is a separate file (`[initiative-id]-[YYYY-MM-DD].md`).
+- `plan/` - The current change being planned.
+  - `plan/current/design.md` - Confirmed design and build plan.
+  - `plan/current/feature-brief.md` - The initiating human-authored brief.
+  - `plan/current/iteration-log.md` - Audit trail of the pipeline run.
+  - `plan/archive/` - Historical plans filed here after merge.
+  - `plan/changelog/` - A record of all changes ({initiative-id}-{YYYY-MM-DD}.md).
 - `src/` - Component source code, tests, and component manifests (`component.yml`).
-- `docs/` - Living repository documentation (always current, no change records). Includes component registry and dependency graph.
+- `docs/` - Living repository documentation (always current). Includes component registry and dependency graph.
 
 See [initiative-structure.md](../plan/initiative-structure.md) for the full layout.
 
@@ -90,8 +93,9 @@ Feature brief: plan/current/feature-brief.md
 The orchestrator will:
 1. Assess your brief against the three layers (Product, Architecture, Engineering)
 2. Coach you through any gaps - one question at a time
-3. Produce the validated design at `plan/current/design.md`
-4. Execute the Agentic Iteration Loop: Spec → ADRs → Code → Validate → Security → Docs
+3. Produce the **confirmed design** at `plan/current/design.md` (**Planifest confirmed**)
+4. Execute the **Agentic Iteration Loop** (Phases 1-6): Spec → ADRs → Code → Validate → Security → Docs
+   (Executing: planifest-spec-agent → planifest-adr-agent → planifest-codegen-agent → ...)
 
 ---
 
@@ -99,9 +103,8 @@ The orchestrator will:
 
 1. Copy `planifest-framework/` into your repo root
 2. Run the setup script for your tool
-3. Create `docs/` if it doesn't exist
-4. Add a `component.yml` manifest to each existing component in `src/` - use the [component manifest template](templates/component.template.yml) and [guide](templates/component-guide.md)
-5. Tell the orchestrator to use **retrofit** adoption mode:
+3. Add a `component.yml` manifest to each existing component in `src/` - use the [component manifest template](templates/component.template.yml) and [guide](templates/component-guide.md)
+4. Tell the orchestrator to use **retrofit** adoption mode:
 
 ```
 Execute the Planifest Agentic Iteration Loop in retrofit mode.
@@ -144,7 +147,7 @@ Component ID: auth-service
 Change request: Add refresh token rotation
 ```
 
-The change-agent handles it — no need to re-run the full Agentic Iteration Loop.
+The **planifest-change-agent** handles it — no need to re-run the full Initiative Pipeline.
 
 ---
 
