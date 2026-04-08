@@ -9,7 +9,7 @@ Execute the Planifest change pipeline for modifications to an existing initiativ
 
 ## Prerequisites
 
-- An existing initiative with a confirmed Planifest at `plan/current/planifest.md`
+- An existing initiative with a confirmed design at `plan/current/design.md`
 - The component(s) affected by the change exist in `src/{component-id}/`
 
 ## Input

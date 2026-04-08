@@ -11,7 +11,7 @@ Onboard an existing codebase into the Planifest framework.
 
 - Existing code in `src/`
 - An initiative brief at `plan/current/initiative-brief.md` describing the intended changes
-- Component manifests (`component.json`) in each existing component - use the [component manifest template](../templates/component-manifest.template.json) and [guide](../templates/component-manifest-guide.md)
+- Component manifests (`component.yml`) in each existing component - use the [component manifest template](../templates/component.template.yml) and [guide](../templates/component-guide.md)
 
 ## Steps
 

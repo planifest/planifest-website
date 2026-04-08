@@ -158,9 +158,9 @@ monorepo/
 │
 ├── plan/
 │   └── pilot/                 # ← The pilot initiative lives here
-│       ├── planifest.md       # The Planifest - plan for what will be built, manifest of what it builds against
-│       ├── initiative-brief.md
-│       ├── pipeline-run.md    # Latest local pipeline run log
+│       ├── design.md          # Confirmed design and build plan
+│       ├── feature-brief.md
+│       ├── iteration-log.md   # Latest pipeline run log
 │       └── docs/              # Full artifact set per FD-019
 │           ├── design-spec.md
 │           ├── openapi-spec.yaml
@@ -258,15 +258,19 @@ The Pulumi stack state is stored in a GCP Storage bucket rather than Pulumi Clou
 
 ## 6. What Happens When Purpose is Confirmed
 
-When the pilot's product scope is defined, an Initiative Brief will be written and committed to the Obsidian vault. Planifest will process it through the full initiative pipeline. The spec-agent and adr-agent are hard gates - development does not begin until the specification is complete. Humans retain approval at the PR, for any schema changes, and for any high/critical risk items.
+When the pilot's product scope is defined, a **Feature Brief** will be written and committed to the repo. Planifest will process it through the full initiative pipeline. The orchestrator begins **Phase 0 - Assess and Coach**. Development does not begin until the **design** (`plan/current/design.md`) is complete and **Planifest confirmed**. Humans retain approval at the PR, for any schema changes, and for any high/critical risk items.
 
-1. **spec-agent** coaches for every answer needed - surfaces gaps before proceeding. Derives the design spec, OpenAPI definition, scope, risk register, and domain glossary
-2. **adr-agent** generates ADRs for every significant decision - only proceeds once spec is complete
-3. **codegen-agent** scaffolds the full implementation inside `src/pilot/`
-4. **validate loop** runs CI and self-corrects
-5. **security-agent** produces the security report
-6. **pr-agent** opens the PR
-7. **docs-agent** syncs all artifacts (design spec, ADRs, security report, data contracts, glossary, SLOs, cost model) to the Obsidian vault via the docs-mcp provider
+1. **Phase 0** coaches for every answer needed - surfaces gaps before proceeding. Derives the **design.md**.
+2. **spec-agent (Phase 1)** derives the detailed specification, OpenAPI definition, scope, risk register, and domain glossary.
+3. **adr-agent (Phase 2)** generates ADRs for every significant decision.
+4. **codegen-agent (Phase 3)** scaffolds the full implementation inside `src/pilot/`.
+5. **validate loop (Phase 4)** runs CI and self-corrects.
+6. **security-agent (Phase 5)** produces the security report.
+7. **docs-agent (Phase 6)** opens the PR and syncs all artifacts.
+
+### Targeted Modifications
+
+Once the pilot components exist, future modifications (bugs, adjustments) that don't change intent will follow the **Change Pipeline**, bypassing the full Agentic Iteration Loop while still maintaining artifact consistency. Trivial UI or logic fixes follow the **Fast Path**.
 
 The `component.json` for the pilot will be pre-seeded with the confirmed technical decisions from this document - stack, cloud provider, CI platform - so the agents don't need to derive them from the brief.
 

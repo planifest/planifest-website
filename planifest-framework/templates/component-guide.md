@@ -1,6 +1,6 @@
 # Component Manifest - Template Guide
 
-> This is the canonical template for `component.json` - the manifest file that describes a built component. Agents write it after building; agents and humans read it before changing anything.
+> This is the canonical template for `component.yml` - the manifest file that describes a built component. Agents write it after building; agents and humans read it before changing anything.
 
 *Related: [Shared Schema Definitions](../schemas/shared.schema.json)*
 
@@ -8,7 +8,7 @@
 
 ## When is it created?
 
-The `component.json` is created at **two points** in the lifecycle:
+The `component.yml` is created at **two points** in the lifecycle:
 
 1. **Pre-seeded by the human** (or orchestrator) before the pipeline runs - with stack decisions, initiative mode, and domain knowledge path. Purpose, contract, and data sections are left empty or minimal. This gives the codegen-agent its constraints.
 
@@ -21,7 +21,7 @@ From that point forward, every change-agent reads it before modifying the compon
 ## File location
 
 ```
-src/{{component-id}}/component.json
+src/{{component-id}}/component.yml
 ```
 
 ---
@@ -67,6 +67,8 @@ Pre-seeded by the human or orchestrator. The codegen-agent reads this - it does 
 | `stack.iac` | Yes | Infrastructure as code tool. |
 | `stack.cloud` | Yes | Target cloud provider. |
 | `stack.compute` | Yes | Compute platform. |
+| `stack.styling` | Conditional | CSS approach for frontend components (or `none`). |
+| `stack.componentLibrary` | Conditional | UI component library (or `none`). |
 | `stack.ci` | Yes | CI/CD platform. |
 
 ### Contract
@@ -75,7 +77,7 @@ Describes the component's interface - what it accepts, what it produces, who dep
 
 | Field | Required | Written by | Description |
 |---|---|---|---|
-| `contract.apiSpec` | Yes | Agent | Relative path to the OpenAPI spec or equivalent schema. |
+| `contract.apiSpec` | Yes | Agent | Path to the OpenAPI spec (from project root). The spec-agent writes this to `plan/{initiative-id}/openapi-spec.yaml` (if the component serves an API). |
 | `contract.inputs` | Yes | Agent | Array of inputs (HTTP endpoints, events, queues) the component accepts. |
 | `contract.outputs` | Yes | Agent | Array of outputs the component produces. |
 | `contract.consumedBy` | Yes | Agent | Array of component IDs that depend on this component. Updated as the system grows. |
@@ -141,6 +143,9 @@ Operational metadata used by the CI/CD pipeline and template stamping system.
 | `metadata.updatedAt` | Yes | Agent | ISO 8601 timestamp. Updated on every change. |
 | `metadata.createdBy` | Yes | System | `agent` or `human`. |
 | `metadata.lastModifiedBy` | Yes | System | `agent` or `human`. |
+| `metadata.skill` | Yes | Agent | Which skill produced or last modified this manifest (e.g., `codegen-agent`, `change-agent`). |
+| `metadata.tool` | Yes | Agent | Which agentic tool was used (e.g., `claude-code`, `cursor`, `antigravity`). |
+| `metadata.model` | Yes | Agent | Which model produced the output (e.g., `claude-sonnet-4-20250514`). |
 
 ---
 
@@ -155,4 +160,4 @@ Operational metadata used by the CI/CD pipeline and template stamping system.
 
 ---
 
-*Template: [component-manifest.template.json](component-manifest.template.json)*
+*Template: [component.template.yml](component.template.yml)*

@@ -1,3 +1,9 @@
+---
+title: "Data Contract: {{component-name}}"
+summary: "Defines the precise schema and relationships of data owned by this component."
+status: "draft | active"
+version: "0.1.0"
+---
 # Data Contract - {{component-name}}
 
 **Skill:** [codegen-agent](../skills/codegen-agent-SKILL.md) (updated via migration proposals)

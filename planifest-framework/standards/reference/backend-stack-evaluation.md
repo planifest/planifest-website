@@ -1,5 +1,11 @@
 # Planifest - Backend Stack Evaluation
 
+## Version Log
+
+| Version | Change Description | Date | Changed By |
+|---|---|---|---|
+| 1 | Initial document - comprehensive evaluation of 13 backend stacks for agent-generated code | 05 MAR 2026 | Martin Mayer (via agent) |
+| 2 | Fixed heading prefix; corrected Implications section - Planifest does not specify a stack, the pilot does; added FD-015 reference and orchestrator coaching guidance | 07 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

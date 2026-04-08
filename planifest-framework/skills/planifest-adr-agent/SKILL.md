@@ -1,6 +1,8 @@
 ---
 name: planifest-adr-agent
 description: Produces Architecture Decision Records for each significant decision in the specification. Invoked by the orchestrator during Phase 2.
+bundle_templates: [adr.template.md]
+bundle_standards: []
 ---
 
 # Planifest - adr-agent
@@ -24,7 +26,7 @@ description: Produces Architecture Decision Records for each significant decisio
 
 - Design Specification at `plan/current/design-spec.md`
 - OpenAPI Specification at `plan/current/openapi-spec.yaml`
-- Planifest at `plan/current/planifest.md` (for stack declaration)
+- design at `plan/current/design.md` (for stack declaration)
 
 ---
 
@@ -34,38 +36,36 @@ One ADR per significant decision, written to `plan/current/adr/ADR-{NNN}-{title}
 
 ---
 
-## What Counts as a Significant Decision
+## What Requires an ADR
 
-Any choice that has consequences worth recording:
+A decision requires an ADR if it meets **any** of these criteria:
 
-- Framework, library, or database selection
-- Deployment topology
-- Sync vs async communication
-- Authentication or authorisation strategy
-- Component boundaries and granularity
-- Data ownership assignments
-- Trade-offs with notable positive and negative consequences
-- Deviations from the declared stack (these require justification)
+| Criterion | Example |
+|-----------|---------|
+| **Costly to reverse** — changing it later requires significant rework | Database engine choice, ORM selection, auth strategy |
+| **Affects multiple components** — the decision crosses component boundaries | Sync vs async communication, shared type strategy, event schema |
+| **Constrains future work** — it narrows options for later initiatives | Deployment topology, cloud provider lock-in, data partitioning |
+| **Deviates from the declared stack** — anything not in the Planifest stack section | Using a library not in the stack, choosing a different compute model |
+| **Involves a security trade-off** — convenience vs security, performance vs isolation | Session storage strategy, token expiry policy, CORS configuration |
+| **Data ownership assignment** — which component owns which data | Every data ownership mapping gets an ADR |
+
+A decision does **not** require an ADR if:
+- It is a direct consequence of the stack declaration with no meaningful alternative (e.g., "use npm because the stack is Node.js")
+- It is a code-level implementation detail within a single component (e.g., "use a switch statement vs if/else")
+- It is already documented in the design spec as a requirement (e.g., "support OAuth2" when the spec mandates it)
 
 ---
 
 ## ADR Format
 
-```markdown
-# ADR-{NNN}: {title}
+Follow the [ADR Template](../templates/adr.template.md). Key sections:
 
-## Status
-Accepted
-
-## Context
-Why this decision needed to be made. What constraints or trade-offs were in play.
-
-## Decision
-What was decided. Be specific.
-
-## Consequences
-What becomes easier. What becomes harder. What is deferred. What risk is introduced or mitigated.
-```
+- **Context** — why this decision needed to be made
+- **Decision** — what was decided and why (be specific)
+- **Alternatives Considered** — table of options with pros, cons, and rejection reason
+- **Affected Components** — which components are impacted and how
+- **Consequences** — positive, negative, and risks (all three required)
+- **Related ADRs** — cross-references to other ADRs this depends on, extends, or conflicts with
 
 ---
 

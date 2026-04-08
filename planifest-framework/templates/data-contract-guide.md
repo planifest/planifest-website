@@ -2,7 +2,7 @@
 
 > How the codegen-agent defines schema ownership and how migration proposals work.
 
-*Related: [Codegen Agent Skill](../skills/codegen-agent-SKILL.md) | [Component Manifest Guide](component-manifest-guide.md)*
+*Related: [Codegen Agent Skill](../skills/codegen-agent-SKILL.md) | [Component Guide](component-guide.md)*
 
 ---
 
@@ -26,7 +26,7 @@ Data is owned by exactly one component. This is a Planifest hard limit.
 - Other components access it via the owner's API (REST, gRPC, events)
 - No component bypasses the owner to query another component's database directly
 
-The `Owner` field in the data contract header must match the `id` in the component's `component.json`.
+The `Owner` field in the data contract header must match the `id` in the component's `component.yml`.
 
 ---
 

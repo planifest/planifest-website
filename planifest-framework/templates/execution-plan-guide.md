@@ -1,20 +1,20 @@
-# Design Specification - Guide
+# Execution Plan - Guide
 
-> How the spec-agent produces a design specification, and how to read one.
+> How the spec-agent produces an execution plan, and how to read one.
 
-*Related: [Spec Agent Skill](../skills/spec-agent-SKILL.md) | [Initiative Brief Guide](initiative-brief-guide.md)*
+*Related: [Spec Agent Skill](../skills/spec-agent-SKILL.md) | [Feature Brief Guide](feature-brief-guide.md)*
 
 ---
 
 ## Purpose
 
-The Design Specification translates the Initiative Brief into **specific, testable requirements**. It is the contract between what the human asked for and what the codegen-agent will build. Every requirement traces back to a user story or acceptance criterion - if it doesn't trace, it shouldn't exist.
+The Execution Plan translates the Feature Brief into **specific, testable requirements**. It is the contract between what the human asked for and what the codegen-agent will build. Every requirement traces back to a user story or acceptance criterion - if it doesn't trace, it shouldn't exist.
 
 ---
 
 ## Who Writes It
 
-The **spec-agent** produces this document during Phase 1 of the pipeline. It reads the confirmed Planifest and the original Initiative Brief as input. It does not invent requirements - it derives them.
+The **spec-agent** produces this document during the Specification step of the Agentic Iteration Loop. It reads the confirmed Planifest and the original Feature Brief as input. It does not invent requirements - it derives them.
 
 ---
 
@@ -22,7 +22,7 @@ The **spec-agent** produces this document during Phase 1 of the pipeline. It rea
 
 - **After** the orchestrator confirms the Planifest (end of Phase 0)
 - **Before** ADRs are generated (Phase 2 reads this as input)
-- **One per initiative**, or one per phase if the initiative is phased (`design-spec-phase-2.md`)
+- **One per initiative**, or one per phase if the initiative is phased (`execution-plan-phase-2.md`)
 
 ---
 
@@ -42,7 +42,7 @@ Each requirement must be:
 
 ### Non-Functional Requirements
 
-Same rule - measurable targets only. These are derived from the NFR section of the Initiative Brief, not invented.
+Same rule - measurable targets only. These are derived from the NFR section of the Feature Brief, not invented.
 
 ### API Summary
 
@@ -70,21 +70,21 @@ Material gaps the spec-agent couldn't resolve from the brief. These are **not** 
 ## How It Connects
 
 ```
-Initiative Brief -> Design Spec -> ADRs -> Code
-                -> OpenAPI Spec â†—        â†—
-                -> Data Model â”€â”€-> Data Contract
+Feature Brief -> Execution Plan -> ADRs -> Code
+              -> OpenAPI Spec (if API) ↗
+              -> Data Model ──-> Data Contract
 ```
 
-The design spec is the central artifact. ADRs explain HOW to implement the requirements. The codegen-agent reads both.
+The execution plan is the central artifact. ADRs explain HOW to implement the requirements. The codegen-agent reads both.
 
 ---
 
 ## File Location
 
-`plan/current/design-spec.md`
+`plan/current/execution-plan.md`
 
-If phased: `plan/design-spec-phase-{n}.md`
+If phased: `plan/execution-plan-phase-{n}.md`
 
 ---
 
-*Template: [design-spec.template.md](design-spec.template.md)*
+*Template: [execution-plan.template.md](execution-plan.template.md)*

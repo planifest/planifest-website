@@ -1,3 +1,9 @@
+---
+title: "Domain Glossary - {{initiative-name}}"
+summary: "Definitions of domain terms used within this initiative."
+status: "draft | active"
+version: "0.1.0"
+---
 # Domain Glossary - {{initiative-name}}
 
 **Skill:** [spec-agent](../skills/spec-agent-SKILL.md) (updated by any agent that introduces a new domain term)

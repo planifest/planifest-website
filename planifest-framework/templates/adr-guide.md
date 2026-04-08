@@ -14,7 +14,7 @@ An ADR captures a single architectural decision - the context that demanded it, 
 
 ## Who Writes It
 
-The **adr-agent** produces ADRs during Phase 2 of the pipeline. It reads the Design Specification and OpenAPI Specification as input. Each significant decision gets its own ADR.
+The **adr-agent** produces ADRs during Phase 2 of the pipeline. It reads the Execution Plan and OpenAPI Specification (if applicable) as input. Each significant decision gets its own ADR.
 
 ---
 

@@ -140,7 +140,7 @@ AGENTS.md
 |------|--------|
 | **Skill discovery** | `.gemini/skills/{name}/SKILL.md` or `.agent/skills/{name}/SKILL.md` |
 | **Workflow discovery** | `.agent/workflows/{name}.md` (becomes `/name` slash command) |
-| **Boot file** | None needed - uses skill discovery directly |
+| **Boot file** | `GEMINI.md` (project root) |
 | **Personal skills** | `~/.gemini/antigravity/skills/` |
 | **Frontmatter** | `name` + `description` required |
 | **Progressive disclosure** | Yes |
@@ -162,6 +162,7 @@ AGENTS.md
     ├── initiative-pipeline.md
     ├── change-pipeline.md
     └── retrofit.md
+GEMINI.md
 ```
 
 ---
@@ -171,7 +172,7 @@ AGENTS.md
 | Item | Detail |
 |------|--------|
 | **Skill discovery** | `.github/skills/{name}/SKILL.md` |
-| **Workflow discovery** | `.github/workflows/{name}.md` (natural language workflows) |
+| **Workflow discovery** | `.github/copilot-workflows/{name}.md` (natural language workflows — avoids GitHub Actions conflict) |
 | **Boot file** | `.github/copilot-instructions.md` |
 | **Personal skills** | `~/.copilot/skills/` |
 | **Frontmatter** | `name` + `description` + optional `license` |
@@ -188,7 +189,7 @@ AGENTS.md
 │   ├── _planifest-templates/
 │   ├── _planifest-standards/
 │   └── _planifest-schemas/
-├── workflows/
+├── copilot-workflows/
 │   ├── initiative-pipeline.md
 │   ├── change-pipeline.md
 │   └── retrofit.md
@@ -197,9 +198,59 @@ AGENTS.md
 
 ---
 
+### Windsurf (Codeium)
+
+| Item | Detail |
+|------|--------|
+| **Skill discovery** | `.windsurf/skills/{name}/SKILL.md` |
+| **Workflow discovery** | None — rules are embedded in `.windsurfrules` |
+| **Boot file** | `.windsurfrules` (project root — always applied by Cascade) |
+| **Frontmatter** | `name` + `description` required |
+| **Progressive disclosure** | Yes |
+| **Setup command** | `./planifest-framework/setup.sh windsurf` or `.\planifest-framework\setup.ps1 windsurf` |
+
+**Creates:**
+```
+.windsurf/
+└── skills/
+    ├── planifest-orchestrator/SKILL.md
+    ├── planifest-spec-agent/SKILL.md
+    ├── ... (all 8 skills)
+    ├── _planifest-templates/
+    ├── _planifest-standards/
+    └── _planifest-schemas/
+.windsurfrules
+```
+
+---
+
+### Cline / Roo Code
+
+| Item | Detail |
+|------|--------|
+| **Skill discovery** | `.clinerules/skills/{name}/SKILL.md` |
+| **Workflow discovery** | None — instructions are embedded in `.clinerules` |
+| **Boot file** | `.clinerules` (project root — always loaded as persistent context) |
+| **Frontmatter** | `name` + `description` required |
+| **Progressive disclosure** | Yes |
+| **Setup command** | `./planifest-framework/setup.sh cline` or `.\planifest-framework\setup.ps1 cline` |
+
+**Creates:**
+```
+.clinerules/
+└── skills/
+    ├── planifest-orchestrator/SKILL.md
+    ├── planifest-spec-agent/SKILL.md
+    ├── ... (all 8 skills)
+    ├── _planifest-templates/
+    ├── _planifest-standards/
+    └── _planifest-schemas/
+.clinerules
+```
+
 ## Common Patterns Across All Tools
 
-All five tools share these conventions:
+All seven tools share these conventions:
 - Skills are folders containing a `SKILL.md` file
 - `SKILL.md` must have YAML frontmatter with `name` and `description`
 - Tools use **progressive disclosure** - they read frontmatter first, then load the full body on demand
@@ -219,6 +270,8 @@ All five tools share these conventions:
    .agents/
    .gemini/
    .github/skills/
+   .windsurf/
+   .clinerules/
    ```
 
 ---

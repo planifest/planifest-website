@@ -1,3 +1,9 @@
+---
+title: "Scope - {{initiative-name}}"
+summary: "Defines explicit boundaries of what is in scope and out of scope."
+status: "draft | active"
+version: "0.1.0"
+---
 # Scope - {{initiative-name}}
 
 **Skill:** [spec-agent](../skills/spec-agent-SKILL.md)
