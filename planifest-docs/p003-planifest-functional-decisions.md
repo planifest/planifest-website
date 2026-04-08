@@ -31,27 +31,33 @@ Across all three layers, Scope, Risks, and Dependencies are first-class concerns
 
 ---
 
-## FD-003 - The Initiative Brief is the initiating input
+## FD-003 - The Feature Brief is the initiating input
 
-**Decision:** A human authors one structured markdown document - the Initiative Brief - covering the problem statement, user stories, acceptance criteria, constraints, and known integrations. This is the seed that initiates the pipeline.
+**Decision:** A human authors one structured markdown document - the Feature Brief - covering the problem statement, user stories, acceptance criteria, constraints, and known integrations. This is the seed that initiates the pipeline.
 
-The orchestrator agent assesses the brief against what a complete Planifest specification requires, coaches the human through any gaps - one question at a time, in priority order - and produces the validated **Planifest**: the plan for what will be built and the manifest of what it builds against. The human confirms the Planifest before the pipeline proceeds. This is the hard gate.
+The orchestrator agent begins **Phase 0 - Assess and Coach**. It assesses the brief against what a complete Planifest specification requires, coaches the human through any gaps - one question at a time, in priority order - and produces the **confirmed design**: the plan for what will be built and the manifest of what it builds against. It is written to `plan/current/design.md`. The human confirms the design before the pipeline proceeds to Phase 1. This status is **Planifest confirmed**. This is the hard gate.
+
+Every request is triaged into one of three tracks:
+- **Fast Path**: For UI styling, copy changes, or isolated pure-function bugs.
+- **Change Pipeline**: For bug fixes or targeted changes to 1-2 existing components.
+- **Initiative Pipeline**: For new features, >3 user stories, or new problem statements.
 
 Human intervention points are:
-- **Initiative Brief** - initiating the pipeline
-- **Planifest confirmation** - the human confirms the validated Planifest before development begins
+- **Feature Brief** - initiating the pipeline
+- **Phase 0 Coaching** - answering gaps in the brief
+- **Design confirmation** - the human confirms the design (`design.md`) and grants **Planifest confirmed** status before Phase 1 begins
 - **PR review** - reviewing code and docs before merging
 - **Schema changes and migrations** - approving any data contract changes
 - **High/critical risk items** - human review required by default
-- **Agent-raised improvements** - human decides whether they become a new Initiative Brief
+- **Agent-raised improvements** - human decides whether they become a new Feature Brief
 
-**Rationale:** A single, well-defined initiating input makes the pipeline deterministic and every downstream artifact traceable to a human decision. The coaching conversation ensures the brief reaches the level of detail the framework requires without placing the burden of knowing the framework on the human. Autonomous execution between gates does not mean zero human involvement - it means human involvement is deliberate, bounded, and at the right moments.
+**Rationale:** A single, well-defined initiating input makes the pipeline deterministic and every downstream artifact traceable to a human decision. The coaching conversation (Phase 0) ensures the brief reaches the level of detail the framework requires without placing the burden of knowing the framework on the human. Triage ensures the level of rigour is proportionate to the risk of the change. Autonomous execution between gates does not mean zero human involvement - it means human involvement is deliberate, bounded, and at the right moments.
 
 ---
 
 ## FD-004 - Specification must be complete before development begins
 
-**Decision:** Agents do not begin development until the specification is complete. The orchestrator agent coaches the human through every gap in the Initiative Brief before the spec-agent produces artifacts. The spec-agent and adr-agent then surface any remaining ambiguity or unresolved decision before passing work to the codegen-agent. An incomplete specification is a hard gate - the pipeline does not proceed.
+**Decision:** Agents do not begin development until the specification is complete. The orchestrator agent (**planifest-orchestrator**) coaches the human through every gap in the Feature Brief during **Phase 0**. The human confirms the resulting design (`plan/current/design.md`). The pipeline then proceeds through **Phase 1 (Specification)** and **Phase 2 (Architecture Decisions)** only once the status is **Planifest confirmed**. The **planifest-spec-agent** and **planifest-adr-agent** then surface any remaining ambiguity or unresolved decision before passing work to the **planifest-codegen-agent** (Phase 3). A missing design confirmed status or incomplete specification is a hard gate - the pipeline does not proceed.
 
 **Rationale:** The specification is not just the input to the pipeline - it is the standard against which all outputs are assessed. Code generated against an incomplete spec is incomplete, inconsistent, or incorrect by definition. Planifest insists on completeness first.
 
@@ -70,11 +76,11 @@ Human intervention points are:
 **Decision:** The division of responsibility is explicit and non-negotiable by default.
 
 **Humans:**
-- Author Initiative Briefs
+- Author Feature Briefs
 - Submit adjustments (small changes) and bug reports
 - Review and approve PRs - code and docs together, always
 - Approve schema changes and migrations
-- Decide whether an agent-raised improvement becomes an Initiative Brief
+- Decide whether an agent-raised improvement becomes a Feature Brief
 
 **Agents:**
 - Build, test, document, and raise PRs
@@ -229,8 +235,8 @@ The guiding principle: **one reason to change, easy to rebuild rather than modif
 
 **Decision:** Where a team enters the Planifest pipeline depends on the state of their system and the complexity of their domain.
 
-- **Greenfield** (`initiative_mode: greenfield`) - new system, no prior codebase. The Initiative Brief is the sole input. The pipeline runs from spec to PR.
-- **Retrofit** (`initiative_mode: retrofit`) - existing production system with no prior spec. The `spec-agent` performs codebase ingestion first: scanning the repo, inferring existing architecture, and generating ADRs from what already exists. Conflicts, drift, and tech debt are surfaced before any new code is written.
+- **Greenfield** (`initiative_mode: greenfield`) - new system, no prior codebase. The Feature Brief is the sole input. The pipeline runs from spec to PR.
+- **Retrofit** (`initiative_mode: retrofit`) - existing production system with no prior spec. The **planifest-spec-agent** performs codebase ingestion first: scanning the repo, inferring existing architecture, and generating ADRs from what already exists. Conflicts, drift, and tech debt are surfaced before any new code is written.
 - **Agent Interface Layer** (`initiative_mode: agent-interface`) - large or complex component library where a full codebase spec creates more noise than signal. A well-defined interface layer is specified first; agents develop against the interface, not the internals.
 
 **Rationale:** A single entry point would make Planifest impractical for the most common real-world scenario - an existing production system. Adoption mode is a first-class concern, not an edge case.
@@ -245,7 +251,7 @@ The guiding principle: **one reason to change, easy to rebuild rather than modif
 
 | Artifact | Purpose |
 |---|---|
-| Initiative Brief | What needs to be built and why |
+| Feature Brief | What needs to be built and why |
 | Design Specification | Functional and non-functional requirements |
 | OpenAPI Specification | Language-agnostic API contract |
 | ADRs | Every significant decision with context and consequences |
@@ -263,17 +269,9 @@ The guiding principle: **one reason to change, easy to rebuild rather than modif
 
 | Artifact | Purpose |
 |---|---|
-| Component Purpose | What this component exists to do in the wider system |
-| Interface Contract | Inputs, outputs, schema, consumers, breaking change policy |
-| Dependencies | What it consumes / what depends on it |
-| Data Contract | Schema, invariants, ownership |
-| Migration History | Full history of schema changes |
-| ADRs | Component-level decisions |
-| Risk | Component-scoped risk items |
-| Scope | Component-scoped in / out / deferred |
-| Quirks | Component-scoped oddities |
-| Test Coverage Summary | Coverage state at point of generation |
-| Known Tech Debt | Explicitly acknowledged debt |
+| Component Manifest (`component.yml`) | The single source of truth for component domain knowledge: purpose, context, contract, data ownership, scope, risk, and quality metrics. Replaces separate markdown files for these concerns. |
+| ADRs | Component-specific arch decisions (in global `docs/adr/`) |
+| Migration History | Full history of data schema changes (in global `docs/migrations/`) |
 
 **System-wide:**
 
@@ -296,11 +294,11 @@ MCP will eventually provide the infrastructure layer - typed tool calls, credent
 
 ---
 
-## FD-021 - A Planifest is the plan and the manifest
+## FD-021 - The design is the plan and the manifest
 
-**Decision:** For every initiative, the orchestrator agent produces a **Planifest** - the plan is what will be built, the manifest is what it builds against. The human confirms the Planifest before the pipeline proceeds. It is written to `plan/current/planifest.md`.
+**Decision:** For every initiative, the orchestrator agent and human collaborate to produce the **design** during Phase 0. The plan is what will be built, the manifest is what it builds against. The human grants **Planifest confirmed** status before the pipeline proceeds to the **Agentic Iteration Loop** (Phases 1-6). It is written to `plan/current/design.md`.
 
-The Planifest records: the problem, the adoption mode, the confirmed product layer (user stories, acceptance criteria, constraints), the architecture layer (NFRs, security, cost), the engineering layer (stack, components, data ownership, deployment), the scope boundaries (in, out, deferred), and the risks and dependencies.
+The Planifest records: the problem, the adoption mode, the initiative ID (`{0000000}-{kebab-case-name}`), the confirmed product layer (user stories, acceptance criteria, constraints), the architecture layer (NFRs, security, cost), the engineering layer (stack, components, data ownership, deployment), the scope boundaries (in, out, deferred), and the risks and dependencies.
 
 **Rationale:** You cannot plan what to build without recording what you're building against. The Planifest is the contract between human and agent - the hard gate before development begins. See [Strategic Intent vs Stochastic Execution](p017-research-report-strategic-intent-vs-stochastic-execution.md) for the technical evaluation of this sequential intent-mapping logic.
 
@@ -308,7 +306,7 @@ The Planifest records: the problem, the adoption mode, the confirmed product lay
 
 ## FD-022 - Planifest is delivered as Agent Skills
 
-**Decision:** The Planifest pipeline is delivered as a set of Agent Skills - one `SKILL.md` file per pipeline phase, each independently installable. The orchestrator skill is the entry point; phase skills (spec-agent, adr-agent, codegen-agent, validate-agent, security-agent, docs-agent, change-agent) are invoked in sequence. Tool-specific adapters (`.claude/CLAUDE.md`, `.cursorrules`, `copilot-instructions.md`) load the skills via each tool's native compliance mechanism.
+**Decision:** The Planifest pipeline is delivered as a set of Agent Skills - one `SKILL.md` file per pipeline phase, each independently installable. The entry point is the **planifest-orchestrator** skill; phase skills (**planifest-spec-agent**, **planifest-adr-agent**, **planifest-codegen-agent**, **planifest-validate-agent**, **planifest-security-agent**, **planifest-docs-agent**, **planifest-change-agent**) are invoked in sequence. Tool-specific setup scripts (`planifest-framework/setup/*.ps1`) configure the tools (Claude Code, Cursor, Copilot, etc.) to load the skills and follow the framework.
 
 This resolves FQ-007.
 

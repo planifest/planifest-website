@@ -56,23 +56,25 @@ flowchart TD
     A([ðŸ‘¤ Initiative Brief]) --> ORCH[Orchestrator]
     Z([ðŸ‘¤ Adjustment / Bug Report]) --> ORCH
 
-    ORCH --> SA[spec-agent]
-    SA -->|spec complete?| GATE1{Hard gate}
-    GATE1 -->|No - surface gaps| SA
-    GATE1 -->|Yes| AA[adr-agent]
-    AA --> CA[codegen-agent]
-    CA --> VA[validate-loop]
-    VA --> SEC[security-agent]
-    SEC --> PRA[pr-agent]
-    PRA --> HGATE([ðŸ‘¤ PR Review])
-    HGATE --> DA[docs-agent]
-    DA --> DKS[(plan/, manifest/, docs/)]
+    ORCH --> PHASE0[Phase 0: Assess & Coach]
+    PHASE0 -->|Planifest confirmed| LOOP
+    
+    subgraph LOOP["Agentic Iteration Loop (Phases 1-6)"]
+        direction TB
+        PHASE1[Phase 1: planifest-spec-agent]
+        PHASE1 --> PHASE2[Phase 2: planifest-adr-agent]
+        PHASE2 --> PHASE3[Phase 3: planifest-codegen-agent]
+        PHASE3 --> PHASE4[Phase 4: planifest-validate-agent]
+        PHASE4 --> PHASE5[Phase 5: planifest-security-agent]
+        PHASE5 --> PHASE6[Phase 6: planifest-docs-agent]
+    end
+    
+    PHASE6 --> HGATE([ðŸ‘¤ PR Review])
 
     style A fill:transparent,stroke:#28a745,stroke-width:2px
     style Z fill:transparent,stroke:#28a745,stroke-width:2px
     style HGATE fill:transparent,stroke:#28a745,stroke-width:2px
-    style GATE1 fill:transparent,stroke:#f0a500,stroke-width:2px
-    style DKS fill:transparent,stroke:#0066cc,stroke-width:2px,stroke-dasharray: 5 5
+    style PHASE0 fill:transparent,stroke:#f0a500,stroke-width:2px
 ```
 
 > Planifest runs in two modes: any **CI/CD platform** (GitHub Actions, GitLab CI, Bitbucket Pipelines, CircleCI, etc.) using an LLM API, and any **agentic coding tool** (Claude Code, Cursor, Codex, Antigravity, GitHub Copilot, etc.) locally on a dev machine. See [Agentic Tool Runbook](p010-planifest-agentic-tool-runbook.md).
@@ -154,86 +156,58 @@ Conservative by default. Autonomy is earned progressively. Hard limits cannot be
 
 See [FD-007 - Default rules](p003-planifest-functional-decisions.md#fd-007--default-rules-are-conservative-autonomy-is-earned-progressively) for the full default rules table.
 
+### Three-Track Decision Tree (Scope-based Routing)
+
+Every incoming request is triaged into one of three execution tracks based on the scope of the change:
+
+| Track | Signal | Rigour |
+|---|---|---|
+| **Fast Path** | UI styling, copy/text changes, or isolated pure-function logic bugs. No schema changes. | **Low**: Bypass spec/ADR. Direct implementation + validation. |
+| **Change Pipeline** | Targeted bug fix or modification to 1-2 existing components. | **Medium**: Phase 1 Context -> Phase 2 Change -> Phase 3 Validate. |
+| **Initiative Pipeline** | New features, ≥ 3 user stories, or touches > 3 components. | **High**: Full Phase 0-6 Agentic Iteration Loop. |
+
+See [Planifest Pipeline](p015-planifest-pipeline.md) for detailed criteria per track.
+
 ---
 
-## 5. Pipeline Architecture - New Initiatives
+## 5. Pipeline Architecture - Initiative Pipeline
 
-Triggered when a new Initiative Brief is committed to the document store or vault.
+Triggered when a new Feature Brief is provided.
 
-**Specification is a hard gate.** The spec-agent and adr-agent surface every gap, ambiguity, or unresolved decision before passing work to the codegen-agent. The pipeline does not proceed until the specification is complete.
+**The design is a hard gate.** The orchestrator coaches the human until a complete design (`plan/current/design.md`) is produced and **Planifest confirmed**. The pipeline then proceeds through specification, architecture, and generation.
 
 ```mermaid
 flowchart TD
-    BRIEF([ðŸ‘¤ Initiative Brief])
-
-    subgraph PHASE1["â‘  Specification - hard gate"]
-        S["spec-agent"]
-        SG{"Spec complete?"}
-        S --> SG
-        SG -->|No - surface gaps| S
+    BRIEF([ðŸ‘¤ Feature Brief]) --> P0[â‘ Phase 0: Assess & Coach]
+    P0 -->|Planifest confirmed| LOOP
+    
+    subgraph LOOP["Agentic Iteration Loop"]
+        direction TB
+        P1[â‘  Phase 1: planifest-spec-agent]
+        P1 --> P2[â‘¡ Phase 2: planifest-adr-agent]
+        P2 --> P3[â‘¢ Phase 3: planifest-codegen-agent]
+        P3 --> P4[â‘£ Phase 4: planifest-validate-agent]
+        P4 --> P5[â‘¤ Phase 5: planifest-security-agent]
+        P5 --> P6[â‘¥ Phase 6: planifest-docs-agent]
     end
+    
+    P6 --> HGATE([ðŸ‘¤ PR Review])
 
-    subgraph PHASE2["â‘¡ Architecture Decisions"]
-        A["adr-agent"]
-    end
-
-    subgraph PHASE3["â‘¢ Code Generation"]
-        C["codegen-agent"]
-    end
-
-    subgraph PHASE4["â‘£ Validate & Self-Correct"]
-        V{"CI passes?"}
-        FIX["Self-correct"]
-        FAIL(["âŒ Halt"])
-        RETRY(["Retries left?"])
-    end
-
-    subgraph PHASE5["â‘¤ Security"]
-        SEC["security-agent"]
-    end
-
-    subgraph PHASE6["â‘¥ Ship & Document"]
-        PR["pr-agent"]
-        DOCS["docs-agent"]
-        DKS["Update plan/ and docs/"]
-    end
-
-    HGATE([ðŸ‘¤ PR Review])
-    DONE([âœ… Merged Â· Domain updated])
-
-    BRIEF --> PHASE1
-    SG -->|Yes| PHASE2
-    PHASE2 --> PHASE3
-    PHASE3 --> PHASE4
-    V -->|Yes| PHASE5
-    V -->|No| RETRY
-    RETRY -->|Yes| FIX --> V
-    RETRY -->|No| FAIL
-    PHASE5 --> PHASE6
-    PR --> DOCS --> DKS --> HGATE --> DONE
-
-    style BRIEF fill:transparent,stroke:#28a745,stroke-width:2px,color:#000
-    style HGATE fill:transparent,stroke:#28a745,stroke-width:2px,color:#000
-    style DONE fill:transparent,stroke:#28a745,stroke-width:2px,color:#000
-    style FAIL fill:transparent,stroke:#dc3545,stroke-width:2px,color:#000
-    style PHASE1 fill:transparent,stroke:#f0a500,stroke-width:2px
-    style PHASE2 fill:transparent,stroke:#6c8ebf,stroke-width:2px
-    style PHASE3 fill:transparent,stroke:#6c8ebf,stroke-width:2px
-    style PHASE4 fill:transparent,stroke:#f0a500,stroke-width:2px
-    style PHASE5 fill:transparent,stroke:#6c8ebf,stroke-width:2px
-    style PHASE6 fill:transparent,stroke:#6c8ebf,stroke-width:2px
+    style BRIEF fill:transparent,stroke:#28a745,stroke-width:2px
+    style HGATE fill:transparent,stroke:#28a745,stroke-width:2px
+    style P0 fill:transparent,stroke:#f0a500,stroke-width:2px
 ```
 
 ### Agent responsibilities
 
 | Agent | Domain Knowledge Access (v1.0) | Output |
 |---|---|---|
-| spec-agent | Reads `docs/` and `plan/` folders directly | design-spec.md, openapi.yaml, scope.md, risk-register.md |
-| adr-agent | Reads `docs/adr/` directly | docs/adr/*.md |
-| codegen-agent | Reads component files; writes via filesystem | Full implementation + tests + IaC |
-| security-agent | Reads source files directly | security-report.md |
-| pr-agent | Via git push + CLI | PR with full description |
-| docs-agent | Writes to `docs/` and `plan/` folders directly | SDLC folders updated |
+| planifest-spec-agent | Reads `docs/` and `plan/current/` directly | design-spec.md, openapi.yaml, scope.md, risk-register.md |
+| planifest-adr-agent | Reads `docs/adr/` directly | docs/adr/*.md |
+| planifest-codegen-agent | Reads component files; writes via filesystem | Full implementation + tests + IaC |
+| planifest-validate-agent | Reads failure logs; writes via filesystem | Test results, self-correct logs |
+| planifest-security-agent | Reads source files directly | security-report.md |
+| planifest-docs-agent | Writes to `docs/` and `plan/current/` folders directly | SDLC folders updated |
 
 ---
 
@@ -248,7 +222,7 @@ flowchart TD
     end
 
     subgraph PHASE2["â‘¡ Targeted Change"]
-        C["change-codegen-agent"]
+        C["planifest-change-agent"]
     end
 
     subgraph PHASE3["â‘¢ Validate & Self-Correct"]
@@ -337,7 +311,7 @@ Planifest defines distinct artifact types. No artifact bleeds into another. Each
 
 | Artifact | Purpose |
 |---|---|
-| Initiative Brief | What needs to be built and why |
+| Feature Brief | What needs to be built and why |
 | Design Specification | Functional and non-functional requirements |
 | OpenAPI Specification | Language-agnostic API contract - generated first |
 | ADRs | Every significant decision with context and consequences |
@@ -380,7 +354,7 @@ Planifest defines distinct artifact types. No artifact bleeds into another. Each
 
 | Mode | `initiative_mode` | Entry point | Description |
 |---|---|---|---|
-| **Greenfield** | `greenfield` | Initiative Brief | New system, no prior codebase. Pipeline runs spec to PR. |
+| **Greenfield** | `greenfield` | Feature Brief | New system, no prior codebase. Pipeline runs spec to PR. |
 | **Retrofit** | `retrofit` | Existing codebase | spec-agent performs codebase ingestion first - scans, infers architecture, generates ADRs from what exists. Surfaces drift and tech debt before any new code. |
 | **Agent Interface Layer** | `agent-interface` | Interface spec | Large or complex component library. Interface layer specified first; agents develop against it, not the internals. |
 
@@ -392,57 +366,34 @@ Planifest defines distinct artifact types. No artifact bleeds into another. Each
 monorepo/
 â”œâ”€â”€ planifest-framework/
 â”‚   â”œâ”€â”€ skills/
-â”‚   â”‚   â”œâ”€â”€ planifest-orchestrator/SKILL.md   # Entry point - coaching + sequencing
-â”‚   â”‚   â”œâ”€â”€ planifest-spec-agent/SKILL.md     # Produce specification artifacts
-â”‚   â”‚   â”œâ”€â”€ planifest-adr-agent/SKILL.md      # Produce ADRs
-â”‚   â”‚   â”œâ”€â”€ planifest-codegen-agent/SKILL.md  # Implement against spec
-â”‚   â”‚   â”œâ”€â”€ planifest-validate-agent/SKILL.md # Run checks, self-correct
-â”‚   â”‚   â”œâ”€â”€ planifest-security-agent/SKILL.md # Security assessment
-â”‚   â”‚   â”œâ”€â”€ planifest-docs-agent/SKILL.md     # Complete documentation
-â”‚   â”‚   â””â”€â”€ planifest-change-agent/SKILL.md   # Change pipeline
-â”‚   â”œâ”€â”€ adapters/
-â”‚   â”‚   â”œâ”€â”€ claude-code/CLAUDE.md
-â”‚   â”‚   â”œâ”€â”€ cursor/.cursorrules
-â”‚   â”‚   â”œâ”€â”€ copilot/copilot-instructions.md
-â”‚   â”‚   â””â”€â”€ antigravity/planifest.yaml
-â”‚   â””â”€â”€ templates/                  # Artifact templates
-â”‚       â”œâ”€â”€ initiative-brief.md
-â”‚       â”œâ”€â”€ component-manifest.template.json
-â”‚       â”œâ”€â”€ pipeline-run.template.md
-â”‚       â””â”€â”€ ...
-â”œâ”€â”€ plan/                           # Active and historical plans
-â”‚   â”œâ”€â”€ planifest.md            # The Planifest for the active change
-â”‚   â”œâ”€â”€ initiative-brief.md     # The brief for the active change
-â”‚   â”œâ”€â”€ design-spec.md          # Active initiative-level artifacts
-â”‚   â”œâ”€â”€ openapi-spec.yaml
-â”‚   â”œâ”€â”€ domain-glossary.md
-â”‚   â”œâ”€â”€ risk-register.md
-â”‚   â”œâ”€â”€ scope.md
-â”‚   â”œâ”€â”€ operational-model.md
-â”‚   â”œâ”€â”€ slo-definitions.md
-â”‚   â”œâ”€â”€ cost-model.md
-â”‚   â”œâ”€â”€ security-report.md
-â”‚   â”œâ”€â”€ adr/
-â”‚   â”‚   â””â”€â”€ ADR-001-*.md
-â”‚   â”œâ”€â”€ changelog/                  # Log of all pipeline/change runs
-â”‚   â”‚   â””â”€â”€ {initiative-id}-<YYYY-MM-DD>.md
-â”‚   â””â”€â”€ {initiative-id}/            # Historical plans, moved here post-review
-â”‚       â””â”€â”€ <historical active plan contents>
+â”‚   â”‚   â”œâ”€â”€ planifest-orchestrator/SKILL.md   # Entry point
+â”‚   â”‚   â”œâ”€â”€ planifest-spec-agent/SKILL.md
+â”‚   â”‚   â”œâ”€â”€ planifest-adr-agent/SKILL.md
+â”‚   â”‚   â”œâ”€â”€ planifest-codegen-agent/SKILL.md
+â”‚   â”‚   â”œâ”€â”€ planifest-validate-agent/SKILL.md
+â”‚   â”‚   â”œâ”€â”€ planifest-security-agent/SKILL.md
+â”‚   â”‚   â”œâ”€â”€ planifest-docs-agent/SKILL.md
+â”‚   â”‚   â””â”€â”€ planifest-change-agent/SKILL.md
+â”‚   â”œâ”€â”€ setup/                        # Tool setup scripts
+â”‚   â”œâ”€â”€ templates/                      # Artifact templates
+â”‚   â”‚   â”œâ”€â”€ feature-brief.template.md
+â”‚   â”‚   â”œâ”€â”€ iteration-log.template.md
+â”‚   â”‚   â””â”€â”€ ...
+â”œâ”€â”€ plan/                           # Execution plans
+â”‚   â”œâ”€â”€ current/
+â”‚   â”‚   â”œâ”€â”€ design.md               # Confirmed build plan
+â”‚   â”‚   â”œâ”€â”€ feature-brief.md
+â”‚   â”‚   â”œâ”€â”€ iteration-log.md
+â”‚   â”‚   â””â”€â”€ ...
+â”‚   â”œâ”€â”€ archive/                     # Historical plans
+â”‚   â””â”€â”€ changelog/                   # Audit log
 â”œâ”€â”€ src/
 â”‚   â””â”€â”€ {component-id}/
-â”‚       â”œâ”€â”€ component.json          # Component manifest
-â”‚       â”œâ”€â”€ apps/ | packages/ | infra/   # Implementation
-â”‚       â””â”€â”€ docs/                   # Component-level artifacts
-â”‚           â”œâ”€â”€ purpose.md
-â”‚           â”œâ”€â”€ interface-contract.md
-â”‚           â”œâ”€â”€ data-contract.md
-â”‚           â”œâ”€â”€ dependencies.md
-â”‚           â”œâ”€â”€ risk.md
-â”‚           â”œâ”€â”€ scope.md
-â”‚           â”œâ”€â”€ quirks.md
-â”‚           â”œâ”€â”€ tech-debt.md
-â”‚           â””â”€â”€ migrations/
-â”œâ”€â”€ docs/                           # Repo-wide state
+â”‚       â”œâ”€â”€ component.yml           # Component manifest (Single Source of Truth)
+â”‚       â””â”€â”€ apps/ | packages/ | infra/   # Implementation
+â”œâ”€â”€ docs/                           # Repo-wide state & artifact history
+â”‚   â”œâ”€â”€ adr/                        # Component-specific ADRs (persisted)
+â”‚   â”œâ”€â”€ migrations/                  # Component migration records
 â”‚   â”œâ”€â”€ component-registry.md
 â”‚   â””â”€â”€ dependency-graph.md
 â””â”€â”€ README.md

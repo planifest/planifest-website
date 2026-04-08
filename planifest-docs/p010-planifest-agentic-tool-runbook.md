@@ -1,9 +1,4 @@
-# Planifest - Agentic Tool Runbook
-
-
----
-
-> How to run the Planifest pipeline using each supported agentic development tool. v1.0 delivers the pipeline as Agent Skills - the orchestrator skill (`planifest-framework/skills/orchestrator/SKILL.md`) is the entry point. Tool-specific adapters in `planifest-framework/adapters/` load the skills via each tool's native compliance mechanism. MCP server infrastructure described in earlier versions of this document is a future roadmap item - see [RC-001](p014-planifest-roadmap.md) through [RC-004](p014-planifest-roadmap.md).
+> How to run the Planifest pipeline using each supported agentic development tool. v1.0 delivers the pipeline as Agent Skills - the orchestrator skill (`planifest-framework/skills/planifest-orchestrator/SKILL.md`) is the entry point. Tool-specific adapters in `planifest-framework/adapters/` load the skills via each tool's native compliance mechanism. MCP server infrastructure described in earlier versions of this document is a future roadmap item - see [RC-001](p014-planifest-roadmap.md) through [RC-004](p014-planifest-roadmap.md).
 
 *Related: [Master Plan](p001-planifest-master-plan.md) | [Roadmap](p014-planifest-roadmap.md)*
 
@@ -25,15 +20,12 @@
 
 ## 1. The Orchestrator Skill - the shared source of truth
 
-`planifest-framework/skills/orchestrator/SKILL.md` is the entry point for all Planifest work, regardless of which agentic tool is used. It defines the coaching conversation, the pipeline phases, their sequencing, and the hard limits. Every tool loads this skill (or its tool-specific adapter) and follows it. The runtime differs; the steps do not.
+`planifest-framework/skills/planifest-orchestrator/SKILL.md` is the entry point for all Planifest work, regardless of which agentic tool is used. It defines the coaching conversation, the pipeline phases (0-6), their sequencing, and the hard limits. Every tool loads this skill (or its tool-specific adapter) and follows it. The runtime differs; the steps do not.
 
 The orchestrator skill:
-- Assesses the Initiative Brief against what a complete Planifest specification requires
-- Coaches the human through gaps - one question at a time, in priority order
-- Produces the validated **Planifest** (`plan/current/planifest.md`) - the plan for what will be built and the manifest of what it builds against
-- Sequences the phase skills: spec-agent -> adr-agent -> codegen-agent -> validate-agent -> security-agent -> docs-agent
-
-For changes to existing initiatives, the orchestrator invokes the change-agent skill instead of the full pipeline.
+- **Phase 0 (Assess and Coach)**: Assesses the brief and coaches the human to reach a **Planifest confirmed** state, producing the **design** at `plan/current/design.md`.
+- **Sequences the phase skills**: spec-agent (Phase 1) -> adr-agent (Phase 2) -> codegen-agent (Phase 3) -> validate-agent (Phase 4) -> security-agent (Phase 5) -> docs-agent (Phase 6).
+- **Handles Change Requests**: Invokes the change-agent skill for targeted modifications.
 
 ---
 
@@ -62,22 +54,20 @@ The adapter file is loaded automatically when Claude Code opens the project root
 
 ### Running the initiative pipeline
 
-Paste this instruction into Claude Code:
-
 ```
-Load the Planifest orchestrator skill at planifest-framework/skills/orchestrator/SKILL.md and execute the Initiative Pipeline.
+Load the Planifest orchestrator skill at planifest-framework/skills/planifest-orchestrator/SKILL.md and execute the Initiative Pipeline.
 
-Initiative brief: plan/current/initiative-brief.md
+Feature brief: plan/current/feature-brief.md
 Initiative ID: {{initiative_id}}
 Adoption mode: greenfield | retrofit | agent-interface
 ```
 
-The orchestrator will assess the brief, coach you through any gaps, produce the Planifest, and then sequence through the phase skills.
+The orchestrator will start Phase 0, coach gaps, produce the design (`design.md`), and then sequence through the phase skills once **Planifest confirmed**.
 
 ### Running the change pipeline
 
 ```
-Load the Planifest orchestrator skill at planifest-framework/skills/orchestrator/SKILL.md and execute the Change Pipeline.
+Load the Planifest orchestrator skill at planifest-framework/skills/planifest-orchestrator/SKILL.md and execute the Change Pipeline.
 
 Initiative ID: {{initiative_id}}
 Component ID: {{component_id}}

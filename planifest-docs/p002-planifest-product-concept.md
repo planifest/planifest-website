@@ -25,15 +25,16 @@ Planifest is a specification framework for agentic development, delivered as a s
 
 A Planifest is the plan and the manifest: the plan is what will be built, the manifest is what it builds against.
 
-A human writes an Initiative Brief. The orchestrator agent assesses it against what a complete Planifest specification requires, coaches the human through any gaps - one question at a time - and produces the validated Planifest. Once confirmed, a coordinated set of agent skills produces the complete artifact:
+A human writes a **Feature Brief**. The orchestrator agent begins **Phase 0 - Assess and Coach**. It assesses the brief against what a complete Planifest specification requires, coaches the human through any gaps - one question at a time - and produces the **confirmed design** (`plan/current/design.md`). Once **Planifest confirmed**, a coordinated set of agent skills produces the complete artifact:
 
-- Design specification derived from the brief
-- Architecture Decision Records for every significant choice
-- Full implementation - frontend, backend, shared types, tests
-- Infrastructure as code
-- Security assessment
-- PR with structured description, ready for human review
-- Documentation written alongside the code in the git repository
+- **Execution Plan** and **Design Specification** derived from the brief
+- **OpenAPI Specification** (if applicable)
+- **Architecture Decision Records (ADRs)** for every significant choice
+- **Full implementation** - frontend, backend, shared types, tests
+- **Infrastructure as code**
+- **Security assessment**
+- **PR** with structured description, ready for human review
+- **Documentation** written alongside the code in the git repository
 
 For changes to existing components, agents load structured context about the component before acting - its contract, its consumers, its change policy - and produce a targeted diff rather than a full regeneration.
 
@@ -41,11 +42,11 @@ For changes to existing components, agents load structured context about the com
 flowchart LR
     H(["👤 You write the brief"])
 
-    H --> S
+    H --> P0[Phase 0: Coach]
 
-    subgraph S["Planifest - autonomous from here"]
+    subgraph S["Planifest - autonomous once confirmed"]
         direction LR
-        A["Spec & ADRs"] --> B["Code & tests"] --> C["Security"] --> D["PR & docs"]
+        P0 --> A["Spec & ADRs"] --> B["Code & tests"] --> C["Security"] --> D["PR & docs"]
     end
 
     D --> PR(["✅ Production-ready component"])
@@ -85,7 +86,7 @@ flowchart LR
     style WITH fill:transparent,stroke:#28a745,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
-The second differentiator is the coaching conversation. The orchestrator agent does not accept a vague brief and start building. It assesses the brief against what a complete specification requires, identifies gaps, and coaches the human through them - one question at a time, scientifically, without allowing corners to be cut. The specification is the standard against which everything downstream is assessed. Planifest insists on completeness first.
+The second differentiator is the coaching conversation. The orchestrator agent does not accept a vague brief and start building. It initiates **Phase 0 - Assess and Coach**, assessing the brief against what a complete specification requires, identifying gaps, and coaching the human through them - one question at a time, scientifically, without allowing corners to be cut. Reaching **Planifest confirmed** status is the standard against which everything downstream is assessed. Planifest insists on completeness first.
 
 The third differentiator is documentation as a first-class output. Every pipeline run produces a rich set of versioned artifacts - design specs, ADRs, security reports, data contracts, migration history, domain glossary, SLO definitions, cost models - written alongside the code they describe. The artifacts are the source of truth, stored as markdown in the git repository.
 
