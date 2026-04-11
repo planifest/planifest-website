@@ -1,9 +1,8 @@
 # Planifest Pilot App
 
-
 ---
 
-> The first initiative built and maintained by Planifest, using Planifest. Purpose TBC - this document covers the confirmed technical decisions and will be updated when the product scope is defined.
+> The first feature built and maintained by Planifest, using Planifest. Purpose TBC - this document covers the confirmed technical decisions and will be updated when the product scope is defined.
 
 *Related: [Master Plan](p001-planifest-master-plan.md) | [Product Concept](p002-planifest-product-concept.md) | [Roadmap](p014-planifest-roadmap.md)*
 
@@ -49,7 +48,7 @@ This is a pilot decision, not a Planifest default. The [Frontend Stack Evaluatio
 ### Backend
 Node.js with Fastify and TypeScript. Fastify's native JSON Schema validation pairs cleanly with the OpenAPI-first approach Planifest uses - the spec defines the contract, Fastify validates against it at runtime. Shared types via Zod schemas in a `packages/shared` workspace.
 
-This is a pilot decision, not a Planifest default. The [Backend Stack Evaluation](p013-planifest-backend-stack-evaluation.md) assessed 13 frameworks for agent-generated code and found Node.js/TypeScript + Fastify defensible for single-language simplicity, SDK coverage (~95%), and LLM fluency - but noted trade-offs in error handling discipline and type system soundness. For future initiatives, especially those with security-critical or high-performance components, the evaluation recommends considering Go (highest first-pass success rate) or Rust (strongest compile-time guarantees).
+This is a pilot decision, not a Planifest default. The [Backend Stack Evaluation](p013-planifest-backend-stack-evaluation.md) assessed 13 frameworks for agent-generated code and found Node.js/TypeScript + Fastify defensible for single-language simplicity, SDK coverage (~95%), and LLM fluency - but noted trade-offs in error handling discipline and type system soundness. For future features, especially those with security-critical or high-performance components, the evaluation recommends considering Go (highest first-pass success rate) or Rust (strongest compile-time guarantees).
 
 ### Database
 PostgreSQL via Cloud SQL. Drizzle ORM for type-safe queries - no raw SQL, schema migrations tracked in the repo.
@@ -133,36 +132,32 @@ flowchart TD
 
 ## 4. Monorepo Structure
 
-The pilot app lives inside the Planifest monorepo as its first initiative - eating our own cooking from day one.
+The pilot app lives inside the Planifest monorepo as its first feature - eating our own cooking from day one.
 
 ```
 monorepo/
-├── planifest/
-│   ├── skills/                # Agent Skills - the Planifest pipeline
-│   │   ├── orchestrator/SKILL.md
-│   │   ├── spec-agent/SKILL.md
-│   │   ├── adr-agent/SKILL.md
-│   │   ├── codegen-agent/SKILL.md
-│   │   ├── validate-agent/SKILL.md
-│   │   ├── security-agent/SKILL.md
-│   │   ├── docs-agent/SKILL.md
-│   │   ├── change-agent/SKILL.md
+├── planifest-framework/
+│   ├── skills/                # Agent Skills - the confirmed design pipeline
+│   │   ├── planifest-orchestrator/SKILL.md
+│   │   ├── planifest-spec-agent/SKILL.md
+│   │   ├── planifest-adr-agent/SKILL.md
+│   │   ├── planifest-codegen-agent/SKILL.md
+│   │   ├── planifest-validate-agent/SKILL.md
+│   │   ├── planifest-security-agent/SKILL.md
+│   │   ├── planifest-docs-agent/SKILL.md
+│   │   ├── planifest-change-agent/SKILL.md
 │   │   └── shared/
 │   │       └── default-rules.md
-│   ├── adapters/
-│   │   ├── claude-code/CLAUDE.md
-│   │   ├── cursor/.cursorrules
-│   │   ├── copilot/copilot-instructions.md
-│   │   └── antigravity/planifest.yaml
-│   └── templates/             # Artifact templates
+│   ├── setup/                        # Tool setup scripts
+│   ├── templates/                      # Artifact templates
 │
 ├── plan/
-│   └── pilot/                 # ← The pilot initiative lives here
+│   └── pilot/                 # ← The pilot feature lives here
 │       ├── design.md          # Confirmed design and build plan
 │       ├── feature-brief.md
 │       ├── iteration-log.md   # Latest pipeline run log
 │       └── docs/              # Full artifact set per FD-019
-│           ├── design-spec.md
+│           ├── design-requirements.md
 │           ├── openapi-spec.yaml
 │           ├── domain-glossary.md
 │           ├── risk-register.md
@@ -176,7 +171,7 @@ monorepo/
 │
 ├── src/
 │   └── pilot/                 # ← The pilot implementation lives here
-│       ├── component.json     # Component manifest
+│       ├── component.yml      # Component manifest
 │       ├── apps/
 │       │   ├── web/           # React + TypeScript + Vite + TailwindCSS
 │       │   └── api/           # Fastify + TypeScript
@@ -204,18 +199,18 @@ monorepo/
 
 ## 5. CI/CD Pipeline
 
-The pilot uses GitHub Actions as the CI/CD platform - Planifest's reference implementation. Both the initiative pipeline (used once to bootstrap the pilot) and the change pipeline (used for every subsequent change) are stamped from Planifest's core templates.
+The pilot uses GitHub Actions as the CI/CD platform - Planifest's reference implementation. Both the feature pipeline (used once to bootstrap the pilot) and the change pipeline (used for every subsequent change) are stamped from Planifest's core templates.
 
 ```mermaid
 flowchart LR
     subgraph TRIGGER["Triggers"]
-        T1["initiative-brief.md\ncommitted"]
+        T1["feature-brief.md\ncommitted"]
         T2["Issue / change\nbrief raised"]
         T3["Local Claude Code\nsession"]
     end
 
     subgraph PIPELINE["Planifest Pipeline"]
-        P1["Initiative pipeline\n(GitHub Actions)\nBootstraps pilot app"]
+        P1["Feature pipeline\n(GitHub Actions)\nBootstraps pilot app"]
         P2["Change pipeline\n(GitHub Actions)\nMaintains pilot app"]
         P3["Local pipeline\n(Claude Code)\nDev iteration"]
     end
@@ -237,31 +232,14 @@ flowchart LR
     style GCP2 fill:#fff8e1,stroke:#f0a500
 ```
 
-### GitHub Actions workflow summary
-
-The pilot's CI jobs run in this order on every PR:
-
-1. **lint + typecheck** - both `apps/web` and `apps/api`, scoped via Nx affected
-2. **unit tests** - Jest / Vitest
-3. **integration tests** - API against a Cloud SQL dev instance (Cloud SQL Auth Proxy in the runner)
-4. **container build** - multi-stage Docker builds for web and api, pushed to Artifact Registry
-5. **deploy to dev** - Cloud Run revision deployed automatically on merge to `main`
-6. **deploy to staging** - triggered on release tag, requires staging integration tests to pass
-
-### GCP credentials in GitHub Actions
-
-Service account key stored as a GitHub Actions secret. The service account has the minimum required roles: Cloud Run Developer, Cloud SQL Client, Artifact Registry Writer, Secret Manager Secret Accessor.
-
-The Pulumi stack state is stored in a GCP Storage bucket rather than Pulumi Cloud - keeps everything within the GCP project boundary.
-
 ---
 
 ## 6. What Happens When Purpose is Confirmed
 
-When the pilot's product scope is defined, a **Feature Brief** will be written and committed to the repo. Planifest will process it through the full initiative pipeline. The orchestrator begins **Phase 0 - Assess and Coach**. Development does not begin until the **design** (`plan/current/design.md`) is complete and **Planifest confirmed**. Humans retain approval at the PR, for any schema changes, and for any high/critical risk items.
+When the pilot's product scope is defined, a **Feature Brief** will be written and committed to the repo. Planifest will process it through the full feature pipeline. The orchestrator begins **Phase 0 - Assess and Coach**. Development does not begin until the **confirmed design** (`plan/current/design.md`) is complete and **Design confirmed**. Humans retain approval at the PR, for any schema changes, and for any high/critical risk items.
 
-1. **Phase 0** coaches for every answer needed - surfaces gaps before proceeding. Derives the **design.md**.
-2. **spec-agent (Phase 1)** derives the detailed specification, OpenAPI definition, scope, risk register, and domain glossary.
+1. **Phase 0** coaches for every answer needed - surfaces gaps before proceeding. Derives the **confirmed design** (`design.md`).
+2. **spec-agent (Phase 1)** derives the detailed requirements set, OpenAPI definition, scope, risk register, and domain glossary.
 3. **adr-agent (Phase 2)** generates ADRs for every significant decision.
 4. **codegen-agent (Phase 3)** scaffolds the full implementation inside `src/pilot/`.
 5. **validate loop (Phase 4)** runs CI and self-corrects.
@@ -271,30 +249,6 @@ When the pilot's product scope is defined, a **Feature Brief** will be written a
 ### Targeted Modifications
 
 Once the pilot components exist, future modifications (bugs, adjustments) that don't change intent will follow the **Change Pipeline**, bypassing the full Agentic Iteration Loop while still maintaining artifact consistency. Trivial UI or logic fixes follow the **Fast Path**.
-
-The `component.json` for the pilot will be pre-seeded with the confirmed technical decisions from this document - stack, cloud provider, CI platform - so the agents don't need to derive them from the brief.
-
-```json
-{
-  "id": "pilot",
-  "type": "initiative",
-  "initiative_mode": "greenfield",
-  "status": "in-progress",
-  "stack": {
-    "frontend": "react19+typescript+vite+tailwind+shadcn-ui",
-    "backend": "fastify+typescript",
-    "database": "postgresql",
-    "orm": "drizzle",
-    "iac": "pulumi",
-    "cloud": "gcp",
-    "compute": "cloud-run",
-    "ci": "github-actions"
-  },
-  "domain_knowledge_path": "plan/_archive/pilot/docs"
-}
-```
-
-This pre-seeded manifest ensures the codegen-agent generates Cloud Run-compatible Dockerfiles and Pulumi stacks targeting GCP from the first run - without those decisions appearing in the brief itself.
 
 ---
 

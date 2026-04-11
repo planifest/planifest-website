@@ -158,7 +158,7 @@ The backend evaluation (p013) used 15 criteria. Frontend shares some of these bu
 ### Best Use Cases
 - CRUD SPAs (admin panels, dashboards, internal tools)
 - Integration-heavy applications where third-party React component libraries save agent iteration
-- Any application where the Planifest specification drives a known component structure
+- Any application where the confirmed design requirementsification drives a known component structure
 
 ### Avoid If
 - You need server-side rendering or static site generation (use Next.js instead)
@@ -684,7 +684,7 @@ The backend evaluation (p013) used 15 criteria. Frontend shares some of these bu
 ### Avoid If
 - Building rich interactive SPAs
 - Offline-capable or client-heavy applications
-- The Planifest architecture specifies a React frontend (HTMX is architecturally incompatible)
+- The confirmed design architecture specifies a React frontend (HTMX is architecturally incompatible)
 
 ---
 

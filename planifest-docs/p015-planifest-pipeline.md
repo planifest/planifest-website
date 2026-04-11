@@ -4,14 +4,14 @@
 
 ## How This Works
 
-Planifest is a specification framework. You - the agent - follow it. The specification is the standard against which your output will be assessed.
+Planifest is a requirements framework. You - the agent - follow it. The requirements are the standard against which your output will be assessed.
 
-The **design** (stored at `plan/current/design.md`) is the plan and the manifest: the plan is what will be built, the manifest is what it builds against. For every initiative, you produce this design through a coaching conversation with the human. The human must grant **Planifest confirmed** status before any further work begins.
+The **confirmed design** (stored at `plan/current/design.md`) is the plan and the manifest: the plan is what will be built, the manifest is what it builds against. For every feature, you produce this design through a coaching conversation with the human. The human must grant **Design confirmed** status before any further work begins.
 
 This document describes three execution tracks:
 - **Fast Path**: For trivial UI or copy changes.
 - **Change Pipeline**: For modifications to 1-2 existing components.
-- **Initiative Pipeline**: For new work or significant features.
+- **Feature Pipeline**: For new work or significant features.
 
 ---
 
@@ -19,13 +19,13 @@ This document describes three execution tracks:
 
 | Signal | Track |
 |--------|-------|
-| Confined to UI styling, copy/text changes, or an isolated pure-function bug | **Fast Path** — if ALL Fast Path criteria are met |
-| Dependency version bump with no API changes | **Fast Path** — if ALL Fast Path criteria are met |
-| Bug fix or targeted change to 1–2 existing components | **Change Pipeline** |
-| Adds a new component to an existing initiative | **Change Pipeline** |
-| New user stories that fit within an existing initiative's scope (< 3 stories) | **Change Pipeline** |
-| New features, new user stories (≥ 3), or new problem statement | **Initiative Pipeline** |
-| Touches > 3 components or requires new infrastructure | **Initiative Pipeline** |
+| Confined to UI styling, copy/text changes, or an isolated pure-function bug | **Fast Path** - if ALL Fast Path criteria are met |
+| Dependency version bump with no API changes | **Fast Path** - if ALL Fast Path criteria are met |
+| Bug fix or targeted change to 1-2 existing components | **Change Pipeline** |
+| Adds a new component to an existing feature | **Change Pipeline** |
+| New user stories that fit within an existing feature's scope (< 3 stories) | **Change Pipeline** |
+| New features, new user stories (≥ 3), or new problem statement | **Feature Pipeline** |
+| Touches > 3 components or requires new infrastructure | **Feature Pipeline** |
 
 ### Fast Path Criteria
 
@@ -37,9 +37,9 @@ The Fast Path may ONLY be used if the request meets **ALL** of the following:
 
 ---
 
-## Initiative Pipeline
+## Feature Pipeline
 
-Triggered for new initiatives or large features.
+Triggered for new features or large features.
 
 ```mermaid
 flowchart TD
@@ -49,8 +49,8 @@ flowchart TD
         ASSESS["Assess brief against core layers\n(Product, Architecture, Engineering)"]
         GAPS{"Gaps?"}
         COACH["Phase 0 coaching:\nOne question at a time"]
-        DESIGN["Produce design\n(plan/current/design.md)"]
-        CONFIRM{"Planifest confirmed?"}
+        DESIGN["Produce confirmed design\n(plan/current/design.md)"]
+        CONFIRM{"Design confirmed?"}
         
         ASSESS --> GAPS
         GAPS -->|Yes| COACH
@@ -60,10 +60,10 @@ flowchart TD
     end
 
     CONFIRM -->|Yes| LOOP
-    
+
     subgraph LOOP["Agentic Iteration Loop (Phases 1-6)"]
         direction TB
-        PHASE1[Phase 1 - Specification]
+        PHASE1[Phase 1 - Requirements]
         PHASE2[Phase 2 - Architecture Decisions]
         PHASE3[Phase 3 - Code Generation]
         PHASE4[Phase 4 - Validate]
@@ -93,18 +93,21 @@ flowchart TD
 
 ### Phase 0 - Assess and Coach (Hard Gate)
 
-**Purpose:** Reach a complete, **Planifest confirmed** state.
+**Purpose:** Reach a complete, **Design confirmed** state.
 
 **Process:**
-1. **Assess** the Feature Brief against the three layers: Product, Architecture, Engineering.
+1. **Assess** the Feature Brief against the three layers:
+   - **Product**: Functional Requirements. What the system must do and why.
+   - **Architecture**: Standards. The cross-cutting rules and non-functional requirements.
+   - **Engineering**: Implementation. How the system was actually built.
 2. **Coach** the human through gaps one question at a time.
-3. **Decompose** large initiatives into small features (< 3 stories each).
+3. **Decompose** large features into small features (< 3 stories each).
 4. **Produce** the confirmed design at `plan/current/design.md`.
-5. **Gate:** Human must grant **Planifest confirmed** status before proceeding.
+5. **Gate:** Human must grant **Design confirmed** status before proceeding.
 
 ---
 
-### Phase 1 - Specification
+### Phase 1 - Requirements
 
 **Skill:** `planifest-spec-agent`
 
@@ -165,7 +168,7 @@ flowchart TD
 - Update `src/{component-id}/component.yml`.
 - Update global `docs/adr/` and `docs/migrations/`.
 - Update `docs/component-registry.md` and `docs/dependency-graph.md`.
-- `plan/changelog/{initiative-id}-{YYYY-MM-DD}.md`.
+- `plan/changelog/{feature-id}-{YYYY-MM-DD}.md`.
 - `plan/current/iteration-log.md`.
 
 ---
@@ -179,7 +182,7 @@ flowchart TD
     CHANGE([Change Request]) --> PHASE1
 
     subgraph PHASE1["Phase 1 - Domain Context"]
-        READ["Read existing Planifest, Spec, ADRs\nIdentify blast radius"]
+        READ["Read existing confirmed design, Requirements, ADRs\nIdentify blast radius"]
     end
 
     subgraph PHASE2["Phase 2 - Targeted Change"]
@@ -215,8 +218,8 @@ flowchart TD
 
 These apply in every session, every phase, every pipeline. Non-negotiable.
 
-1. **Planifest must be confirmed before Phase 1 begins.**
-2. **Specification must be complete before Phase 3 begins.**
+1. **Design must be confirmed before Phase 1 begins.**
+2. **Requirements must be complete before Phase 3 begins.**
 3. **No direct schema modification.** Migration proposals only.
 4. **Destructive schema operations require human approval.**
 5. **Data is owned by exactly one component.**

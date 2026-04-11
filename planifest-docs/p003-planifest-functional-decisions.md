@@ -7,9 +7,9 @@ Functional Decisions define what Planifest is and does. They are not ADRs - ADRs
 
 ---
 
-## FD-001 - Planifest is a specification framework for agentic development
+## FD-001 - Planifest is a requirements framework for agentic development
 
-**Decision:** Planifest is a specification framework for agentic development. It defines how requirements are captured, how decisions are recorded, and how agents are instructed and verified - across the full span of product, architecture, and engineering.
+**Decision:** Planifest is a requirements framework for agentic development. It defines how requirements are captured, how decisions are recorded, and how agents are instructed and verified - across the full span of product, architecture, and engineering.
 
 **Rationale:** The root cause of failed agentic development is not inadequate tooling - it is missing domain knowledge. Agents cannot acquire domain knowledge implicitly the way an experienced developer can. Planifest builds a structured domain for agents to reason within, and produces reporting outputs that let teams verify what was built without reading every line of generated code.
 
@@ -17,13 +17,13 @@ Functional Decisions define what Planifest is and does. They are not ADRs - ADRs
 
 ---
 
-## FD-002 - Planifest covers three layers of every initiative
+## FD-002 - Planifest covers three layers of every feature
 
-**Decision:** Every initiative is described across three distinct layers:
+**Decision:** Every feature is described across three distinct layers:
 
-- **Product** - Functional Requirements. What the system must do. Derived from user stories, acceptance criteria, and problem statements. The *Why* and the *What*.
-- **Architecture** - Non-functional Requirements. How the system must perform, scale, and operate. SLOs, latency budgets, availability targets, security constraints, cost boundaries. The *How it must behave*.
-- **Engineering** - Technical Delivery Plan. How the system will be built. Component design, data contracts, interface contracts, infrastructure, deployment topology. The *How it will be built*.
+- **Product** - Functional Requirements. What the system must do and why. Derived from user stories, acceptance criteria, and problem statements.
+- **Architecture** - Standards. Cross-cutting rules and non-functional requirements. SLOs, latency budgets, availability targets, security constraints, cost boundaries.
+- **Engineering** - Implementation. How the system was actually built. Component design, data contracts, interface contracts, infrastructure, deployment topology.
 
 Across all three layers, Scope, Risks, and Dependencies are first-class concerns. Nothing significant is left implicit.
 
@@ -35,17 +35,17 @@ Across all three layers, Scope, Risks, and Dependencies are first-class concerns
 
 **Decision:** A human authors one structured markdown document - the Feature Brief - covering the problem statement, user stories, acceptance criteria, constraints, and known integrations. This is the seed that initiates the pipeline.
 
-The orchestrator agent begins **Phase 0 - Assess and Coach**. It assesses the brief against what a complete Planifest specification requires, coaches the human through any gaps - one question at a time, in priority order - and produces the **confirmed design**: the plan for what will be built and the manifest of what it builds against. It is written to `plan/current/design.md`. The human confirms the design before the pipeline proceeds to Phase 1. This status is **Planifest confirmed**. This is the hard gate.
+The orchestrator agent begins **Phase 0 - Assess and Coach**. It assesses the brief against what a complete requirements set requires, coaches the human through any gaps - one question at a time, in priority order - and produces the **confirmed design**: the plan for what will be built and the manifest of what it builds against. It is written to `plan/current/design.md`. The human confirms the design before the pipeline proceeds to Phase 1. This status is **Design confirmed**. This is the hard gate.
 
 Every request is triaged into one of three tracks:
 - **Fast Path**: For UI styling, copy changes, or isolated pure-function bugs.
 - **Change Pipeline**: For bug fixes or targeted changes to 1-2 existing components.
-- **Initiative Pipeline**: For new features, >3 user stories, or new problem statements.
+- **Feature Pipeline**: For new features, >3 user stories, or new problem statements.
 
 Human intervention points are:
 - **Feature Brief** - initiating the pipeline
 - **Phase 0 Coaching** - answering gaps in the brief
-- **Design confirmation** - the human confirms the design (`design.md`) and grants **Planifest confirmed** status before Phase 1 begins
+- **Design confirmation** - the human confirms the design (`design.md`) and grants **Design confirmed** status before Phase 1 begins
 - **PR review** - reviewing code and docs before merging
 - **Schema changes and migrations** - approving any data contract changes
 - **High/critical risk items** - human review required by default
@@ -55,17 +55,17 @@ Human intervention points are:
 
 ---
 
-## FD-004 - Specification must be complete before development begins
+## FD-004 - Requirements must be complete before development begins
 
-**Decision:** Agents do not begin development until the specification is complete. The orchestrator agent (**planifest-orchestrator**) coaches the human through every gap in the Feature Brief during **Phase 0**. The human confirms the resulting design (`plan/current/design.md`). The pipeline then proceeds through **Phase 1 (Specification)** and **Phase 2 (Architecture Decisions)** only once the status is **Planifest confirmed**. The **planifest-spec-agent** and **planifest-adr-agent** then surface any remaining ambiguity or unresolved decision before passing work to the **planifest-codegen-agent** (Phase 3). A missing design confirmed status or incomplete specification is a hard gate - the pipeline does not proceed.
+**Decision:** Agents do not begin development until the requirements are complete. The orchestrator agent (**planifest-orchestrator**) coaches the human through every gap in the Feature Brief during **Phase 0**. The human confirms the resulting design (`plan/current/design.md`). The pipeline then proceeds through **Phase 1 (Requirements)** and **Phase 2 (Architecture Decisions)** only once the status is **Design confirmed**. The **planifest-spec-agent** and **planifest-adr-agent** then surface any remaining ambiguity or unresolved decision before passing work to the **planifest-codegen-agent** (Phase 3). A missing design confirmed status or incomplete requirements set is a hard gate - the pipeline does not proceed.
 
-**Rationale:** The specification is not just the input to the pipeline - it is the standard against which all outputs are assessed. Code generated against an incomplete spec is incomplete, inconsistent, or incorrect by definition. Planifest insists on completeness first.
+**Rationale:** The requirements are not just the input to the pipeline - it is the standard against which all outputs are assessed. Code generated against an incomplete requirements set is incomplete, inconsistent, or incorrect by definition. Planifest insists on completeness first.
 
 ---
 
 ## FD-005 - The human gate is the PR
 
-**Decision:** The pipeline is fully autonomous between the Initiative Brief and the pull request. The PR is the single human gate, reviewed before the feature enters the release process (UAT or Production, depending on SDLC). Humans review code and docs together - always. Neither is merged without the other.
+**Decision:** The pipeline is fully autonomous between the Feature Brief and the pull request. The PR is the single human gate, reviewed before the feature enters the release process (UAT or Production, depending on SDLC). Humans review code and docs together - always. Neither is merged without the other.
 
 **Rationale:** The PR is the natural, existing engineering checkpoint teams already understand and trust. Planifest delivers a complete, tested, documented, security-assessed artifact to that checkpoint. It does not replace governance - it delivers to it.
 
@@ -94,7 +94,7 @@ Human intervention points are:
 
 ## FD-007 - Default rules are conservative; autonomy is earned progressively
 
-**Decision:** The pipeline ships with conservative defaults. Rules can be relaxed per initiative as confidence in the pipeline grows. Rules marked as hard limits cannot be overridden under any circumstance.
+**Decision:** The pipeline ships with conservative defaults. Rules can be relaxed per feature as confidence in the pipeline grows. Rules marked as hard limits cannot be overridden under any circumstance.
 
 | Rule | Default | Overridable? |
 |---|---|---|
@@ -118,7 +118,7 @@ Human intervention points are:
 
 **Decision:** Planifest encodes functional and non-functional requirements, SDLC procedure, technical strategy, component purpose, domain knowledge, and standards. Implementation details - languages, frameworks, validation libraries - are below Planifest's concern. They are the codegen agent's domain, guided by stack configuration artifacts.
 
-**Rationale:** Planifest's value is the discipline and repeatability it enforces, not the specific tools used to implement any given initiative. Coupling Planifest to implementation choices would limit its applicability and longevity.
+**Rationale:** Planifest's value is the discipline and repeatability it enforces, not the specific tools used to implement any given feature. Coupling Planifest to implementation choices would limit its applicability and longevity.
 
 ---
 
@@ -142,7 +142,7 @@ Agents query before generating. Before building any component, an agent must at 
 
 A dedicated queryable Domain Knowledge Store MCP service is a roadmap item (see [RC-001](p014-planifest-roadmap.md)). It will provide tighter agent context and structured query responses suited to larger teams or complex domains.
 
-**Rationale:** The git `docs/` folder provides sufficient queryability for single-agent, single-initiative work. The standardised file paths and artifact structure mean agents can navigate the store efficiently. The MCP service becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.
+**Rationale:** The git `docs/` folder provides sufficient queryability for single-agent, single-feature work. The standardised file paths and artifact structure mean agents can navigate the store efficiently. The MCP service becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.
 
 ---
 
@@ -168,7 +168,7 @@ A serial write queue where the domain-knowledge-server is the sole writer to the
 
 **Decision:** Planifest produces structured markdown artifacts. Where they are stored and rendered is an integration concern. The artifacts are the source of truth.
 
-In v1.0, the git repository is the default - artifacts land alongside the code via Agent Skills, no additional integration required. A git repo is already in scope for every initiative.
+In v1.0, the git repository is the default - artifacts land alongside the code via Agent Skills, no additional integration required. A git repo is already in scope for every feature.
 
 Teams that want a richer documentation experience (Obsidian, Notion, Confluence) can integrate at the documentation provider level - see [RC-005 - Pluggable Documentation Provider](p014-planifest-roadmap.md).
 
@@ -178,7 +178,7 @@ Teams that want a richer documentation experience (Obsidian, Notion, Confluence)
 
 ## FD-014 - OpenAPI is the canonical contract
 
-**Decision:** The OpenAPI specification is the language-agnostic contract for every initiative. It is generated first, from functional requirements, and everything downstream implements against it. JSON Schema, embedded within OpenAPI, serves as the schema layer. No separate schema artifact is required.
+**Decision:** The OpenAPI specification is the language-agnostic contract for every feature. It is generated first, from functional requirements, and everything downstream implements against it. JSON Schema, embedded within OpenAPI, serves as the schema layer. No separate schema artifact is required.
 
 **Rationale:** OpenAPI is the lingua franca for API contracts, understood across languages and tooling ecosystems. Generating it first ensures the contract is stable before any implementation begins.
 
@@ -186,7 +186,7 @@ Teams that want a richer documentation experience (Obsidian, Notion, Confluence)
 
 ## FD-015 - Stack is a requirement, not a default
 
-**Decision:** Stack is specified explicitly - never assumed or defaulted by Planifest. It is declared at system level and may be overridden at component level. Any component-level deviation must be justified by an ADR. Some initiatives may deliberately leave stack unspecified, allowing agents to reason from requirements alone.
+**Decision:** Stack is specified explicitly - never assumed or defaulted by Planifest. It is declared at system level and may be overridden at component level. Any component-level deviation must be justified by an ADR. Some features may deliberately leave stack unspecified, allowing agents to reason from requirements alone.
 
 Stack decisions are always traceable. Every choice has an ADR. Every override has a justification. Nothing is implicit.
 
@@ -199,7 +199,7 @@ Key findings from the evaluation:
 - **A polyglot architecture is legitimate.** Different components have different requirements. An integration-heavy service benefits from Node.js/TypeScript SDK coverage. A security-critical service benefits from Rust's compile-time guarantees. A data pipeline benefits from Python's ecosystem. The stack can vary by component - each choice requires an ADR.
 - **The pilot stack (Node.js/TypeScript + Fastify) is a defensible choice** for single-language simplicity, SDK coverage, and LLM fluency - but it is a pilot decision, not a Planifest default.
 
-**Rationale:** Defaulting a stack is the same as defaulting requirements - it is presumptuous and undermines the spec-driven principle. Stack is a decision that belongs to the initiative or system, not to the pipeline. Agents generate code in whatever stack is declared - the quality of that code depends on the match between the stack and the initiative's requirements.
+**Rationale:** Defaulting a stack is the same as defaulting requirements - it is presumptuous and undermines the spec-driven principle. Stack is a decision that belongs to the feature or system, not to the pipeline. Agents generate code in whatever stack is declared - the quality of that code depends on the match between the stack and the feature's requirements.
 
 ---
 
@@ -227,17 +227,17 @@ Schema changes follow a strict path regardless of other configuration:
 
 The guiding principle: **one reason to change, easy to rebuild rather than modify**.
 
-**Rationale:** Current model strengths favour generating a focused component from a clear spec over making surgical edits to existing code. Keeping components small and purposeful plays to that strength and keeps the agent's blast radius small and predictable. As model capabilities evolve, this guidance may too.
+**Rationale:** Current model strengths favour generating a focused component from a clear requirements set over making surgical edits to existing code. Keeping components small and purposeful plays to that strength and keeps the agent's blast radius small and predictable. As model capabilities evolve, this guidance may too.
 
 ---
 
 ## FD-018 - Planifest supports three adoption modes
 
-**Decision:** Where a team enters the Planifest pipeline depends on the state of their system and the complexity of their domain.
+**Decision:** Where a team enters the confirmed design pipeline depends on the state of their system and the complexity of their domain.
 
-- **Greenfield** (`initiative_mode: greenfield`) - new system, no prior codebase. The Feature Brief is the sole input. The pipeline runs from spec to PR.
-- **Retrofit** (`initiative_mode: retrofit`) - existing production system with no prior spec. The **planifest-spec-agent** performs codebase ingestion first: scanning the repo, inferring existing architecture, and generating ADRs from what already exists. Conflicts, drift, and tech debt are surfaced before any new code is written.
-- **Agent Interface Layer** (`initiative_mode: agent-interface`) - large or complex component library where a full codebase spec creates more noise than signal. A well-defined interface layer is specified first; agents develop against the interface, not the internals.
+- **Greenfield** (`feature_mode: greenfield`) - new system, no prior codebase. The Feature Brief is the sole input. The pipeline runs from requirements to PR.
+- **Retrofit** (`feature_mode: retrofit`) - existing production system with no prior spec. The **planifest-spec-agent` performs codebase ingestion first: scanning the repo, inferring existing architecture, and generating ADRs from what already exists. Conflicts, drift, and tech debt are surfaced before any new code is written.
+- **Agent Interface Layer** (`feature_mode: agent-interface`) - large or complex component library where a full codebase requirements set creates more noise than signal. A well-defined interface layer is specified first; agents develop against the interface, not the internals.
 
 **Rationale:** A single entry point would make Planifest impractical for the most common real-world scenario - an existing production system. Adoption mode is a first-class concern, not an edge case.
 
@@ -247,12 +247,12 @@ The guiding principle: **one reason to change, easy to rebuild rather than modif
 
 **Decision:** Planifest defines the following artifact types, each with a distinct scope and purpose. No artifact bleeds into another. Each is maintained and versioned independently. Each is a discrete input the agents consume.
 
-**Per Initiative:**
+**Per Feature:**
 
 | Artifact | Purpose |
 |---|---|
 | Feature Brief | What needs to be built and why |
-| Design Specification | Functional and non-functional requirements |
+| Design Requirements | Functional and non-functional requirements |
 | OpenAPI Specification | Language-agnostic API contract |
 | ADRs | Every significant decision with context and consequences |
 | Risk Register | Technical, operational, security, and compliance risks |
@@ -263,7 +263,7 @@ The guiding principle: **one reason to change, easy to rebuild rather than modif
 | Operational Model | Runbook triggers, on-call expectations, alerting thresholds |
 | SLO Definitions | Error budgets, SLIs/SLOs |
 | Cost Model | Compute, storage, egress, third-party cost estimates |
-| Domain Glossary | Ubiquitous language for the initiative |
+| Domain Glossary | Ubiquitous language for the feature |
 
 **Per Component:**
 
@@ -296,21 +296,21 @@ MCP will eventually provide the infrastructure layer - typed tool calls, credent
 
 ## FD-021 - The design is the plan and the manifest
 
-**Decision:** For every initiative, the orchestrator agent and human collaborate to produce the **design** during Phase 0. The plan is what will be built, the manifest is what it builds against. The human grants **Planifest confirmed** status before the pipeline proceeds to the **Agentic Iteration Loop** (Phases 1-6). It is written to `plan/current/design.md`.
+**Decision:** For every feature, the orchestrator agent and human collaborate to produce the **confirmed design** during Phase 0. The plan is what will be built, the manifest is what it builds against. The human grants **Design confirmed** status before the pipeline proceeds to the **Agentic Iteration Loop** (Phases 1-6). It is written to `plan/current/design.md`.
 
-The Planifest records: the problem, the adoption mode, the initiative ID (`{0000000}-{kebab-case-name}`), the confirmed product layer (user stories, acceptance criteria, constraints), the architecture layer (NFRs, security, cost), the engineering layer (stack, components, data ownership, deployment), the scope boundaries (in, out, deferred), and the risks and dependencies.
+The confirmed design records: the problem, the adoption mode, the feature ID (`{0000000}-{kebab-case-name}`), the confirmed product layer (Functional Requirements), the architecture layer (Standards), the engineering layer (Implementation), the scope boundaries (in, out, deferred), and the risks and dependencies.
 
-**Rationale:** You cannot plan what to build without recording what you're building against. The Planifest is the contract between human and agent - the hard gate before development begins. See [Strategic Intent vs Stochastic Execution](p017-research-report-strategic-intent-vs-stochastic-execution.md) for the technical evaluation of this sequential intent-mapping logic.
+**Rationale:** You cannot plan what to build without recording what you're building against. The confirmed design is the contract between human and agent - the hard gate before development begins. See [Strategic Intent vs Stochastic Execution](p017-research-report-strategic-intent-vs-stochastic-execution.md) for the technical evaluation of this sequential intent-mapping logic.
 
 ---
 
 ## FD-022 - Planifest is delivered as Agent Skills
 
-**Decision:** The Planifest pipeline is delivered as a set of Agent Skills - one `SKILL.md` file per pipeline phase, each independently installable. The entry point is the **planifest-orchestrator** skill; phase skills (**planifest-spec-agent**, **planifest-adr-agent**, **planifest-codegen-agent**, **planifest-validate-agent**, **planifest-security-agent**, **planifest-docs-agent**, **planifest-change-agent**) are invoked in sequence. Tool-specific setup scripts (`planifest-framework/setup/*.ps1`) configure the tools (Claude Code, Cursor, Copilot, etc.) to load the skills and follow the framework.
+**Decision:** The confirmed design pipeline is delivered as a set of Agent Skills - one `SKILL.md` file per pipeline phase, each independently installable. The entry point is the **planifest-orchestrator** skill; phase skills (**planifest-spec-agent**, **planifest-adr-agent**, **planifest-codegen-agent**, **planifest-validate-agent**, **planifest-security-agent**, **planifest-docs-agent**, **planifest-change-agent**) are invoked in sequence. Tool-specific setup scripts (`planifest-framework/setup/*.ps1`) configure the tools (Claude Code, Cursor, Copilot, etc.) to load the skills and follow the framework.
 
 This resolves FQ-007.
 
-**Rationale:** Planifest v1.0 is documentation that instructs agents. Agent Skills are structured documents that agents read and follow. The delivery mechanism and the product are the same thing. Skills are composable - a team that only wants the specification discipline installs the orchestrator and spec-agent. A team that wants the full pipeline installs the set.
+**Rationale:** Planifest v1.0 is documentation that instructs agents. Agent Skills are structured documents that agents read and follow. The delivery mechanism and the product are the same thing. Skills are composable - a team that only wants the requirements discipline installs the orchestrator and spec-agent. A team that wants the full pipeline installs the set.
 
 ---
 
@@ -319,7 +319,7 @@ This resolves FQ-007.
 | Ref | Question |
 |---|---|
 | FQ-001 | Trigger mechanism: webhook, file watcher, or queue? Should be pluggable per deployment. |
-| FQ-002 | Initiative Brief structure: what are the defined fields, and how is stack referenced within it? |
+| FQ-002 | Feature Brief structure: what are the defined fields, and how is stack referenced within it? |
 | FQ-003 | System and Component Configuration format: what does a stack declaration artifact look like, and how granular can it be? |
 | FQ-004 | Codebase ingestion for large monorepos: how does ingestion handle component boundaries, existing data contracts, and shared tables that predate Planifest? |
 | FQ-005 | Agent Interface Layer boundaries: when is it warranted, and can Planifest propose one from ingestion or does a human always define it? |
