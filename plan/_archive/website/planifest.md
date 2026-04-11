@@ -1,7 +1,7 @@
-# Planifest - website
+﻿# Planifest - website
 
-## Initiative
-- Problem: Create a landing page and informational website for the Planifest project. It needs to showcase the framework with a beautiful, slick design with dynamic animations and support light/dark themes.
+## Feature
+- Problem: Create a landing page and informational website for the confirmed design project. It needs to showcase the framework with a beautiful, slick design with dynamic animations and support light/dark themes.
 - Adoption mode: greenfield
 
 ## Product Layer
@@ -20,7 +20,7 @@
 ## Engineering Layer
 - Stack: HTML/JS/CSS / Vite / GitHub Actions / GitHub Pages
 - Components:
-  - `web-app`: static site displaying the Planifest landing page
+  - `web-app`: static site displaying the confirmed design landing page
 - Data ownership: none
 - Deployment: GitHub Actions workflow deploying to `gh-pages` branch
 
@@ -39,3 +39,4 @@
 
 ## Confirmation
 Human confirmed this Planifest before proceeding: yes
+

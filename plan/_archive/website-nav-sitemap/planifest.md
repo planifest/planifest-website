@@ -1,14 +1,14 @@
-# Planifest
+﻿# Planifest
 
-**Initiative ID:** `website-nav-sitemap`
+**Feature ID:** `website-nav-sitemap`
 **Status:** `Completed`
 **Lead Layer:** `Product / Engineering`
 
 ## 1. Executive Summary
-Implementation of a responsive hamburger navigation menu and a static HTML sitemap for the Planifest documentation site. This improves accessibility and discoverability of framework files without adding heavyweight UI components.
+Implementation of a responsive hamburger navigation menu and a static HTML sitemap for the confirmed design documentation site. This improves accessibility and discoverability of framework files without adding heavyweight UI components.
 
 ## 2. Component Inventory
-The following components are impacted by this initiative:
+The following components are impacted by this feature:
 - `web-app` (frontend static site generator)
 
 ## 3. Product Specification
@@ -25,3 +25,4 @@ The following components are impacted by this initiative:
 ## 5. Risk Assessment
 - **Risk:** The injected JS bundle might interfere with the static site functionality.
 - **Mitigation:** Used vanilla DOM selectors wrapped in `DOMContentLoaded`. Keeps the bundle lightweight and robust. Minimum dependencies added.
+

@@ -1,6 +1,6 @@
-# Design Specification - Planifest Website
+# Design Requirements - Planifest Website
 
-> This document defines the functional and non-functional requirements for the Planifest Website.
+> This document defines the functional and non-functional requirements for the confirmed design Website.
 
 ---
 

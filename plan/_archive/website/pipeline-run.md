@@ -1,23 +1,23 @@
-# Pipeline Run - website
+﻿# Pipeline Run - website
 
-> Audit trail for the execution of the Planifest Website initiative.
+> Audit trail for the execution of the confirmed design Website feature.
 
 ## Run Metadata
-- **Initiative ID**: website
+- **Feature ID**: website
 - **Run ID**: run-20260311-2335
 - **Timestamp**: 2026-03-11T23:35:00Z
 - **Status**: Complete
 
 ## Phase 0 - Assess and Coach
 - **Orchestrator**: planifest-orchestrator
-- **Outcome**: Planifest confirmed by human.
+- **Outcome**: Design confirmed by human.
 - **Artifacts**: `plan/website/planifest.md`
 
 ## Phase 1 - Specification
 - **Agent**: planifest-spec-agent
 - **Outcome**: All specification artifacts produced.
 - **Artifacts**:
-  - `plan/website/docs/design-spec.md`
+  - `plan/website/docs/design-requirements.md`
   - `plan/website/docs/scope.md`
   - `plan/website/docs/risk-register.md`
   - `plan/website/docs/domain-glossary.md`
@@ -64,11 +64,11 @@
 **Status**: Complete
 
 ### Files changed
-- `planifest-docs/p001-planifest-master-plan.md` — removed MCP Servers diagram subgraph, "MCP is the nervous system" para, MCP write model section, Build Sequence (MCP-first); updated access path to v1.0 (git docs/); updated agent responsibilities table
-- `planifest-docs/p002-planifest-product-concept.md` — replaced "MCP servers" with "Agent Skills" in open source library description
-- `planifest-docs/p003-planifest-functional-decisions.md` — FD-010, FD-011, FD-012, FD-013, FD-020 updated to reflect agentskills.io as v1.0 delivery; MCP noted as roadmap
-- `planifest-docs/p004-the-pathway-to-agentic-development.md` — removed MCP from domain knowledge store versioning note; updated "Accessing the Domain" to v1.0 single path
-- `planifest-docs/p010-planifest-agentic-tool-runbook.md` — MCP column clarified as roadmap; context limit diagram updated
+- `planifest-docs/p001-planifest-master-plan.md` - removed MCP Servers diagram subgraph, "MCP is the nervous system" para, MCP write model section, Build Sequence (MCP-first); updated access path to v1.0 (git docs/); updated agent responsibilities table
+- `planifest-docs/p002-planifest-product-concept.md` - replaced "MCP servers" with "Agent Skills" in open source library description
+- `planifest-docs/p003-planifest-functional-decisions.md` - FD-010, FD-011, FD-012, FD-013, FD-020 updated to reflect agentskills.io as v1.0 delivery; MCP noted as roadmap
+- `planifest-docs/p004-the-pathway-to-agentic-development.md` - removed MCP from domain knowledge store versioning note; updated "Accessing the Domain" to v1.0 single path
+- `planifest-docs/p010-planifest-agentic-tool-runbook.md` - MCP column clarified as roadmap; context limit diagram updated
 
 ### Contract changed: no
 ### Schema changed: no
@@ -80,15 +80,16 @@
 ## Change Run - 2026-03-18
 
 **Run type**: Change pipeline
-**Change request**: Repository hygiene cleanup — exclude tool-specific AI agent config directories from version control. Configuration should live generically in `planifest-framework/`.
+**Change request**: Repository hygiene cleanup - exclude tool-specific AI agent config directories from version control. Configuration should live generically in `planifest-framework/`.
 **Agent**: planifest-change-agent
 **Status**: Complete
 
 ### Files changed
-- `.gitignore` (new) — excludes `.claude/`, `.gemini/`, `.agent/`, `.cursor/`, `.windsurf/`, `.copilot/`
-- `.claude/`, `.gemini/`, `.agent/` — 436 files removed from git index (untracked, not deleted)
+- `.gitignore` (new) - excludes `.claude/`, `.gemini/`, `.agent/`, `.cursor/`, `.windsurf/`, `.copilot/`
+- `.claude/`, `.gemini/`, `.agent/` - 436 files removed from git index (untracked, not deleted)
 
 ### Contract changed: no
 ### Schema changed: no
 ### ADR required: no
 ### Artifacts produced: `plan/website/docs/change-summary.md`
+

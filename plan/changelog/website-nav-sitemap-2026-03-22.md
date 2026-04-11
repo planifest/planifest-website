@@ -1,4 +1,4 @@
-# Change Log: Website Navigation & Sitemap (website-nav-sitemap)
+﻿# Change Log: Website Navigation & Sitemap (website-nav-sitemap)
 Date: 2026-03-22
 
 ## Executive Summary
@@ -15,5 +15,6 @@ Following user guidance, navigation elements needed strengthening. The modal-bas
 
 ## Artifacts Produced
 - `sitemap.html` (Static Output)
-- `initiative-brief.md`
+- `feature-brief.md`
 - `planifest.md`
+

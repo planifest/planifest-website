@@ -39,14 +39,14 @@ Blast radius: documentation content only - no code affected
 
 # Change Summary - 2026-03-18
 
-Change request: Repository hygiene cleanup — exclude tool-specific AI agent config directories from version control.
+Change request: Repository hygiene cleanup - exclude tool-specific AI agent config directories from version control.
 Interpretation: Added `.gitignore` to the repository root excluding `.claude/`, `.gemini/`, `.agent/`, `.cursor/`, `.windsurf/`, and `.copilot/`. Untracked 436 previously committed files from `.claude/`, `.gemini/`, and `.agent/`. Generic, tool-agnostic configuration continues to live in `planifest-framework/`.
 Components affected: none (repository infrastructure only)
 Contract changed: no
 Schema changed: no
 Migration proposed: no
 Consumers affected: none
-Blast radius: repository structure only — no product code, contracts, or schemas affected
+Blast radius: repository structure only - no product code, contracts, or schemas affected
 
 ## Files changed
 

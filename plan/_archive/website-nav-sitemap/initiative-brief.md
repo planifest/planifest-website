@@ -1,8 +1,8 @@
-# Initiative Brief: Website Navigation & Sitemap
+﻿# Feature Brief: Website Navigation & Sitemap
 
 ## The Product Goal
 **What problem are we solving?**
-We need a responsive navigation menu and a static sitemap for the Planifest documentation website. The current layout lacked mobile-friendly navigation (hamburger menu) and a comprehensive sitemap indicating where all documents reside.
+We need a responsive navigation menu and a static sitemap for the confirmed design documentation website. The current layout lacked mobile-friendly navigation (hamburger menu) and a comprehensive sitemap indicating where all documents reside.
 
 **Who is this for?**
 Users browsing the documentation site on both desktop and mobile devices.
@@ -28,4 +28,5 @@ Navigation is a core requirement for usability. Without a proper responsive menu
 - `src/web-app/src/style.css` (global styles)
 - `src/web-app/src/main.ts` (lightweight interaction logic)
 - `src/web-app/scripts/build-docs.js` (static generation logic)
-- The documentation generator process in the Planifest Framework.
+- The documentation generator process in the confirmed design Framework.
+

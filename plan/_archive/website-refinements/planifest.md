@@ -1,6 +1,6 @@
-# Planifest - Website Refinements
+﻿# Planifest - Website Refinements
 
-**Initiative:** website-refinements
+**Feature:** website-refinements
 **Status:** Completed
 **Date:** 2026-03-22
 **Component Target:** `web-app`
@@ -17,3 +17,4 @@
 - `c:\d\planifest-docs\planifest-docs\*`
 - `c:\d\planifest-docs\src\web-app\scripts\build-docs.js`
 - `c:\d\planifest-docs\src\web-app\component.json`
+

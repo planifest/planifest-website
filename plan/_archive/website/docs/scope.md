@@ -1,12 +1,12 @@
-# Scope Document - Planifest Website
+﻿# Scope Document - Planifest Website
 
-> Defines what is in scope, out of scope, and deferred for the Planifest Website initiative.
+> Defines what is in scope, out of scope, and deferred for the confirmed design Website feature.
 
 ## 1. In Scope
 
 - **Beautiful hero section** that captivates visitors with modern aesthetics.
 - **Dynamic animations** that feel premium without degrading performance.
-- **Technical overview** of the Planifest framework and the canonical 3-folder structure.
+- **Technical overview** of the confirmed design framework and the canonical 3-folder structure.
 - **Rendering of Markdown pages** natively from the `planifest-docs/` subdirectory during build time.
 - **Stripping of metadata** (document IDs, versions log tables) to ensure a cleaner visual layout for readers.
 - **Linking documentation pages** so that relative references in the markdown resolve smoothly on the deployed site.
@@ -26,3 +26,4 @@
 
 - **Interactive Playground**: Initially planned, but explicitly deferred.
     - *Note:* The playground module cannot be built until further requirement scoping establishes what specific capabilities the playground needs (e.g. backend container environment versus client-side mocking).
+

@@ -1,4 +1,4 @@
-# SLO Definitions - Planifest Website
+﻿# SLO Definitions - Planifest Website
 
 > Details error budgets, SLIs/SLOs.
 
@@ -13,4 +13,5 @@ The service objectives center completely around maintaining the default availabi
 
 ## Error Budget
 
-- Downtime incurred by external system failures (GitHub CDN caching, GitHub Actions runners) reduces the budget but isn't something the Planifest initiative takes remediating actions on, other than waiting for vendor resolution.
+- Downtime incurred by external system failures (GitHub CDN caching, GitHub Actions runners) reduces the budget but isn't something the confirmed design feature takes remediating actions on, other than waiting for vendor resolution.
+
