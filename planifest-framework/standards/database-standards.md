@@ -17,10 +17,10 @@
 
 ## 2. Migrations
 
-- All schema changes go through migration files — never modify the database directly
+- All schema changes go through migration files - never modify the database directly
 - Migrations are forward-only (up only). Rollbacks are separate migration files.
 - Migration files are numbered sequentially and never reordered
-- Every migration is idempotent — running it twice produces the same result
+- Every migration is idempotent - running it twice produces the same result
 
 **Destructive operations** (drop column, drop table, rename) require:
 1. A migration proposal at `src/{component-id}/docs/migrations/proposed-{desc}.md`
@@ -33,17 +33,17 @@
 
 - Every data-owning component has a data contract at `src/{component-id}/docs/data-contract.md`
 - The data contract defines: tables, columns, types, constraints, relationships, invariants
-- The data contract is the source of truth — the ORM schema must match it exactly
+- The data contract is the source of truth - the ORM schema must match it exactly
 - Changes to the data contract require a migration proposal
 
 ---
 
 ## 4. Query Patterns
 
-- Use parameterized queries — never string interpolation for SQL
+- Use parameterized queries - never string interpolation for SQL
 - Use the ORM declared in the stack for standard CRUD operations
-- Raw SQL is acceptable for complex queries — document the rationale
-- N+1 queries are defects — use eager loading or batch queries
+- Raw SQL is acceptable for complex queries - document the rationale
+- N+1 queries are defects - use eager loading or batch queries
 - All queries must have a timeout configured
 
 ---
@@ -52,8 +52,8 @@
 
 - Use connection pooling for all database connections
 - Configure pool size based on the compute model (serverless needs smaller pools)
-- Handle connection errors gracefully — retry with backoff, then fail with a clear error
-- Close connections properly — use `finally` blocks or connection managers
+- Handle connection errors gracefully - retry with backoff, then fail with a clear error
+- Close connections properly - use `finally` blocks or connection managers
 
 ---
 

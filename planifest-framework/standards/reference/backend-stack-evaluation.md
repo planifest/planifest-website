@@ -1,4 +1,4 @@
-# Planifest - Backend Stack Evaluation
+﻿# Planifest - Backend Stack Evaluation
 
 ## Version Log
 
@@ -23,11 +23,11 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 
 | Stars | Meaning |
 |---|---|
-| ★★★★★ | Best in class - near-zero agent iteration needed |
-| ★★★★ | Strong - occasional iteration, mostly correct first time |
-| ★★★ | Adequate - regular iteration needed but manageable |
-| ★★ | Weak - frequent iteration, many classes of bugs slip through |
-| ★ | Poor - unsuitable for agent-generated code |
+| â˜…â˜…â˜…â˜…â˜… | Best in class - near-zero agent iteration needed |
+| â˜…â˜…â˜…â˜… | Strong - occasional iteration, mostly correct first time |
+| â˜…â˜…â˜… | Adequate - regular iteration needed but manageable |
+| â˜…â˜… | Weak - frequent iteration, many classes of bugs slip through |
+| â˜… | Poor - unsuitable for agent-generated code |
 
 ---
 
@@ -36,54 +36,54 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 > **Note:** Evaluated with TypeScript enabled throughout. Plain JavaScript would score significantly lower.
 
 ### Compile-Time Error Detection
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - TypeScript catches type mismatches, unused variables, and basic null checks (`strictNullChecks`).
 - No memory safety, no data race prevention, no enforced error handling.
 - `any` escape hatch is trivially easy for an LLM to reach for. `ts-expect-error` suppresses errors silently.
 - Common mistakes that slip through: runtime type coercion, missing `await`, uncaught promise rejections, prototype pollution.
 
 ### Error Feedback Clarity
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - TypeScript compiler errors are verbose but generally pinpoint the exact location and expected type.
 - Stack traces in Node.js are readable but can be noisy with async boundaries.
 - LLMs handle TypeScript errors well - large training corpus of TS error -> fix patterns.
 
 ### Type System
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Structural typing is expressive and flexible. Discriminated unions, mapped types, conditional types are powerful.
 - **Unsound by design.** `any` breaks the type system entirely. Type assertions (`as`) bypass checks. `enum` has known soundness holes.
 - Cannot express ownership, lifetime, or concurrency contracts.
 - Zod bridges runtime validation to compile-time types, which is valuable for agent-generated code.
 
 ### Concurrency Safety
-**Score: ★★**
+**Score: â˜…â˜…**
 - Single-threaded event loop avoids classical data races for most code.
 - `Worker` threads reintroduce shared memory and `SharedArrayBuffer` with no compile-time safety.
 - Missing `await` is the #1 concurrency bug LLMs produce - silently returns a Promise object instead of the resolved value.
 - No deadlock prevention. No backpressure by default.
 
 ### Memory Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Garbage collected - no buffer overflows, use-after-free, or double-free in normal code.
 - Memory leaks from event listener accumulation and closure retention are common in LLM-generated code.
 - `Buffer` API can cause out-of-bounds reads if misused, though this is rare in practice.
 
 ### Error Handling
-**Score: ★★**
+**Score: â˜…â˜…**
 - Exceptions are implicit and can be silently ignored. No forced handling.
 - `try/catch` is optional. Unhandled promise rejections crash the process (or worse, silently fail in older Node versions).
 - LLMs frequently forget to wrap async operations in try/catch.
 - No `Result` type natively - libraries like `neverthrow` exist but LLMs rarely reach for them unprompted.
 
 ### Testing Framework
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Vitest/Jest are extremely well-known to LLMs. Test generation is natural and idiomatic.
 - Supertest for HTTP testing is straightforward.
 - Mocking is well-supported but can be brittle (module mocking, dependency injection patterns vary).
 - Property-based testing via `fast-check` exists but LLMs rarely generate it unprompted.
 
 ### Dependency Management
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - `package-lock.json` / `pnpm-lock.yaml` provide reproducible installs.
 - npm ecosystem is massive but quality varies wildly. LLMs sometimes hallucinate package names.
 - `npm audit` exists but vulnerability noise-to-signal ratio is poor.
@@ -102,47 +102,47 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Moderate - single-threaded limits throughput; good for I/O-bound workloads, poor for CPU-bound
 
 ### Observability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Pino (structured JSON logging) is excellent and Fastify integrates it natively.
 - OpenTelemetry JS SDK is mature. Auto-instrumentation for HTTP, database, and queue libraries.
 - Prometheus client (`prom-client`) is well-maintained.
 - Stack traces are readable but async gaps can make them incomplete without `--async-stack-traces`.
 
 ### Operational Stability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Massive production adoption (Netflix, LinkedIn, PayPal, Uber).
 - Node.js LTS cycle is stable. Framework churn is the risk - Express is effectively unmaintained, Fastify is active, Hono is newer.
 - TypeScript releases frequently but backward compatibility is generally good.
 - Security: `node_modules` supply chain attacks are a real and ongoing concern.
 
 ### Ecosystem Completeness
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Web framework, ORM (Drizzle, Prisma), auth (Passport, next-auth patterns), caching (ioredis), job queues (BullMQ), testing, monitoring, serialisation - all available and mature.
 - The most complete ecosystem of any language for web services.
 
 ### Horizontal Scalability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Stateless by convention but nothing enforces it.
 - Cluster module or container orchestration for multi-core utilisation.
 - BullMQ for distributed job processing.
 - Graceful shutdown requires explicit handling (`SIGTERM` listeners) - LLMs often forget this.
 
 ### Type Safety Across Boundaries
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - OpenAPI generation via `@fastify/swagger` or `zod-to-openapi` is natural.
 - tRPC provides end-to-end type safety between services (or frontend-backend).
 - gRPC support via `@grpc/grpc-js` but less idiomatic than REST/JSON.
 - Zod schemas shared across services enforce contracts at runtime.
 
 ### Async/Concurrency Model
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - `async/await` is native and LLMs generate it fluently.
 - Single-threaded - no parallelism without Worker threads.
 - No built-in cancellation (AbortController exists but is poorly adopted).
 - No backpressure by default - streams support it but LLMs rarely implement it correctly.
 
 ### Overall Agent-Suitability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - **Estimated first-pass validation rate:** 65-75%
 - **Typical iterations for a standard CRUD service:** 2-4
 - The enormous training corpus means LLMs generate idiomatic Node/TS more reliably than almost any other stack.
@@ -169,52 +169,52 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ## 2. Python + FastAPI / Django
 
 ### Compile-Time Error Detection
-**Score: ★★**
+**Score: â˜…â˜…**
 - Python is dynamically typed. Type hints (mypy, pyright) are optional and not enforced at runtime.
 - No compile step - errors surface only at runtime or via external linters.
 - `mypy --strict` catches a reasonable set of issues but LLMs frequently generate code that doesn't pass strict mode.
 
 ### Error Feedback Clarity
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Python tracebacks are among the clearest of any language - exact file, line, and readable call stacks.
 - FastAPI validation errors (via Pydantic) are structured and specific.
 - LLMs iterate on Python errors very effectively due to the massive training corpus.
 
 ### Type System
-**Score: ★★**
+**Score: â˜…â˜…**
 - Type hints are advisory, not enforced. `Any` is the default when unspecified.
 - Pydantic provides runtime validation, which is excellent for API boundaries.
 - No compile-time proof of correctness. TypedDict, Protocol, and dataclasses help but are optional.
 - Gradual typing means the LLM can generate code that "works" but has latent type bugs.
 
 ### Concurrency Safety
-**Score: ★★**
+**Score: â˜…â˜…**
 - GIL prevents true data races for CPU-bound code but creates its own problems.
 - `asyncio` is well-supported but mixing sync and async code is a common LLM mistake.
 - `threading` module has no compile-time safety for shared state.
 - Multiprocessing avoids sharing but serialisation overhead is significant.
 
 ### Memory Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Garbage collected. No buffer overflows or use-after-free in pure Python.
 - C extensions can introduce memory safety issues, but this is not typical in agent-generated code.
 - Memory leaks from circular references are possible but uncommon.
 
 ### Error Handling
-**Score: ★★**
+**Score: â˜…â˜…**
 - Exceptions are implicit and optional to catch. `except Exception` swallows everything.
 - No forced error handling. Silent failures are easy to create.
 - FastAPI's dependency injection catches some errors at the framework level, which helps.
 
 ### Testing Framework
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - pytest is excellent and LLMs generate pytest code very naturally.
 - `httpx` async test client for FastAPI is straightforward.
 - Mocking via `unittest.mock` or `pytest-mock` is well-understood by LLMs.
 - Hypothesis (property-based testing) exists but is rarely generated unprompted.
 
 ### Dependency Management
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - `poetry.lock` / `pip freeze` / `uv.lock` provide reproducibility.
 - PyPI ecosystem is large but packaging has historically been painful (though `uv` has improved this significantly).
 - `pip audit` / `safety` for vulnerability scanning.
@@ -233,46 +233,46 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Poor for CPU-bound work (GIL), adequate for I/O-bound with async
 
 ### Observability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - `structlog` for structured logging, but stdlib `logging` (which LLMs default to) is less structured.
 - OpenTelemetry Python SDK exists but is less mature than JS/Java/Go equivalents.
 - Prometheus client available. Sentry integration is excellent.
 - Tracebacks are clear but async tracebacks can be confusing.
 
 ### Operational Stability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Massive production adoption (Instagram, Spotify, Dropbox).
 - Django is one of the most stable frameworks in existence - backward compatibility is a core value.
 - FastAPI is newer but built on mature foundations (Starlette, Pydantic).
 - Python 2->3 transition was painful, but Python 3.x releases are stable.
 
 ### Ecosystem Completeness
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Web framework, ORM (SQLAlchemy, Django ORM, Tortoise), auth (Django auth, authlib), caching (redis-py), job queues (Celery, arq), testing, monitoring, serialisation - all mature.
 - Data science and ML ecosystem is unmatched (relevant for analytics services).
 
 ### Horizontal Scalability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Stateless by convention. ASGI (uvicorn) scales well horizontally.
 - Celery for distributed task processing is battle-tested.
 - GIL limits per-process throughput for CPU-bound work.
 - Graceful shutdown in uvicorn is handled but LLMs need prompting to configure it properly.
 
 ### Type Safety Across Boundaries
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - FastAPI generates OpenAPI specs from Pydantic models automatically - this is excellent.
 - gRPC support via `grpcio` and `betterproto`.
 - Runtime validation at boundaries via Pydantic is strong, but no compile-time guarantees between services.
 
 ### Async/Concurrency Model
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - `asyncio` with `async/await` is native. LLMs generate it reasonably well.
 - Mixing sync and async is a constant footgun - blocking calls in async handlers stall the event loop.
 - No cancellation built into the language (task cancellation exists but is awkward).
 - GIL limits true parallelism.
 
 ### Overall Agent-Suitability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - **Estimated first-pass validation rate:** 60-70%
 - **Typical iterations for a standard CRUD service:** 3-5
 - LLMs generate Python fluently, but the lack of compile-time checking means bugs hide until runtime.
@@ -298,49 +298,49 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ## 3. Go + Gin / Chi / Echo
 
 ### Compile-Time Error Detection
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Statically typed, compiled. Type mismatches, unused imports, unused variables all caught at compile time.
 - No generics until Go 1.18; now available but LLM training data may generate pre-generics patterns.
 - Cannot prevent nil pointer dereferences at compile time (the `error` interface returns `nil` on success).
 - No data race prevention at compile time, but `go vet` and the race detector catch many issues.
 
 ### Error Feedback Clarity
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Go compiler errors are famously terse and precise. Single-line errors pointing to exact location.
 - No 50-line template error avalanches. No cascading failures.
 - LLMs can parse and act on Go errors with minimal confusion.
 - `go vet` provides additional static analysis with clear output.
 
 ### Type System
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Simple and sound within its scope. No inheritance, no generics abuse, no variance complexity.
 - `interface{}` / `any` is the escape hatch - less dangerous than TypeScript's `any` because it requires explicit type assertions.
 - Cannot express complex invariants, ownership, or lifetime constraints.
 - No sum types / discriminated unions (the `error` interface is the main workaround).
 
 ### Concurrency Safety
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Goroutines and channels are the primary concurrency model - LLMs generate them naturally.
 - **No compile-time data race prevention.** The race detector (`-race` flag) catches races at runtime but only on exercised code paths.
 - `sync.Mutex` is available but nothing forces its correct use.
 - Channel-based designs are safer but LLMs sometimes create goroutine leaks (sending to unbuffered channels with no receiver).
 
 ### Memory Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Garbage collected. No buffer overflows in safe code.
 - Slices can be aliased unexpectedly (append may or may not create a new backing array).
 - `unsafe` package exists but LLMs rarely reach for it.
 - No use-after-free or double-free in normal code.
 
 ### Error Handling
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Errors are explicit return values - `func() (result, error)`. This is Go's strongest feature for agent-generated code.
 - The convention forces the LLM to at least acknowledge the error return. `if err != nil` is deeply ingrained in LLM training data.
 - Downside: LLMs sometimes generate `_ = err` or empty error handling blocks, discarding the error.
 - No exceptions. No hidden control flow.
 
 ### Testing Framework
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Built-in `testing` package. No external dependency needed.
 - Table-driven tests are idiomatic and LLMs generate them well.
 - `httptest` for HTTP handler testing is excellent.
@@ -348,7 +348,7 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - No built-in assertion library (though `testify` is near-universal).
 
 ### Dependency Management
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - `go.sum` provides cryptographic verification of dependencies.
 - Go modules are stable, well-designed, and reproducible.
 - Minimal dependency trees - Go culture favours the standard library.
@@ -367,7 +367,7 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Excellent - compiled, multi-core, efficient garbage collector
 
 ### Observability
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - `slog` (structured logging) is in the standard library since Go 1.21.
 - OpenTelemetry Go SDK is mature and widely adopted.
 - Prometheus client library is the reference implementation (Prometheus itself is written in Go).
@@ -375,19 +375,19 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - The entire CNCF observability stack (Prometheus, Jaeger, Grafana agent) is written in Go.
 
 ### Operational Stability
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Massive production adoption (Google, Uber, Cloudflare, Docker, Kubernetes).
 - Go 1 compatibility promise - code written for Go 1.0 still compiles with Go 1.22.
 - Security track record is strong. CVE response is fast.
 - The standard library is comprehensive and stable.
 
 ### Ecosystem Completeness
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Web framework (Gin/Chi/Echo), database (pgx, sqlx, GORM, ent), auth (various), caching (go-redis), job queues (asynq, machinery), testing (built-in), monitoring (Prometheus, OTel), serialisation (encoding/json, protobuf) - all available.
 - ORM options are less mature than Java/C# equivalents. Migration tooling (goose, atlas) is adequate but less polished than Prisma/Django.
 
 ### Horizontal Scalability
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Stateless by convention, trivial to containerise.
 - Goroutines make concurrent request handling natural.
 - Health checks, graceful shutdown (`os.Signal`, `http.Server.Shutdown`) are idiomatic.
@@ -395,14 +395,14 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - The entire Kubernetes ecosystem assumes Go services.
 
 ### Type Safety Across Boundaries
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - gRPC/protobuf support is excellent - code generation from `.proto` files is native.
 - OpenAPI generation via `swag` or `oapi-codegen` (generate Go types from OpenAPI spec).
 - JSON struct tags provide runtime validation but no compile-time contract enforcement.
 - Connect (connect-go) bridges gRPC and HTTP/JSON elegantly.
 
 ### Async/Concurrency Model
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Goroutines are lightweight (~4 KB stack) and scale to millions.
 - Channels provide typed communication between goroutines.
 - `context.Context` for cancellation and timeouts is idiomatic and well-understood by LLMs.
@@ -410,7 +410,7 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - The runtime handles scheduling - no async/await colour problem.
 
 ### Overall Agent-Suitability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - **Estimated first-pass validation rate:** 70-80%
 - **Typical iterations for a standard CRUD service:** 1-3
 - Go's simplicity means fewer ways to go wrong. The compiler catches most structural issues.
@@ -438,7 +438,7 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ## 4. Rust + Axum / Actix-web / Rocket
 
 ### Compile-Time Error Detection
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - The most comprehensive compile-time checking of any mainstream language.
 - Memory safety (ownership, borrowing, lifetimes) enforced at compile time.
 - Data races prevented at compile time via `Send`/`Sync` traits.
@@ -446,7 +446,7 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - Pattern matching must be exhaustive - no missed cases.
 
 ### Error Feedback Clarity
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Error messages are detailed and often include suggestions - but they are **long and complex**.
 - Lifetime errors are notoriously difficult for humans and LLMs alike.
 - Borrow checker errors require understanding ownership semantics, which LLMs frequently get wrong.
@@ -454,34 +454,34 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - LLMs often enter retry loops fighting the borrow checker rather than restructuring code.
 
 ### Type System
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Sound type system. No null, no implicit conversions, no `any` equivalent.
 - Algebraic data types (`enum` with data), traits, generics with bounds.
 - `unsafe` exists but is explicitly marked and can be audited/forbidden.
 - Can express ownership, lifetime, thread-safety, and complex invariants at the type level.
 
 ### Concurrency Safety
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Data races are **impossible** in safe Rust - the compiler prevents them via the ownership system.
 - `Send` and `Sync` traits enforce thread-safety contracts at compile time.
 - `tokio` runtime provides async concurrency. `Arc<Mutex<T>>` for shared state is explicit and safe.
 - This is the only mainstream language where the compiler guarantees freedom from data races.
 
 ### Memory Safety
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - No garbage collector. Memory safety guaranteed at compile time via ownership and borrowing.
 - No buffer overflows, use-after-free, double-free, or null pointer dereferences in safe code.
 - `unsafe` blocks can bypass these guarantees but are explicit, auditable, and unnecessary for web services.
 
 ### Error Handling
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - `Result<T, E>` is the standard error type. Errors **must** be handled - the compiler enforces it.
 - `?` operator propagates errors ergonomically.
 - No exceptions. No hidden control flow. No silent failures.
 - `thiserror` and `anyhow` crates provide ergonomic error types that LLMs generate well.
 
 ### Testing Framework
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Built-in `#[test]` attribute. Tests live alongside code (no separate test files needed).
 - `cargo test` runs everything. Integration tests in `tests/` directory.
 - Mocking is harder than in dynamic languages - requires trait-based design.
@@ -489,7 +489,7 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - LLMs generate Rust tests reasonably well, but complex test setups require more iteration.
 
 ### Dependency Management
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - `Cargo.lock` provides exact reproducibility.
 - `crates.io` ecosystem is well-curated. `cargo audit` for vulnerability scanning.
 - Minimal dependency philosophy is common in the Rust ecosystem.
@@ -508,7 +508,7 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Best in class - compiled, no GC pauses, zero-cost abstractions
 
 ### Observability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - `tracing` crate is excellent for structured logging and distributed tracing.
 - OpenTelemetry Rust SDK exists but is less mature than Go/Java equivalents.
 - Prometheus metrics via `metrics` crate.
@@ -516,40 +516,40 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - `tokio-console` for async runtime debugging.
 
 ### Operational Stability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Growing production adoption (Cloudflare, Discord, Figma, AWS - Firecracker, Lambda runtime).
 - Rust editions (2015, 2018, 2021, 2024) maintain backward compatibility.
 - Security track record is excellent - memory safety eliminates entire CVE categories.
 - Ecosystem is younger than Go/Java but maturing rapidly.
 
 ### Ecosystem Completeness
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Web framework (Axum, Actix-web), database (sqlx, diesel, sea-orm), auth (limited), caching (redis-rs), job queues (limited - no equivalent to BullMQ/Celery), testing (built-in), monitoring (tracing, OTel), serialisation (serde - best in class).
 - Gaps: Auth libraries, job queue systems, and many business-domain libraries lag behind Node/Go/Java.
 
 ### Horizontal Scalability
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Tiny binaries, instant startup, minimal memory - ideal for container orchestration.
 - Async runtime (tokio) handles massive concurrency efficiently.
 - Graceful shutdown via tokio signal handling.
 - gRPC (tonic) is excellent.
 
 ### Type Safety Across Boundaries
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - `serde` serialisation/deserialisation is type-safe and derives from struct definitions.
 - gRPC via `tonic` with protobuf code generation.
 - OpenAPI generation via `utoipa` or `aide`.
 - Strong type safety within a service; cross-service contracts via protobuf/OpenAPI.
 
 ### Async/Concurrency Model
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - `async/await` with tokio runtime. Zero-cost futures.
 - Cancellation via `tokio::select!` and `CancellationToken`.
 - Backpressure via bounded channels and stream combinators.
 - Compile-time thread safety guarantees are unique among all evaluated languages.
 
 ### Overall Agent-Suitability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - **Estimated first-pass validation rate:** 40-55%
 - **Typical iterations for a standard CRUD service:** 5-10
 - Rust produces the most correct code **once it compiles**, but getting it to compile is the hard part.
@@ -579,55 +579,55 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ## 5. Java + Spring Boot
 
 ### Compile-Time Error Detection
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Statically typed, compiled. Generics, checked exceptions, null analysis (with annotations).
 - NullPointerException remains the #1 runtime error - Java's type system doesn't prevent null by default.
 - Checked exceptions force error handling at compile time (unique among evaluated languages alongside Rust's `Result`).
 - Annotation processors catch configuration errors early.
 
 ### Error Feedback Clarity
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Java compiler errors are clear for type mismatches.
 - Spring Boot errors can be extremely verbose - long stack traces with proxy layers, AOP, and reflection.
 - Spring configuration errors are often cryptic ("No qualifying bean of type...").
 - LLMs handle standard Java errors well but Spring-specific errors require framework knowledge.
 
 ### Type System
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Sound within its scope. Generics with erasure (weaker than C# reified generics).
 - `sealed` classes (Java 17+) enable exhaustive pattern matching.
 - `null` is the major weakness - no null safety without annotations or Optional.
 - `record` types (Java 16+) reduce boilerplate for data classes.
 
 ### Concurrency Safety
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - `synchronized`, `volatile`, `java.util.concurrent` - comprehensive but not compile-time enforced.
 - Virtual threads (Java 21+) simplify concurrency but don't prevent races.
 - No compile-time data race prevention.
 - Immutable records and `final` fields help but are optional.
 
 ### Memory Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Garbage collected. No buffer overflows or use-after-free in normal code.
 - Memory leaks from unclosed resources, listener accumulation - `try-with-resources` helps.
 - No `unsafe` equivalent in normal code.
 
 ### Error Handling
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Checked exceptions are unique - the compiler forces you to handle or propagate.
 - LLMs sometimes generate `catch (Exception e) {}` which swallows everything, but the compiler at least forces acknowledgement.
 - `Optional<T>` for null safety is available but not enforced.
 - Spring's `@ExceptionHandler` and `@ControllerAdvice` provide structured error handling for web services.
 
 ### Testing Framework
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - JUnit 5 is the most mature testing framework in any ecosystem.
 - Mockito for mocking is excellent and LLMs generate it fluently.
 - Spring Boot Test with `@SpringBootTest`, `MockMvc`, and `TestRestTemplate` is comprehensive.
 - Testcontainers (invented in Java ecosystem) for integration testing with real databases.
 
 ### Dependency Management
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Maven Central is the most stable package repository in any ecosystem.
 - `pom.xml` or `build.gradle.kts` with lockfiles provide reproducibility.
 - OWASP Dependency Check for vulnerability scanning.
@@ -646,7 +646,7 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Good after JIT warmup; poor during cold start
 
 ### Observability
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Micrometer (metrics abstraction) is best in class.
 - Spring Boot Actuator provides health, metrics, and info endpoints out of the box.
 - OpenTelemetry Java agent provides zero-code instrumentation.
@@ -654,33 +654,33 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - JFR (Java Flight Recorder) for production profiling is unmatched.
 
 ### Operational Stability
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - The most battle-tested enterprise stack. Decades of production use at every major company.
 - Spring Boot's release cycle is stable. Backward compatibility is a priority.
 - Java's LTS releases (11, 17, 21) provide long-term support.
 - Security: Mature CVE process. Spring Security is the most comprehensive auth framework.
 
 ### Ecosystem Completeness
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Web framework, ORM (Hibernate/JPA, jOOQ), auth (Spring Security), caching (Spring Cache, Caffeine), job queues (Spring Batch, Quartz), testing (JUnit, Mockito, Testcontainers), monitoring (Micrometer, Actuator), serialisation (Jackson) - all best-in-class.
 - The most complete enterprise ecosystem.
 
 ### Horizontal Scalability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Spring Boot is stateless by convention. 
 - Spring Cloud provides service discovery, circuit breakers, distributed configuration.
 - Health checks and graceful shutdown are built into Actuator.
 - JVM memory footprint is the main cost concern at scale.
 
 ### Type Safety Across Boundaries
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - OpenAPI generation via SpringDoc is excellent - generates from annotated controllers.
 - gRPC support via grpc-java is mature.
 - Spring Cloud Contract for consumer-driven contract testing.
 - GraphQL via Spring GraphQL with type-safe resolvers.
 
 ### Async/Concurrency Model
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Virtual threads (Java 21+) eliminate the async/sync colour problem entirely.
 - Reactive (Project Reactor, WebFlux) available but complex for LLMs.
 - `CompletableFuture` for async operations.
@@ -688,7 +688,7 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - Virtual threads are the best concurrency model for agent-generated code - write sync, get async.
 
 ### Overall Agent-Suitability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - **Estimated first-pass validation rate:** 65-75%
 - **Typical iterations for a standard CRUD service:** 2-4
 - Enormous training corpus. LLMs generate Spring Boot code fluently.
@@ -716,55 +716,55 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ## 6. C# + ASP.NET Core
 
 ### Compile-Time Error Detection
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Statically typed, compiled. Nullable reference types (NRTs) since C# 8 catch null issues at compile time.
 - Pattern matching with exhaustiveness checking.
 - `Analyzers` provide additional compile-time checks (similar to linters but integrated into compilation).
 - No memory safety beyond GC. No data race prevention at compile time.
 
 ### Error Feedback Clarity
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Roslyn compiler errors are clear and specific with error codes.
 - ASP.NET Core errors are generally well-structured.
 - Less Spring-like "magic" means fewer cryptic configuration errors.
 - LLMs handle C# errors well given substantial training data from .NET ecosystem.
 
 ### Type System
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Reified generics (unlike Java's erasure) - generics work at runtime.
 - Nullable reference types provide compile-time null safety (when enabled).
 - `record` types for immutable data. `required` keyword (C# 11) enforces property initialisation.
 - `Span<T>` and `ref struct` for memory-safe high-performance code.
 
 ### Concurrency Safety
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - `async/await` is native and well-designed (C# pioneered this pattern).
 - No compile-time data race prevention.
 - `Immutable` collections and `record` types help but are optional.
 - `Channel<T>` for producer-consumer patterns.
 
 ### Memory Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Garbage collected. `Span<T>` provides safe stack-allocated memory access.
 - `unsafe` keyword exists but is explicit and rarely needed for web services.
 - Memory leaks from event handler accumulation are possible.
 
 ### Error Handling
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Exceptions are the primary mechanism - implicit, can be ignored.
 - No checked exceptions.
 - `Result<T>` pattern is not standard (libraries exist but aren't idiomatic).
 - Middleware exception handling in ASP.NET Core is well-structured.
 
 ### Testing Framework
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - xUnit/NUnit are mature. `WebApplicationFactory` for integration testing is excellent.
 - Moq/NSubstitute for mocking.
 - LLMs generate C# tests fluently.
 - `Verify` for snapshot testing. `Bogus` for test data generation.
 
 ### Dependency Management
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - NuGet with `packages.lock.json` for reproducibility.
 - Stable ecosystem with good versioning practices.
 - `dotnet audit` / vulnerability scanning available.
@@ -782,46 +782,46 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Good - Kestrel is one of the fastest web servers in benchmarks
 
 ### Observability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - OpenTelemetry .NET SDK is well-maintained (Microsoft contributes actively).
 - Built-in `ILogger` with structured logging. Serilog for advanced structured logging.
 - Health checks built into ASP.NET Core middleware.
 - `dotnet-trace`, `dotnet-dump`, `dotnet-counters` for production diagnostics.
 
 ### Operational Stability
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Massive production adoption (Microsoft, Stack Overflow, Unity).
 - .NET LTS releases provide 3-year support. Backward compatibility is strong.
 - ASP.NET Core is actively developed with regular performance improvements.
 - Security: Microsoft's security response process is mature.
 
 ### Ecosystem Completeness
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Web framework, ORM (Entity Framework Core, Dapper), auth (ASP.NET Identity, IdentityServer), caching (IDistributedCache, Redis), job queues (Hangfire, MassTransit), testing (xUnit, Moq), monitoring (OTel, Application Insights), serialisation (System.Text.Json) - all mature.
 
 ### Horizontal Scalability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Stateless by convention. Kestrel is highly concurrent.
 - Health checks and graceful shutdown built into the hosting model.
 - gRPC support is first-class.
 - `IHostedService` for background work.
 
 ### Type Safety Across Boundaries
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - OpenAPI generation via Swashbuckle/NSwag.
 - gRPC with protobuf code generation.
 - Minimal API with source generators for type-safe routing.
 - GraphQL via HotChocolate.
 
 ### Async/Concurrency Model
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - `async/await` was pioneered in C# and is the most mature implementation.
 - `CancellationToken` is first-class - passed through the entire stack by convention.
 - `Channel<T>` for backpressure.
 - Task Parallel Library (TPL) for structured parallelism.
 
 ### Overall Agent-Suitability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - **Estimated first-pass validation rate:** 65-75%
 - **Typical iterations for a standard CRUD service:** 2-4
 - Strong compile-time checking with nullable reference types.
@@ -849,42 +849,42 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ## 7. TypeScript + Deno (Fresh / Oak / Hono)
 
 ### Compile-Time Error Detection
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Same TypeScript type system as Node.js - same strengths and weaknesses.
 - Deno's stricter defaults (no implicit `any`, stricter module resolution) help slightly.
 - Permission system adds a runtime safety layer but doesn't improve compile-time detection.
 
 ### Error Feedback Clarity
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Same as Node/TS for type errors.
 - Deno's runtime errors include permission denials which are clear and actionable.
 - Fewer stack trace issues than Node.js due to cleaner module system.
 
 ### Type System
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Identical to Node/TS. See Node.js evaluation.
 
 ### Concurrency Safety
-**Score: ★★**
+**Score: â˜…â˜…**
 - Same as Node.js. Single-threaded event loop.
 - Web Workers available. Same limitations.
 
 ### Memory Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Same as Node.js. Garbage collected.
 
 ### Error Handling
-**Score: ★★**
+**Score: â˜…â˜…**
 - Same as Node.js. Exceptions are implicit.
 
 ### Testing Framework
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Built-in test runner (`deno test`) - no external dependency needed.
 - Snapshot testing built-in.
 - LLMs are less familiar with Deno testing patterns than Jest/Vitest.
 
 ### Dependency Management
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - URL-based imports with lockfile (`deno.lock`).
 - No `node_modules` - cleaner dependency management.
 - `jsr` registry is newer but well-designed.
@@ -903,37 +903,37 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Moderate (same as Node.js, V8-based)
 
 ### Observability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Less mature than Node.js ecosystem.
 - OpenTelemetry support exists but with fewer auto-instrumentation options.
 - Structured logging available but less ecosystem support than Pino.
 
 ### Operational Stability
-**Score: ★★**
+**Score: â˜…â˜…**
 - Young ecosystem. Breaking changes between major versions.
 - Production adoption is limited compared to Node.js.
 - Deno Deploy is promising but vendor-specific.
 
 ### Ecosystem Completeness
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Web framework (Fresh, Oak, Hono), database (via npm compat), auth (limited native), caching (via npm), queues (via npm).
 - Relies heavily on npm compatibility, which means it inherits Node's ecosystem but with compatibility gaps.
 
 ### Horizontal Scalability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Same as Node.js in principle. Deno Deploy provides built-in edge deployment.
 
 ### Type Safety Across Boundaries
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Same TypeScript capabilities as Node.js.
 - OpenAPI, gRPC, Zod - all work (via npm compat or native).
 
 ### Async/Concurrency Model
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Same as Node.js. V8 event loop.
 
 ### Overall Agent-Suitability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - **Estimated first-pass validation rate:** 55-65%
 - **Typical iterations for a standard CRUD service:** 3-5
 - LLMs generate Deno code less reliably than Node.js due to smaller training corpus.
@@ -960,47 +960,47 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ## 8. Ruby + Rails / Sinatra
 
 ### Compile-Time Error Detection
-**Score: ★**
+**Score: â˜…**
 - Dynamically typed. No compile step. All errors are runtime errors.
 - Sorbet (type checker) exists but adoption is limited and LLMs rarely generate Sorbet-annotated code.
 - Ruby's "convention over configuration" means misconfiguration only surfaces at runtime.
 
 ### Error Feedback Clarity
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Ruby error messages are readable but Rails errors can be obscured by middleware layers.
 - `NoMethodError` on `nil` is the most common crash and tells you little about the root cause.
 - Better exception pages in development mode.
 
 ### Type System
-**Score: ★**
+**Score: â˜…**
 - No type system. Duck typing. `nil` is a valid value for any variable.
 - Sorbet provides optional typing but is not standard. RBS type definitions exist but are rarely used.
 
 ### Concurrency Safety
-**Score: ★★**
+**Score: â˜…â˜…**
 - GVL (Global VM Lock) prevents true data races in MRI Ruby.
 - Ractors (Ruby 3+) provide actor-based concurrency but LLMs rarely generate Ractor code.
 - Thread safety is largely unenforceable.
 
 ### Memory Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Garbage collected. No buffer overflows in pure Ruby.
 - Memory bloat from object retention is common (especially in Rails).
 
 ### Error Handling
-**Score: ★★**
+**Score: â˜…â˜…**
 - Exceptions are implicit. `rescue` blocks are optional.
 - `rescue => e` without specifying exception type catches everything.
 - No forced error handling.
 
 ### Testing Framework
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - RSpec is excellent and LLMs generate it naturally.
 - Rails testing conventions (fixtures, factories, system tests) are well-established.
 - FactoryBot, Capybara, VCR - mature testing ecosystem.
 
 ### Dependency Management
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - `Gemfile.lock` provides reproducibility.
 - Bundler is reliable but gem ecosystem quality varies.
 - `bundler-audit` for vulnerability scanning.
@@ -1018,43 +1018,43 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Poor - MRI Ruby is one of the slower runtimes
 
 ### Observability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Structured logging via Semantic Logger or Lograge.
 - OpenTelemetry Ruby SDK exists but is less mature.
 - New Relic and DataDog have excellent Ruby agents (historically strong).
 
 ### Operational Stability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Rails is battle-tested at scale (GitHub, Shopify, Basecamp).
 - Rails 7+ is stable with good backward compatibility practices.
 - Ruby version upgrades can break gems, but this is managed.
 
 ### Ecosystem Completeness
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Rails provides everything: ORM (Active Record), auth (Devise), caching, job queues (Sidekiq), testing, mailers, WebSockets - all integrated.
 - The most "batteries included" framework evaluated.
 
 ### Horizontal Scalability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Stateless by convention. Sidekiq for background jobs.
 - Memory footprint per process is high - costly to scale horizontally.
 - Puma web server handles concurrency reasonably.
 
 ### Type Safety Across Boundaries
-**Score: ★★**
+**Score: â˜…â˜…**
 - No compile-time type safety.
 - OpenAPI generation possible but not native to the framework.
 - gRPC support via `grpc` gem.
 - API contracts are enforced at runtime (serializers, strong parameters) not compile time.
 
 ### Async/Concurrency Model
-**Score: ★★**
+**Score: â˜…â˜…**
 - Fibers (Ruby 3+) provide lightweight concurrency.
 - No async/await at the language level.
 - Most Rails code is synchronous - concurrency comes from multi-process deployment (Puma workers).
 
 ### Overall Agent-Suitability
-**Score: ★★**
+**Score: â˜…â˜…**
 - **Estimated first-pass validation rate:** 50-60%
 - **Typical iterations for a standard CRUD service:** 4-6
 - LLMs generate Rails code fluently due to large training corpus.
@@ -1081,54 +1081,54 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ## 9. Elixir + Phoenix
 
 ### Compile-Time Error Detection
-**Score: ★★**
+**Score: â˜…â˜…**
 - Dynamically typed. Pattern matching catches some structural issues.
 - Dialyzer provides type inference and warnings but is not a type checker - it finds definite errors, not possible ones.
 - No compile-time null safety, no enforced error handling.
 
 ### Error Feedback Clarity
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Pattern match failures are clear ("no function clause matching").
 - Dialyzer warnings can be cryptic.
 - OTP crash reports are detailed but require understanding the supervision tree model.
 - LLMs are less familiar with Elixir error patterns than mainstream languages.
 
 ### Type System
-**Score: ★★**
+**Score: â˜…â˜…**
 - Dynamic typing with optional typespecs.
 - Pattern matching provides structural validation at function boundaries.
 - Dialyzer finds type inconsistencies but doesn't guarantee type safety.
 - No null - Elixir uses pattern matching and tagged tuples (`{:ok, value}` / `{:error, reason}`).
 
 ### Concurrency Safety
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - **BEAM VM provides actor-model concurrency.** Each process has isolated memory - no shared mutable state.
 - Data races are structurally impossible in normal Elixir code.
 - Supervision trees provide automatic crash recovery.
 - This is the safest concurrency model after Rust, achieved through architecture rather than type system.
 
 ### Memory Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - BEAM VM manages memory per process. No buffer overflows.
 - Immutable data by default eliminates many classes of memory bugs.
 - Individual process crashes are isolated and recovered by supervisors.
 
 ### Error Handling
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - "Let it crash" philosophy with supervisor recovery.
 - Pattern matching on `{:ok, _}` / `{:error, _}` tuples is idiomatic and LLMs generate it well.
 - `with` blocks for composing operations with error handling.
 - No silent failures - unmatched patterns crash explicitly.
 
 ### Testing Framework
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - ExUnit is built-in and adequate.
 - Property-based testing via StreamData.
 - Ecto sandbox for database testing is well-designed.
 - LLMs generate Elixir tests less reliably than tests in mainstream languages.
 
 ### Dependency Management
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - `mix.lock` provides reproducibility.
 - Hex package manager is well-maintained.
 - `mix audit` for vulnerability scanning.
@@ -1147,40 +1147,40 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Good - BEAM preemptive scheduler utilises all cores naturally
 
 ### Observability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - `:telemetry` library is the standard instrumentation mechanism.
 - OpenTelemetry Erlang/Elixir SDK exists but is less mature.
 - BEAM has built-in process introspection (`:observer`).
 - Structured logging via Logger backends.
 
 ### Operational Stability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - BEAM VM is one of the most battle-tested runtimes (Ericsson telecoms since 1986).
 - Phoenix framework is stable with good backward compatibility.
 - Elixir ecosystem is younger but built on Erlang/OTP's 30+ year foundation.
 - Hot code upgrades are possible (unique among evaluated stacks).
 
 ### Ecosystem Completeness
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Web framework (Phoenix), database (Ecto), auth (limited - phx.gen.auth), caching (Cachex, ETS), job queues (Oban), testing (ExUnit), monitoring (telemetry), serialisation (Jason).
 - Gaps: Auth libraries, CRM integrations, analytics integrations.
 
 ### Horizontal Scalability
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - BEAM's distributed computing is native - nodes can connect and communicate transparently.
 - Lightweight processes (millions per node) make high-concurrency trivial.
 - Phoenix PubSub provides distributed pub/sub out of the box.
 - Graceful shutdown and rolling deployments are well-supported.
 
 ### Type Safety Across Boundaries
-**Score: ★★**
+**Score: â˜…â˜…**
 - No compile-time type safety across boundaries.
 - OpenAPI generation via `open_api_spex`.
 - gRPC support exists but is less mature.
 - Runtime validation via Ecto changesets.
 
 ### Async/Concurrency Model
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Every function call can be concurrent - spawn a process.
 - `Task`, `GenServer`, `Agent` provide structured concurrency patterns.
 - Preemptive scheduling prevents any single process from starving others.
@@ -1188,7 +1188,7 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - Backpressure via GenStage.
 
 ### Overall Agent-Suitability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - **Estimated first-pass validation rate:** 45-55%
 - **Typical iterations for a standard CRUD service:** 4-7
 - LLMs generate Elixir less reliably than mainstream languages - smaller training corpus.
@@ -1216,21 +1216,21 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ## 10. Kotlin + Ktor
 
 ### Compile-Time Error Detection
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Statically typed, compiled. Null safety is built into the type system (`String` vs `String?`).
 - Smart casts reduce unnecessary type assertions.
 - Coroutine-based async doesn't require special error handling syntax.
 - Data classes, sealed classes, and exhaustive `when` expressions prevent many bug classes.
 
 ### Error Feedback Clarity
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Kotlin compiler errors are clear and specific.
 - Ktor errors are straightforward (less framework magic than Spring).
 - Coroutine errors can be confusing but are improving.
 - LLMs handle Kotlin errors well but have less training data than Java.
 
 ### Type System
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Null safety at the language level - `NullPointerException` from Kotlin code is virtually impossible.
 - Sealed classes for exhaustive pattern matching.
 - Reified generics (inline functions).
@@ -1238,33 +1238,33 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - Type-safe builders (DSL support).
 
 ### Concurrency Safety
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Coroutines provide structured concurrency with cancellation.
 - No compile-time data race prevention.
 - `Mutex` and `Channel` from `kotlinx.coroutines`.
 - Shared mutable state is possible and not prevented by the type system.
 
 ### Memory Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - JVM garbage collection. No buffer overflows.
 - Same as Java - memory leaks from resource retention possible.
 
 ### Error Handling
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Exceptions are unchecked (unlike Java's checked exceptions).
 - `Result<T>` type is available but not idiomatic for all error handling.
 - `runCatching` provides functional error handling.
 - No forced error handling at compile time.
 
 ### Testing Framework
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - JUnit 5 (shared with Java). Kotest for Kotlin-native testing.
 - MockK for Kotlin-idiomatic mocking.
 - Ktor test client is straightforward.
 - LLMs generate Kotlin tests adequately but less fluently than Java.
 
 ### Dependency Management
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Gradle with lockfiles. Maven Central.
 - Same as Java - mature and stable.
 
@@ -1281,42 +1281,42 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Good after JIT warmup
 
 ### Observability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Inherits Java's observability ecosystem (Micrometer, OTel, SLF4J).
 - Ktor has built-in metrics and call logging features.
 - Same JFR/profiling capabilities as Java.
 
 ### Operational Stability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - JetBrains actively maintains Kotlin. Android adoption ensures longevity.
 - Ktor is stable but smaller community than Spring.
 - Kotlin/JVM code can fall back to Spring Boot if needed.
 
 ### Ecosystem Completeness
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Access to all Java libraries plus Kotlin-specific: Ktor, Exposed (ORM), kotlinx-serialization, Koin (DI).
 - Gaps filled by Java libraries.
 
 ### Horizontal Scalability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Same as Java. JVM platform benefits.
 - Structured concurrency with coroutines is natural for distributed work.
 
 ### Type Safety Across Boundaries
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - OpenAPI via Ktor OpenAPI plugin or shared Java tools.
 - gRPC support.
 - kotlinx-serialization for type-safe JSON handling.
 
 ### Async/Concurrency Model
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Structured concurrency with coroutines is best-in-class for JVM languages.
 - `CoroutineScope` enforces structured lifetimes.
 - Cancellation is cooperative and propagates through the scope hierarchy.
 - `Flow` for reactive streams with backpressure.
 
 ### Overall Agent-Suitability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - **Estimated first-pass validation rate:** 60-70%
 - **Typical iterations for a standard CRUD service:** 2-5
 - Null safety alone prevents a large class of agent-generated bugs.
@@ -1343,50 +1343,50 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ## 11. Scala + Play / ZIO
 
 ### Compile-Time Error Detection
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - Among the most powerful compile-time checking available on the JVM.
 - ZIO's type-safe effect system tracks errors, environment, and output in the type signature: `ZIO[R, E, A]`.
 - Pattern matching with sealed traits enforces exhaustiveness.
 - Implicits can cause confusion but also enable powerful compile-time constraints.
 
 ### Error Feedback Clarity
-**Score: ★★**
+**Score: â˜…â˜…**
 - Scala compiler errors are notoriously verbose and confusing.
 - Implicit resolution failures produce multi-line errors that are hard for humans and LLMs alike to parse.
 - ZIO's type errors involve complex type-level computation that overwhelms LLMs.
 - Compilation is slow, lengthening feedback loops.
 
 ### Type System
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - One of the most expressive type systems available. Higher-kinded types, type-level programming, path-dependent types.
 - ZIO encodes effects, errors, and dependencies in types - the most expressive effect system evaluated.
 - `Option` instead of null. Pattern matching with exhaustive checks.
 
 ### Concurrency Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - ZIO fibers provide lightweight, safe concurrency.
 - Immutability by default reduces data race risk.
 - No compile-time data race prevention (unlike Rust), but the functional paradigm makes races rare.
 
 ### Memory Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - JVM garbage collection. Same as Java/Kotlin.
 
 ### Error Handling
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - ZIO's typed errors are the most expressive error handling of any evaluated framework.
 - Errors are tracked in the type signature - you cannot ignore them.
 - `Either`, `Try`, `Option` - multiple layers of error handling.
 - Error propagation is automatic and type-safe.
 
 ### Testing Framework
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - ScalaTest, Specs2, ZIO Test.
 - Property-based testing via ScalaCheck.
 - LLMs generate Scala tests less reliably than Java/Kotlin equivalents.
 
 ### Dependency Management
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - sbt or Mill. `build.sbt` can be complex.
 - Maven Central access. Lockfile support via sbt plugins.
 - Binary compatibility across Scala versions is a persistent issue (Scala 2 vs 3).
@@ -1404,40 +1404,40 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Good after warmup
 
 ### Observability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Inherits Java ecosystem. ZIO has `zio-telemetry` for OpenTelemetry.
 - Less direct support than Spring Boot's Actuator.
 
 ### Operational Stability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Production adoption at scale (LinkedIn, Twitter/X, Netflix - historically).
 - Scala 2->3 migration has been disruptive. Binary compatibility across versions is fragile.
 - ZIO is younger and still evolving.
 
 ### Ecosystem Completeness
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Web framework (Play, ZIO HTTP, http4s), database (Slick, Doobie, Quill), auth (limited native), caching, queues (ZIO ecosystem), testing, monitoring.
 - Complete but often requires ZIO-specific wrappers, limiting choice.
 
 ### Horizontal Scalability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - ZIO fibers scale efficiently. Akka/Pekko for distributed systems.
 - Same JVM benefits as Java/Kotlin.
 
 ### Type Safety Across Boundaries
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - OpenAPI via Tapir (excellent - type-safe endpoint definitions).
 - gRPC via ScalaPB.
 - ZIO Schema for type-safe serialisation.
 
 ### Async/Concurrency Model
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - ZIO fibers are lightweight and structured.
 - Effect system tracks async operations in types.
 - Cancellation, timeouts, and retries are built into ZIO.
 
 ### Overall Agent-Suitability
-**Score: ★★**
+**Score: â˜…â˜…**
 - **Estimated first-pass validation rate:** 35-50%
 - **Typical iterations for a standard CRUD service:** 6-12
 - The most powerful type system is also the hardest for LLMs to navigate.
@@ -1464,49 +1464,49 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ## 12. PHP + Laravel / Symfony
 
 ### Compile-Time Error Detection
-**Score: ★★**
+**Score: â˜…â˜…**
 - Dynamically typed. No compile step.
 - PHPStan/Psalm provide static analysis (up to level 9) but are not part of the standard toolchain.
 - Type hints (PHP 7.4+) are runtime-enforced, not compile-time.
 
 ### Error Feedback Clarity
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - PHP error messages are often vague ("undefined index", "call to member function on null").
 - Laravel's error pages (Ignition) are excellent for development.
 - Stack traces can be noisy with middleware and service container layers.
 
 ### Type System
-**Score: ★★**
+**Score: â˜…â˜…**
 - Type hints are optional and runtime-only.
 - Union types (PHP 8.0), intersection types (PHP 8.1), enums (PHP 8.1) improve things.
 - No generics. PHPStan/Psalm add generic annotations via docblocks.
 
 ### Concurrency Safety
-**Score: ★**
+**Score: â˜…**
 - PHP's shared-nothing architecture means each request is isolated - no data races within a request.
 - But: no concurrency model within a request. No async/await. No goroutines.
 - Parallel processing requires Swoole/ReactPHP or external job queues.
 
 ### Memory Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Garbage collected. Each request gets a fresh memory space.
 - Memory leaks are impossible in traditional PHP (process dies after request).
 - Long-running processes (Swoole, Octane) reintroduce memory leak risk.
 
 ### Error Handling
-**Score: ★★**
+**Score: â˜…â˜…**
 - Exceptions are implicit. `try/catch` is optional.
 - Laravel's exception handler provides structured error handling at the framework level.
 - No forced error handling.
 
 ### Testing Framework
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - PHPUnit is mature. Laravel's testing utilities (factories, HTTP tests, mocks) are excellent.
 - Pest PHP provides a modern, expressive testing API.
 - LLMs generate Laravel tests naturally.
 
 ### Dependency Management
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Composer with `composer.lock` provides reproducibility.
 - Packagist is well-maintained.
 - `composer audit` for vulnerability scanning.
@@ -1525,43 +1525,43 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Moderate. PHP 8+ JIT improves this.
 
 ### Observability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Monolog for structured logging.
 - OpenTelemetry PHP SDK exists but is less mature.
 - Laravel Telescope for debugging (development).
 - Sentry/DataDog integrations are available.
 
 ### Operational Stability
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Massive production adoption (WordPress, Facebook/Meta - Hack, Shopify - historically, Wikipedia).
 - Laravel releases are regular and backward compatibility is managed.
 - PHP 8.x is stable and performant.
 
 ### Ecosystem Completeness
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - Laravel provides: ORM (Eloquent), auth (Sanctum, Passport), caching, job queues (Horizon), testing, mailing, events, broadcasting - extremely batteries-included.
 
 ### Horizontal Scalability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Shared-nothing architecture makes horizontal scaling natural.
 - Laravel Horizon for Redis-based queue management.
 - No built-in gRPC support. REST-oriented.
 
 ### Type Safety Across Boundaries
-**Score: ★★**
+**Score: â˜…â˜…**
 - No compile-time type safety.
 - OpenAPI generation via L5-Swagger.
 - API resources for serialisation.
 - No gRPC ecosystem.
 
 ### Async/Concurrency Model
-**Score: ★★**
+**Score: â˜…â˜…**
 - Traditional PHP: no concurrency within a request.
 - Laravel Octane (Swoole/RoadRunner) adds async capabilities but is a different paradigm.
 - No language-level async/await.
 
 ### Overall Agent-Suitability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - **Estimated first-pass validation rate:** 55-65%
 - **Typical iterations for a standard CRUD service:** 3-5
 - LLMs generate Laravel code fluently - large training corpus.
@@ -1588,48 +1588,48 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ## 13. Clojure + Ring / Luminus
 
 ### Compile-Time Error Detection
-**Score: ★**
+**Score: â˜…**
 - Dynamically typed. Lisp dialect. No compile-time type checking.
 - `clojure.spec` provides runtime contracts but no compile-time guarantees.
 - Errors surface only at runtime.
 
 ### Error Feedback Clarity
-**Score: ★★**
+**Score: â˜…â˜…**
 - JVM stack traces with Clojure's function names can be cryptic.
 - Lisp-style errors (unmatched parentheses, arity mismatches) are clear to Clojure developers but confusing to LLMs.
 - Long stack traces through Ring middleware layers.
 
 ### Type System
-**Score: ★**
+**Score: â˜…**
 - No type system. `clojure.spec` is optional runtime validation.
 - Dynamic typing is fundamental to Clojure's design philosophy.
 
 ### Concurrency Safety
-**Score: ★★★★★**
+**Score: â˜…â˜…â˜…â˜…â˜…**
 - **Immutable data structures by default.** Persistent data structures eliminate mutation bugs.
 - Software Transactional Memory (STM) for coordinated state changes.
 - Atoms, Refs, Agents - each with defined concurrency semantics.
 - Data races on immutable data are structurally impossible.
 
 ### Memory Safety
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - JVM garbage collection. Persistent data structures have overhead but are safe.
 - No buffer overflows or use-after-free.
 
 ### Error Handling
-**Score: ★★**
+**Score: â˜…â˜…**
 - Exceptions (JVM). No forced error handling.
 - Some libraries use monadic error handling but it's not idiomatic Clojure.
 - `try/catch` is optional.
 
 ### Testing Framework
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - `clojure.test` is built-in. Adequate but basic.
 - Property-based testing via `test.check`.
 - LLMs generate Clojure tests poorly - small training corpus.
 
 ### Dependency Management
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - `deps.edn` or Leiningen with lockfiles.
 - Access to Maven Central (all Java libraries).
 - Clojars for Clojure-specific libraries.
@@ -1648,41 +1648,41 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 - **CPU efficiency:** Moderate - persistent data structures have overhead
 
 ### Observability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Inherits Java ecosystem via interop.
 - Clojure-specific tooling is limited.
 
 ### Operational Stability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - Stable language - Rich Hickey prioritises backward compatibility.
 - Smaller community means slower library updates and fewer maintained packages.
 - Production adoption at Nubank (world's largest Clojure user), Walmart, CircleCI.
 
 ### Ecosystem Completeness
-**Score: ★★**
+**Score: â˜…â˜…**
 - Web framework (Ring, Compojure, Reitit), database (next.jdbc, HoneySQL), auth (Buddy), testing (clojure.test).
 - Gaps: Job queues, caching, monitoring - require Java interop or limited Clojure wrappers.
 
 ### Horizontal Scalability
-**Score: ★★★**
+**Score: â˜…â˜…â˜…**
 - JVM-based. Same scalability profile as Java/Kotlin.
 - Immutable data makes distributed computing safer.
 
 ### Type Safety Across Boundaries
-**Score: ★**
+**Score: â˜…**
 - No type safety. `clojure.spec` for runtime validation only.
 - OpenAPI generation possible but not native.
 - No gRPC ecosystem in Clojure (use Java interop).
 
 ### Async/Concurrency Model
-**Score: ★★★★**
+**Score: â˜…â˜…â˜…â˜…**
 - `core.async` provides CSP-style channels (similar to Go).
 - Immutable data eliminates most concurrency hazards.
 - `manifold` for async/deferred values.
 - No language-level async/await.
 
 ### Overall Agent-Suitability
-**Score: ★★**
+**Score: â˜…â˜…**
 - **Estimated first-pass validation rate:** 35-45%
 - **Typical iterations for a standard CRUD service:** 6-10
 - LLMs generate Clojure poorly. Lisp syntax, macros, and idiomatic patterns are poorly represented in training data.
@@ -1749,26 +1749,26 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 ### Trade-Off Matrix
 
 ```
-                    Correctness ←-> Iteration Speed
-                    ┌─────────────────────────────────┐
+                    Correctness ←-> Iteration Speed
+                    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
           High      │ Rust        Scala               │
-      Correctness   │   ↑           ↑                 │
+      Correctness   │   ←‘           ←‘                 │
                     │   Go    Kotlin  C#              │
-                    │     ↑     ↑      ↑              │
+                    │     ←‘     ←‘      ←‘              │
                     │      Java   Node/TS             │
-                    │        ↑      ↑                 │
+                    │        ←‘      ←‘                 │
                     │   Elixir  Python  PHP           │
-                    │     ↑       ↑      ↑            │
+                    │     ←‘       ←‘      ←‘            │
           Low       │  Clojure  Ruby                  │
       Correctness   │                                 │
-                    └─────────────────────────────────┘
+                    └──â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
                     Slow                          Fast
                     Iteration                 Iteration
 ```
 
 ```
-                    Correctness ←-> Integration Coverage
-                    ┌─────────────────────────────────┐
+                    Correctness ←-> Integration Coverage
+                    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
           High      │                     Node/TS     │
       Integration   │                  Java  Python   │
                     │               C#   PHP  Kotlin  │
@@ -1777,7 +1777,7 @@ This document evaluates backend frameworks and languages for use in **Planifest'
                     │      Scala                      │
           Low       │   Rust   Elixir  Clojure       │
       Integration   │                                 │
-                    └─────────────────────────────────┘
+                    └──â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
                     Low                          High
                     Correctness           Correctness
 ```
@@ -1786,23 +1786,23 @@ This document evaluates backend frameworks and languages for use in **Planifest'
 
 | Framework | Memory Safety | Compile-Time Types | Silent Failures | Race Conditions | Testing | SDK >30% | Clear Errors | Stable API | Mature (5yr+) | Struct Logging | Dist Tracing | Image <500MB | Startup <5s | Graceful Shutdown |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Node/TS + Fastify | ✅ | ✅ | ⚠️ | ⚠️ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Python + FastAPI | ✅ | ❌ | ⚠️ | ⚠️ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Go + Chi/Echo | ✅ | ✅ | ⚠️ | ⚠️ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Rust + Axum | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Java + Spring Boot | ✅ | ✅ | ⚠️ | ⚠️ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | ✅ |
-| C# + ASP.NET | ✅ | ✅ | ⚠️ | ⚠️ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Deno + Fresh | ✅ | ✅ | ⚠️ | ⚠️ | ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| Ruby + Rails | ✅ | ❌ | ⚠️ | ⚠️ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | ⚠️ | ✅ | ⚠️ | ✅ |
-| Elixir + Phoenix | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| Kotlin + Ktor | ✅ | ✅ | ⚠️ | ⚠️ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | ✅ |
-| Scala + ZIO | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ❌ | ⚠️ | ✅ | ✅ | ⚠️ | ✅ | ⚠️ | ✅ |
-| PHP + Laravel | ✅ | ❌ | ⚠️ | ✅* | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| Clojure + Ring | ✅ | ❌ | ⚠️ | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ | ✅ |
+| Node/TS + Fastify | ✅ | ✅ | âš ï¸ | âš ï¸ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Python + FastAPI | ✅ | âŒ | âš ï¸ | âš ï¸ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Go + Chi/Echo | ✅ | ✅ | âš ï¸ | âš ï¸ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Rust + Axum | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | âš ï¸ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Java + Spring Boot | ✅ | ✅ | âš ï¸ | âš ï¸ | ✅ | ✅ | âš ï¸ | ✅ | ✅ | ✅ | ✅ | ✅ | âš ï¸ | ✅ |
+| C# + ASP.NET | ✅ | ✅ | âš ï¸ | âš ï¸ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Deno + Fresh | ✅ | ✅ | âš ï¸ | âš ï¸ | ✅ | ✅ | ✅ | âš ï¸ | âŒ | ✅ | âš ï¸ | ✅ | ✅ | ✅ |
+| Ruby + Rails | ✅ | âŒ | âš ï¸ | âš ï¸ | ✅ | ✅ | âš ï¸ | ✅ | ✅ | ✅ | âš ï¸ | ✅ | âš ï¸ | ✅ |
+| Elixir + Phoenix | ✅ | âŒ | ✅ | ✅ | ✅ | ✅ | âš ï¸ | ✅ | ✅ | ✅ | âš ï¸ | ✅ | ✅ | ✅ |
+| Kotlin + Ktor | ✅ | ✅ | âš ï¸ | âš ï¸ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | âš ï¸ | ✅ |
+| Scala + ZIO | ✅ | ✅ | ✅ | âš ï¸ | ✅ | ✅ | âŒ | âš ï¸ | ✅ | ✅ | âš ï¸ | ✅ | âš ï¸ | ✅ |
+| PHP + Laravel | ✅ | âŒ | âš ï¸ | ✅* | ✅ | ✅ | âš ï¸ | ✅ | ✅ | ✅ | âš ï¸ | ✅ | ✅ | ✅ |
+| Clojure + Ring | ✅ | âŒ | âš ï¸ | ✅ | ✅ | ✅ | âŒ | ✅ | ✅ | âš ï¸ | âš ï¸ | ✅ | âš ï¸ | ✅ |
 
 *PHP's shared-nothing architecture means races are structurally impossible within a request.
 
-**Legend:** ✅ = passes, ⚠️ = conditional/partial, ❌ = fails
+**Legend:** ✅ = passes, âš ï¸ = conditional/partial, âŒ = fails
 
 **Frameworks with red flags:**
 - **Deno:** Immature (<5 years of serious production use)
@@ -1822,7 +1822,7 @@ Go wins on the combination that matters most for agent-generated code: high firs
 
 The type system is simpler than Rust's, which means LLMs write valid Go on the first attempt far more often. The explicit `if err != nil` pattern means agents handle errors by default. The compiler errors are the clearest of any evaluated language. Container images are 10-30 MB with sub-50ms startup.
 
-The trade-off is SDK coverage (~80% vs Node's ~95%) and a less expressive type system. For Planifest, where the architecture is standardised and integrations are bounded by the Initiative Brief, this trade-off is acceptable.
+The trade-off is SDK coverage (~80% vs Node's ~95%) and a less expressive type system. For Planifest, where the architecture is standardised and integrations are bounded by the Feature Brief, this trade-off is acceptable.
 
 ### 2. Best Framework by Use Case
 
@@ -1841,29 +1841,29 @@ The trade-off is SDK coverage (~80% vs Node's ~95%) and a less expressive type s
 For a complete Planifest-managed system with agent-generated microservices:
 
 ```
-┌──────────────────────────────────────────────────────────┐
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
 │                   Service Architecture                    │
-├──────────────────────────────────────────────────────────┤
+├──â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
 │                                                          │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     │
 │  │  Frontend    │  │  BFF / API  │  │  Integration │     │
 │  │  React/TS    │  │  Gateway    │  │  Services    │     │
 │  │  (Vite)      │  │  Go + Chi   │  │  Node/TS +   │     │
 │  │              │  │             │  │  Fastify     │     │
-│  └─────────────┘  └─────────────┘  └─────────────┘     │
+│  └──â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  └──â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  └──â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     │
 │                          │                │              │
-│                          ▼                ▼              │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│                          â-¼                â-¼              │
+│  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     │
 │  │  Core Domain│  │  Security-  │  │  Data /      │     │
 │  │  Services   │  │  Critical   │  │  Analytics   │     │
 │  │  Go + Chi   │  │  Rust +     │  │  Python +    │     │
 │  │             │  │  Axum       │  │  FastAPI     │     │
-│  └─────────────┘  └─────────────┘  └─────────────┘     │
+│  └──â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  └──â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  └──â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     │
 │                                                          │
 │  Shared contracts: OpenAPI + protobuf                    │
 │  Shared observability: OpenTelemetry -> DataDog/Grafana   │
 │  Orchestration: Kubernetes / ECS Fargate                 │
-└──────────────────────────────────────────────────────────┘
+└──â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 | Layer | Language | Rationale |
@@ -1916,7 +1916,7 @@ For a complete Planifest-managed system with agent-generated microservices:
 
 ### 6. Agent Success Probability
 
-For a typical CRUD web service generated from an Initiative Brief:
+For a typical CRUD web service generated from an Feature Brief:
 
 | Stack | First-Pass Compilation | First-Pass Tests Pass | Production-Ready After N Iterations |
 |---|---|---|---|
@@ -1969,14 +1969,14 @@ Go (default) + Node/TS (integrations) + Rust (security-critical) + Python (data)
 
 ## Implications for Planifest
 
-Planifest does not specify a stack - stack is a requirement declared per initiative, not a framework default (see [FD-015](p003-planifest-functional-decisions.md#fd-015--stack-is-a-requirement-not-a-default)). The Planifest pilot uses TypeScript/Node.js + Fastify for the backend. This is a **defensible choice** for the pilot for the following reasons:
+Planifest does not specify a stack - stack is a requirement declared per feature, not a framework default (see [FD-015](p003-planifest-functional-decisions.md#fd-015--stack-is-a-requirement-not-a-default)). The confirmed design pilot uses TypeScript/Node.js + Fastify for the backend. This is a **defensible choice** for the pilot for the following reasons:
 
 1. **Single-language stack** (TS everywhere) eliminates context-switching for the codegen-agent
 2. **Maximum SDK coverage** for integration-heavy services
 3. **Shared Zod schemas** between frontend and backend enforce contracts
 4. **LLM fluency** in TypeScript is the highest of any language
 
-However, future initiatives should consider the findings of this evaluation when declaring their stack:
+However, future features should consider the findings of this evaluation when declaring their stack:
 
 1. **Go for core domain services** where deployment efficiency, error clarity, and first-pass success rate matter more than SDK coverage
 2. **Rust for security-critical services** (auth, payment processing) where compile-time guarantees justify the higher iteration cost
@@ -1984,3 +1984,4 @@ However, future initiatives should consider the findings of this evaluation when
 4. **If using TypeScript, enforce strict mode** (`strict: true`, `noUncheckedIndexedAccess`, ban `any` via ESLint) and consider `neverthrow` or similar Result-type libraries to mitigate the type system's weaknesses
 
 The orchestrator agent should draw human attention to this document during the stack coaching conversation. The human decides - but with the evidence.
+

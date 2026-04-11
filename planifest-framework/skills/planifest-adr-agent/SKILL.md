@@ -1,19 +1,19 @@
----
+﻿---
 name: planifest-adr-agent
-description: Produces Architecture Decision Records for each significant decision in the specification. Invoked by the orchestrator during Phase 2.
+description: Produces Architecture Decision Records for each significant decision in the requirements. Invoked by the orchestrator during Phase 2.
 bundle_templates: [adr.template.md]
 bundle_standards: []
 ---
 
 # Planifest - adr-agent
 
-> You produce Architecture Decision Records for every significant decision in the specification. Each ADR captures context, decision, and consequences - so future humans and agents understand not just what was decided, but why.
+> You produce Architecture Decision Records for every significant decision in the requirements. Each ADR captures context, decision, and consequences - so future humans and agents understand not just what was decided, but why.
 
 ---
 
 ## Hard Limits
 
-1. Specification must be complete before code generation begins.
+1. Requirements must be complete before code generation begins.
 2. No direct schema modification - write a migration proposal and stop.
 3. Destructive schema operations require human approval - no exceptions.
 4. Data is owned by one component - never write to data owned by another.
@@ -24,7 +24,7 @@ bundle_standards: []
 
 ## Input
 
-- Design Specification at `plan/current/design-spec.md`
+- Design Requirements at `plan/current/design-requirements.md`
 - OpenAPI Specification at `plan/current/openapi-spec.yaml`
 - design at `plan/current/design.md` (for stack declaration)
 
@@ -42,17 +42,17 @@ A decision requires an ADR if it meets **any** of these criteria:
 
 | Criterion | Example |
 |-----------|---------|
-| **Costly to reverse** — changing it later requires significant rework | Database engine choice, ORM selection, auth strategy |
-| **Affects multiple components** — the decision crosses component boundaries | Sync vs async communication, shared type strategy, event schema |
-| **Constrains future work** — it narrows options for later initiatives | Deployment topology, cloud provider lock-in, data partitioning |
-| **Deviates from the declared stack** — anything not in the Planifest stack section | Using a library not in the stack, choosing a different compute model |
-| **Involves a security trade-off** — convenience vs security, performance vs isolation | Session storage strategy, token expiry policy, CORS configuration |
-| **Data ownership assignment** — which component owns which data | Every data ownership mapping gets an ADR |
+| **Costly to reverse** - changing it later requires significant rework | Database engine choice, ORM selection, auth strategy |
+| **Affects multiple components** - the decision crosses component boundaries | Sync vs async communication, shared type strategy, event schema |
+| **Constrains future work** - it narrows options for later features | Deployment topology, cloud provider lock-in, data partitioning |
+| **Deviates from the declared stack** - anything not in the design stack section | Using a library not in the stack, choosing a different compute model |
+| **Involves a security trade-off** - convenience vs security, performance vs isolation | Session storage strategy, token expiry policy, CORS configuration |
+| **Data ownership assignment** - which component owns which data | Every data ownership mapping gets an ADR |
 
 A decision does **not** require an ADR if:
 - It is a direct consequence of the stack declaration with no meaningful alternative (e.g., "use npm because the stack is Node.js")
 - It is a code-level implementation detail within a single component (e.g., "use a switch statement vs if/else")
-- It is already documented in the design spec as a requirement (e.g., "support OAuth2" when the spec mandates it)
+- It is already documented in the design requirements as a requirement (e.g., "support OAuth2" when the requirements mandate it)
 
 ---
 
@@ -60,12 +60,12 @@ A decision does **not** require an ADR if:
 
 Follow the [ADR Template](../templates/adr.template.md). Key sections:
 
-- **Context** — why this decision needed to be made
-- **Decision** — what was decided and why (be specific)
-- **Alternatives Considered** — table of options with pros, cons, and rejection reason
-- **Affected Components** — which components are impacted and how
-- **Consequences** — positive, negative, and risks (all three required)
-- **Related ADRs** — cross-references to other ADRs this depends on, extends, or conflicts with
+- **Context** - why this decision needed to be made
+- **Decision** - what was decided and why (be specific)
+- **Alternatives Considered** - table of options with pros, cons, and rejection reason
+- **Affected Components** - which components are impacted and how
+- **Consequences** - positive, negative, and risks (all three required)
+- **Related ADRs** - cross-references to other ADRs this depends on, extends, or conflicts with
 
 ---
 
@@ -73,7 +73,7 @@ Follow the [ADR Template](../templates/adr.template.md). Key sections:
 
 - Be specific. Vague ADRs are useless. "We chose PostgreSQL" is not an ADR. "We chose PostgreSQL over DynamoDB because the data model is relational and the team has existing expertise" is.
 - Consequences must include at least one positive and one negative consequence. Every decision has trade-offs.
-- Do not write ADRs for decisions that are fixed by the stack declaration - those are already decided. Write one ADR that records the stack choice itself, referencing the Planifest.
+- Do not write ADRs for decisions that are fixed by the stack declaration - those are already decided. Write one ADR that records the stack choice itself, referencing the design.
 - Number sequentially from ADR-001.
 - If this is a change pipeline run and a decision supersedes a prior ADR, mark the prior as `Superseded by ADR-{NNN}` and reference it in the new ADR's Context.
 - Write each ADR to disk as you complete it. Do not hold them all in memory.
@@ -81,3 +81,4 @@ Follow the [ADR Template](../templates/adr.template.md). Key sections:
 ---
 
 *This skill is invoked by the orchestrator. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*
+

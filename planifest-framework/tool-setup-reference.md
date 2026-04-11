@@ -1,4 +1,4 @@
-# Agentic Tool Setup Reference
+﻿# Agentic Tool Setup Reference
 
 > How each supported coding tool discovers skills, and what the setup script creates for each.
 
@@ -30,7 +30,7 @@ For each tool, the script:
 1. **Creates the tool's skill directory** (e.g., `.claude/skills/`)
 2. **Copies each skill** as `{skill-name}/SKILL.md` with the required YAML frontmatter (`name` + `description`)
 3. **Copies supporting files** (templates, standards, schemas) into the skill directory as `_planifest-*` folders
-4. **Copies workflows** (initiative-pipeline, change-pipeline, retrofit) into the tool's workflow directory
+4. **Copies workflows** (feature-pipeline, change-pipeline, retrofit) into the tool's workflow directory
 5. **Creates a boot file** (e.g., `CLAUDE.md`) if one doesn't already exist
 
 ---
@@ -65,7 +65,7 @@ For each tool, the script:
 │   ├── _planifest-standards/
 │   └── _planifest-schemas/
 └── commands/
-    ├── initiative-pipeline.md
+    ├── feature-pipeline.md
     ├── change-pipeline.md
     └── retrofit.md
 CLAUDE.md
@@ -126,7 +126,7 @@ CLAUDE.md
 │   ├── _planifest-standards/
 │   └── _planifest-schemas/
 └── workflows/
-    ├── initiative-pipeline.md
+    ├── feature-pipeline.md
     ├── change-pipeline.md
     └── retrofit.md
 AGENTS.md
@@ -159,7 +159,7 @@ AGENTS.md
     └── _planifest-schemas/
 .agent/
 └── workflows/
-    ├── initiative-pipeline.md
+    ├── feature-pipeline.md
     ├── change-pipeline.md
     └── retrofit.md
 GEMINI.md
@@ -172,7 +172,7 @@ GEMINI.md
 | Item | Detail |
 |------|--------|
 | **Skill discovery** | `.github/skills/{name}/SKILL.md` |
-| **Workflow discovery** | `.github/copilot-workflows/{name}.md` (natural language workflows — avoids GitHub Actions conflict) |
+| **Workflow discovery** | `.github/copilot-workflows/{name}.md` (natural language workflows - avoids GitHub Actions conflict) |
 | **Boot file** | `.github/copilot-instructions.md` |
 | **Personal skills** | `~/.copilot/skills/` |
 | **Frontmatter** | `name` + `description` + optional `license` |
@@ -190,7 +190,7 @@ GEMINI.md
 │   ├── _planifest-standards/
 │   └── _planifest-schemas/
 ├── copilot-workflows/
-│   ├── initiative-pipeline.md
+│   ├── feature-pipeline.md
 │   ├── change-pipeline.md
 │   └── retrofit.md
 └── copilot-instructions.md
@@ -203,8 +203,8 @@ GEMINI.md
 | Item | Detail |
 |------|--------|
 | **Skill discovery** | `.windsurf/skills/{name}/SKILL.md` |
-| **Workflow discovery** | None — rules are embedded in `.windsurfrules` |
-| **Boot file** | `.windsurfrules` (project root — always applied by Cascade) |
+| **Workflow discovery** | None - rules are embedded in `.windsurfrules` |
+| **Boot file** | `.windsurfrules` (project root - always applied by Cascade) |
 | **Frontmatter** | `name` + `description` required |
 | **Progressive disclosure** | Yes |
 | **Setup command** | `./planifest-framework/setup.sh windsurf` or `.\planifest-framework\setup.ps1 windsurf` |
@@ -229,8 +229,8 @@ GEMINI.md
 | Item | Detail |
 |------|--------|
 | **Skill discovery** | `.clinerules/skills/{name}/SKILL.md` |
-| **Workflow discovery** | None — instructions are embedded in `.clinerules` |
-| **Boot file** | `.clinerules` (project root — always loaded as persistent context) |
+| **Workflow discovery** | None - instructions are embedded in `.clinerules` |
+| **Boot file** | `.clinerules` (project root - always loaded as persistent context) |
 | **Frontmatter** | `name` + `description` required |
 | **Progressive disclosure** | Yes |
 | **Setup command** | `./planifest-framework/setup.sh cline` or `.\planifest-framework\setup.ps1 cline` |
@@ -277,3 +277,4 @@ All seven tools share these conventions:
 ---
 
 *Source of truth: `planifest-framework/` - the generated files are copies.*
+

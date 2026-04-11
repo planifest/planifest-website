@@ -1,4 +1,4 @@
-# Iteration Log - Guide
+﻿# Iteration Log - Guide
 
 > The audit trail written at the end of every Agentic Iteration Loop.
 
@@ -61,10 +61,11 @@ When reviewing a PR that was produced by Planifest:
 
 ## File Location
 
-`plan/changelog/{initiative-id}-<YYYY-MM-DD>.md`
+`plan/changelog/{feature-id}-<YYYY-MM-DD>.md`
 
 If phased: `plan/iteration-log-phase-{n}.md`
 
 ---
 
 *Template: [iteration-log.template.md](iteration-log.template.md)*
+

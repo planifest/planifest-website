@@ -1,4 +1,4 @@
----
+﻿---
 name: planifest-security-agent
 description: Performs a security review of the implementation, producing a security report with specific findings. Invoked during Phase 5.
 bundle_templates: [security-report.template.md]
@@ -13,7 +13,7 @@ bundle_standards: []
 
 ## Hard Limits
 
-1. Specification must be complete before code generation begins.
+1. Requirements must be complete before code generation begins.
 2. No direct schema modification - write a migration proposal and stop.
 3. Destructive schema operations require human approval - no exceptions.
 4. Data is owned by one component - never write to data owned by another.
@@ -24,9 +24,9 @@ bundle_standards: []
 
 ## Input
 
-- The validated implementation at `src/{component-id}/` (all components in the initiative)
-- Infrastructure as Code at `src/{component-id}/` (Terraform, Pulumi, CDK, etc. — if declared in the stack)
-- Design Specification at `plan/current/design-spec.md`
+- The validated implementation at `src/{component-id}/` (all components in the feature)
+- Infrastructure as Code at `src/{component-id}/` (Terraform, Pulumi, CDK, etc. - if declared in the stack)
+- Design Requirements at `plan/current/design-requirements.md`
 - OpenAPI Specification at `plan/current/openapi-spec.yaml` (if applicable)
 - Risk Register at `plan/current/risk-register.md`
 
@@ -41,7 +41,7 @@ Security report at `plan/current/security-report.md`.
 ## Report Structure
 
 ```markdown
-# Security Report - {initiative-id}
+# Security Report - {feature-id}
 
 ## Threat Model (STRIDE)
 
@@ -97,7 +97,7 @@ Top actions before production:
 
 **You are report-only.** You do not modify code, configuration, or infrastructure. You produce a security report with findings and recommendations. The human decides which findings to act on and who implements the fixes.
 
-If you identify a critical vulnerability that is trivially fixable (e.g., a hardcoded credential), you still only report it — you do not fix it. The fix goes through the change-agent with proper documentation and audit trail.
+If you identify a critical vulnerability that is trivially fixable (e.g., a hardcoded credential), you still only report it - you do not fix it. The fix goes through the change-agent with proper documentation and audit trail.
 
 ---
 
@@ -113,3 +113,4 @@ If you identify a critical vulnerability that is trivially fixable (e.g., a hard
 ---
 
 *This skill is invoked by the orchestrator. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*
+

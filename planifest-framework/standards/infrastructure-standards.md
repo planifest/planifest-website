@@ -6,10 +6,10 @@
 
 ## 1. Infrastructure as Code
 
-- All infrastructure must be defined in code — no manual console changes
+- All infrastructure must be defined in code - no manual console changes
 - Use the IaC tool declared in the stack (Terraform, Pulumi, CDK)
 - IaC files live at `src/{component-id}/infra/` or a dedicated infrastructure component
-- All configuration is parameterized — no hardcoded values for environment, region, or credentials
+- All configuration is parameterized - no hardcoded values for environment, region, or credentials
 
 ---
 
@@ -41,7 +41,7 @@
 
 - Use VPC/VNet with private subnets for compute and data
 - Public subnets only for load balancers and NAT gateways
-- Security groups/firewall rules follow least-privilege — only open required ports
+- Security groups/firewall rules follow least-privilege - only open required ports
 - No `0.0.0.0/0` ingress rules except for public load balancers on ports 80/443
 
 ---

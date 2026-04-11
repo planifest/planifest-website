@@ -1,4 +1,4 @@
----
+﻿---
 name: fast-path
 description: Apply a trivial fix directly without a Feature Brief, Execution Plan, or ADR. Use ONLY when the change meets all Fast Path criteria defined in the orchestrator skill.
 ---
@@ -9,7 +9,7 @@ Executes a direct, lightweight change for trivial fixes. Bypasses the full pipel
 
 ## Prerequisites
 
-- An existing initiative with code at `src/{component-id}/`
+- An existing feature with code at `src/{component-id}/`
 - The request meets **ALL** Fast Path criteria (verified by the orchestrator)
 
 ## Fast Path Criteria
@@ -39,9 +39,9 @@ The orchestrator must confirm all four before this workflow is used:
    - Increment the patch version (e.g. `1.2.3` → `1.2.4`)
    - Update `metadata.updatedAt` to today's ISO-8601 date
 
-5. **Log the change.** Append an entry to `plan/changelog/{initiative-id}-{YYYY-MM-DD}.md`:
+5. **Log the change.** Append an entry to `plan/changelog/{feature-id}-{YYYY-MM-DD}.md`:
    ```markdown
-   ## {YYYY-MM-DD} — Fast Path: {description}
+   ## {YYYY-MM-DD} - Fast Path: {description}
    - Change: {what was changed}
    - Component: {component-id}
    - Reason: {why}
@@ -51,11 +51,12 @@ The orchestrator must confirm all four before this workflow is used:
    ```
    fix(fast-path): {description}
    ```
-   The pre-push hook and CI workflow recognise this prefix and require only `component.yml` or `plan/changelog/` to be updated — not full `plan/` or `docs/` changes.
+   The pre-push hook and CI workflow recognise this prefix and require only `component.yml` or `plan/changelog/` to be updated - not full `plan/` or `docs/` changes.
 
 ## What is NOT touched
 
-- `plan/current/design.md` — no modification
-- `plan/current/design-spec.md` — no modification
-- `plan/current/adr/` — no new ADRs
-- `docs/` — no modification (unless the fix directly corrects a documentation error)
+- `plan/current/design.md` - no modification
+- `plan/current/design-requirements.md` - no modification
+- `plan/current/adr/` - no new ADRs
+- `docs/` - no modification (unless the fix directly corrects a documentation error)
+

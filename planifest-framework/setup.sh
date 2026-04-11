@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 set -euo pipefail
 
 # Planifest Setup - Configures skills for your agentic coding tool.
@@ -94,7 +94,7 @@ copy_skills() {
           done
           echo "    standards: selective ($(echo $bundle_standards | wc -w | tr -d ' ') files)"
         else
-          # No manifest — copy all top-level standards (skip reference/ subdirectory)
+          # No manifest - copy all top-level standards (skip reference/ subdirectory)
           find "$SCRIPT_DIR/standards" -maxdepth 1 -type f -exec cp {} "$dest_dir/references/" \;
           echo "    standards: all top-level (no manifest)"
         fi
@@ -162,7 +162,7 @@ activate_guardrails() {
   if [ -f "$gitattributes_src" ]; then
     if [ ! -f "$gitattributes_dest" ]; then
       cp "$gitattributes_src" "$gitattributes_dest"
-      echo "  + .gitattributes (created — enforces LF on hook scripts)"
+      echo "  + .gitattributes (created - enforces LF on hook scripts)"
     else
       echo "  - .gitattributes (already exists, skipped)"
     fi
@@ -201,7 +201,7 @@ initialize_repo() {
 
 Components live here. Each component is a subfolder with a `component.yml` manifest.
 
-See [planifest/spec/initiative-structure.md](../planifest/spec/initiative-structure.md) for the canonical layout.
+See [planifest/spec/feature-structure.md](../planifest/spec/feature-structure.md) for the canonical layout.
 EOF
     echo "  + src/README.md (created)"
   fi
@@ -216,16 +216,16 @@ EOF
     cat << 'EOF' > "$plan_dir/README.md"
 # plan/
 
-Initiative specifications live here. Each initiative gets a subfolder.
+Feature specifications live here. Each feature gets a subfolder.
 
-See [plan/initiative-structure.md](initiative-structure.md) for the canonical layout.
+See [plan/feature-structure.md](feature-structure.md) for the canonical layout.
 EOF
     echo "  + plan/README.md (created)"
   fi
 
-  if [ ! -f "$plan_dir/initiative-structure.md" ]; then
-    cat << 'EOF' > "$plan_dir/initiative-structure.md"
-# Planifest â€” Repository Structure
+  if [ ! -f "$plan_dir/feature-structure.md" ]; then
+    cat << 'EOF' > "$plan_dir/feature-structure.md"
+# Planifest Ã¢â‚¬â€ Repository Structure
 
 > The canonical layout for a Planifest-managed repository. Three top-level folders, three concerns.
 
@@ -235,101 +235,101 @@ EOF
 
 ```
 repo/
-â”œâ”€â”€ planifest-framework/        â† The framework (skills, templates, schemas, standards)
-â”‚                                 Drop this in. Don't modify it per-project.
-â”‚
-â”œâ”€â”€ plan/                       â† The specifications (organized by initiative)
-â”‚                                 Plans, briefs, specs, ADRs, risk, scope, glossary.
-â”‚                                 Everything that describes WHAT to build and WHY.
-â”‚
-â””â”€â”€ src/                        â† The code (organized by component)
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ planifest-framework/        Ã¢â€ Â The framework (skills, templates, schemas, standards)
+Ã¢â€â€š                                 Drop this in. Don't modify it per-project.
+Ã¢â€â€š
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ plan/                       Ã¢â€ Â The specifications (organized by feature)
+Ã¢â€â€š                                 Plans, briefs, specs, ADRs, risk, scope, glossary.
+Ã¢â€â€š                                 Everything that describes WHAT to build and WHY.
+Ã¢â€â€š
+Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ src/                        Ã¢â€ Â The code (organized by component)
                                   Implementation, tests, config, manifests.
                                   Everything that IS the built thing.
 ```
 
 ---
 
-## `planifest-framework/` â€” The Framework
+## `planifest-framework/` Ã¢â‚¬â€ The Framework
 
-This folder is the Planifest framework itself. It is the same across every project. You do not modify it per-initiative â€” you update it when the framework evolves.
+This folder is the Planifest framework itself. It is the same across every project. You do not modify it per-feature Ã¢â‚¬â€ you update it when the framework evolves.
 
 ```
 planifest/
-â”œâ”€â”€ skills/           â† Agent instructions (orchestrator + phase skills)
-â”œâ”€â”€ templates/        â† File format templates for every artifact
-â”œâ”€â”€ schemas/          â† JSON Schema validation definitions
-â”œâ”€â”€ standards/        â† Code quality standards
-â””â”€â”€ spec/             â† This file â€” the canonical structure definition
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ skills/           Ã¢â€ Â Agent instructions (orchestrator + phase skills)
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ templates/        Ã¢â€ Â File format templates for every artifact
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ schemas/          Ã¢â€ Â JSON Schema validation definitions
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ standards/        Ã¢â€ Â Code quality standards
+Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ spec/             Ã¢â€ Â This file Ã¢â‚¬â€ the canonical structure definition
 ```
 
 ---
 
-## `plan/` â€” The Plan/Specifications
+## `plan/` Ã¢â‚¬â€ The Plan/Specifications
 
-Organized by initiative. Each initiative gets a subfolder. This is where humans write briefs and agents write specs. No code lives here.
+Organized by feature. Each feature gets a subfolder. This is where humans write briefs and agents write specs. No code lives here.
 
 ```
 plan/
-â””â”€â”€ {initiative-id}/
-    â”œâ”€â”€ initiative-brief.md          â† Human input (start here)
-    â”œâ”€â”€ design.md                 â† Validated plan (orchestrator output)
-    â”œâ”€â”€ pipeline-run.md              â† Audit trail (per run)
-    â”œâ”€â”€ pipeline-run-phase-2.md      â† Phase 2 audit (if phased)
-    â”‚
-    â”œâ”€â”€ design-spec.md               â† Functional & non-functional requirements
-    â”œâ”€â”€ design-spec-phase-2.md       â† Phase 2 spec (if phased)
-    â”œâ”€â”€ openapi-spec.yaml            â† API contract
-    â”œâ”€â”€ scope.md                     â† In / Out / Deferred
-    â”œâ”€â”€ risk-register.md             â† Risk items with likelihood & impact
-    â”œâ”€â”€ domain-glossary.md           â† Ubiquitous language
-    â”œâ”€â”€ security-report.md           â† Security review findings
-    â”œâ”€â”€ quirks.md                    â† Quirks and workarounds
-    â”œâ”€â”€ recommendations.md           â† Improvement suggestions
-    â”‚
-    â””â”€â”€ adr/
-        â”œâ”€â”€ ADR-001-{title}.md       â† Architecture decision records
-        â”œâ”€â”€ ADR-002-{title}.md
-        â””â”€â”€ ...
+Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ {feature-id}/
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ feature-brief.md          Ã¢â€ Â Human input (start here)
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ design.md                 Ã¢â€ Â Validated plan (orchestrator output)
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ pipeline-run.md              Ã¢â€ Â Audit trail (per run)
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ pipeline-run-phase-2.md      Ã¢â€ Â Phase 2 audit (if phased)
+    Ã¢â€â€š
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ design-requirements.md               Ã¢â€ Â Functional & non-functional requirements
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ design-spec-phase-2.md       Ã¢â€ Â Phase 2 spec (if phased)
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ openapi-spec.yaml            Ã¢â€ Â API contract
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ scope.md                     Ã¢â€ Â In / Out / Deferred
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ risk-register.md             Ã¢â€ Â Risk items with likelihood & impact
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ domain-glossary.md           Ã¢â€ Â Ubiquitous language
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ security-report.md           Ã¢â€ Â Security review findings
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ quirks.md                    Ã¢â€ Â Quirks and workarounds
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ recommendations.md           Ã¢â€ Â Improvement suggestions
+    Ã¢â€â€š
+    Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ adr/
+        Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ ADR-001-{title}.md       Ã¢â€ Â Architecture decision records
+        Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ ADR-002-{title}.md
+        Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ ...
 ```
 
-### Path Rules â€” plan/
+### Path Rules Ã¢â‚¬â€ plan/
 
-1. **Initiative ID** follows the format `{0000000}-{kebab-case-name}` — a 7-digit zero-padded number prefix for chronological ordering, followed by a human-chosen kebab-case name.
-2. **No nesting** â€” specs, ADRs, and supporting docs are flat within the initiative folder. One level of subfolders only (adr/).
-3. **No code** â€” nothing executable lives in `plan/`. If it runs, it belongs in `src/`.
-4. **Phased initiatives** append the phase number: `design-spec-phase-2.md`, `pipeline-run-phase-2.md`. The `design.md` is updated per phase, not duplicated.
+1. **Feature ID** follows the format `{0000000}-{kebab-case-name}` - a 7-digit zero-padded number prefix for chronological ordering, followed by a human-chosen kebab-case name.
+2. **No nesting** Ã¢â‚¬â€ specs, ADRs, and supporting docs are flat within the feature folder. One level of subfolders only (adr/).
+3. **No code** Ã¢â‚¬â€ nothing executable lives in `plan/`. If it runs, it belongs in `src/`.
+4. **Phased features** append the phase number: `design-spec-phase-2.md`, `pipeline-run-phase-2.md`. The `design.md` is updated per phase, not duplicated.
 5. **ADRs** are numbered sequentially. Never renumber. Superseded ADRs stay with `status: superseded`.
 
 ---
 
-## `src/` â€” The Code
+## `src/` Ã¢â‚¬â€ The Code
 
 Organized by component. Each component is a subfolder at the top level of `src/`. The component manifest lives with the code, not with the plan.
 
 ```
 src/
-â””â”€â”€ {component-id}/
-    â”œâ”€â”€ component.yml               â† Component manifest (from template)
-    â”œâ”€â”€ package.json                  â† (or equivalent for the stack)
-    â”‚
-    â”œâ”€â”€ src/                          â† Implementation (structure varies by stack)
-    â”‚   â””â”€â”€ ...
-    â”‚
-    â”œâ”€â”€ tests/                        â† Tests
-    â”‚   â””â”€â”€ ...
-    â”‚
-    â””â”€â”€ docs/
-        â”œâ”€â”€ data-contract.md          â† Schema ownership & invariants
-        â””â”€â”€ migrations/
-            â””â”€â”€ proposed-{desc}.md    â† Migration proposals
+Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ {component-id}/
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ component.yml               Ã¢â€ Â Component manifest (from template)
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ package.json                  Ã¢â€ Â (or equivalent for the stack)
+    Ã¢â€â€š
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ src/                          Ã¢â€ Â Implementation (structure varies by stack)
+    Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ ...
+    Ã¢â€â€š
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ tests/                        Ã¢â€ Â Tests
+    Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ ...
+    Ã¢â€â€š
+    Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ docs/
+        Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ data-contract.md          Ã¢â€ Â Schema ownership & invariants
+        Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ migrations/
+            Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ proposed-{desc}.md    Ã¢â€ Â Migration proposals
 ```
 
-### Path Rules â€” src/
+### Path Rules Ã¢â‚¬â€ src/
 
 1. **Component ID** is kebab-case, matches the `id` in `component.yml`.
-2. **component.yml is mandatory** â€” every component has one. Read it before any work; update it after every build.
+2. **component.yml is mandatory** Ã¢â‚¬â€ every component has one. Read it before any work; update it after every build.
 3. **Component-specific docs** live with the component at `src/{component-id}/docs/`. These describe the component's data contract, migrations, and technical specifics.
-4. **Initiative-level docs** live in `plan/`. The component's `component.yml` references the initiative via the `initiative` field.
+4. **Feature-level docs** live in `plan/`. The component's `component.yml` references the feature via the `feature` field.
 5. **Existing components** that predate Planifest are retrofitted by adding a `component.yml` at their root.
 
 ---
@@ -338,32 +338,32 @@ src/
 
 ```
 plan/current/design.md
-    â””â”€â”€ lists component IDs â†’ src/{component-id}/component.yml
-                                    â””â”€â”€ references initiative â†’ plan/
+    Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ lists component IDs Ã¢â€ â€™ src/{component-id}/component.yml
+                                    Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ references feature Ã¢â€ â€™ plan/
 
-plan/current/design-spec.md
-    â””â”€â”€ functional requirements â†’ implemented in â†’ src/{component-id}/src/
+plan/current/design-requirements.md
+    Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ functional requirements Ã¢â€ â€™ implemented in Ã¢â€ â€™ src/{component-id}/src/
 
 plan/current/adr/ADR-001-*.md
-    â””â”€â”€ decisions â†’ followed by â†’ src/{component-id}/src/
+    Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ decisions Ã¢â€ â€™ followed by Ã¢â€ â€™ src/{component-id}/src/
 
 plan/current/openapi-spec.yaml
-    â””â”€â”€ API contract â†’ implemented in â†’ src/{component-id}/src/
+    Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ API contract Ã¢â€ â€™ implemented in Ã¢â€ â€™ src/{component-id}/src/
 ```
 
 The relationship is bidirectional:
 - `design.md` lists all component IDs
-- Each `component.yml` references its initiative ID
+- Each `component.yml` references its feature ID
 - The plan describes WHAT; the code IS the WHAT
 
 ---
 
-## Retrofit â€” Adding Planifest to an Existing Repo
+## Retrofit Ã¢â‚¬â€ Adding Planifest to an Existing Repo
 
 If the repo already has code:
 
 1. Drop `planifest/` into the repo root
-2. Create `plan/` for the first initiative
+2. Create `plan/` for the first feature
 3. Move existing components under `src/` (or leave them if they're already there)
 4. Add a `component.yml` to each existing component
 5. The orchestrator's retrofit mode will read the codebase and infer the existing architecture
@@ -372,7 +372,7 @@ If the repo already has code:
 
 *Templates for each file are in [planifest/templates/](../templates/). Skills reference these paths.*
 EOF
-    echo "  + plan/initiative-structure.md (created)"
+    echo "  + plan/feature-structure.md (created)"
   fi
 
   # Add tool ignore rules to keep context windows lean
@@ -395,7 +395,7 @@ out/
     fi
   done
 
-  # Deploy .cursorindexingignore — excludes large reference docs from semantic
+  # Deploy .cursorindexingignore - excludes large reference docs from semantic
   # search indexing but keeps them accessible via explicit @ mention
   local indexing_ignore_content="
 # Planifest - Indexing Exclusions (files accessible via @ mention but excluded from search)
@@ -476,7 +476,7 @@ if [ -z "$TOOL" ]; then
 fi
 
 echo "Planifest Setup"
-echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
+echo "Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â"
 
 initialize_repo
 activate_guardrails
@@ -497,3 +497,4 @@ echo ""
 echo "Setup complete."
 echo "  Source of truth: planifest-framework/"
 echo "  Re-run after updating framework files."
+

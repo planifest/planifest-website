@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 Write-Host "Running setup.ps1 tests..."
 
@@ -33,7 +33,7 @@ try {
         throw "FAIL: CLAUDE.md boot file not created"
     }
 
-    if (-not (Test-Path ".claude\commands\initiative-pipeline.md")) {
+    if (-not (Test-Path ".claude\commands\feature-pipeline.md")) {
         throw "FAIL: Workflow command not created for claude-code"
     }
 
@@ -56,3 +56,4 @@ finally {
         Remove-Item -Path $testDir -Recurse -Force
     }
 }
+

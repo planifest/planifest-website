@@ -1,6 +1,6 @@
-# Risk Register - Guide
+﻿# Risk Register - Guide
 
-> How risks are identified, assessed, and tracked throughout an initiative.
+> How risks are identified, assessed, and tracked throughout a feature.
 
 *Related: [Spec Agent Skill](../skills/spec-agent-SKILL.md) | [Scope Guide](scope-guide.md)*
 
@@ -23,11 +23,11 @@ The Risk Register is a living document. The spec-agent seeds it during Phase 1. 
 ## What Makes a Good Risk
 
 A good risk entry is:
-- **Specific to this initiative** - not generic ("data loss is bad")
+- **Specific to this feature** - not generic ("data loss is bad")
 - **Actionable** - has a mitigation plan, not just a description
 - **Assessed** - likelihood and impact rated, not left blank
 
-| âŒ Bad | âœ… Good |
+| Ã¢ÂÅ’ Bad | Ã¢Å“â€¦ Good |
 |--------|---------|
 | "Security risk" | "R-003: The auth-service stores refresh tokens in a PostgreSQL table without encryption at rest. Likelihood: medium. Impact: high. Mitigation: enable TDE on the token table and rotate tokens on every use." |
 | "Performance might be an issue" | "R-005: The search endpoint joins 4 tables without a covering index. Likelihood: high at >1000 records. Impact: medium (latency > SLO). Mitigation: add composite index on (tenant_id, created_at, status)." |
@@ -36,7 +36,7 @@ A good risk entry is:
 
 ## Assumptions as Risks
 
-Assumptions from the Design Specification are automatically logged as risk items with `likelihood: medium`. This ensures they're tracked - if an assumption turns out to be wrong, the risk register already has an entry.
+Assumptions from the Design Requirements are automatically logged as risk items with `likelihood: medium`. This ensures they're tracked - if an assumption turns out to be wrong, the risk register already has an entry.
 
 ---
 
@@ -70,3 +70,4 @@ The **Overall Risk Level** in the header is the highest individual risk level in
 ---
 
 *Template: [risk-register.template.md](risk-register.template.md)*
+

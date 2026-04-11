@@ -1,14 +1,14 @@
-# Feature Brief - Guide
+﻿# Feature Brief - Guide
 
 > How to write a Feature Brief that gives the orchestrator everything it needs to coach you and build your system.
 
-*Related: [Orchestrator Skill](../skills/planifest-orchestrator/SKILL.md) | [Initiative Structure](../../plan/initiative-structure.md)*
+*Related: [Orchestrator Skill](../skills/planifest-orchestrator/SKILL.md) | [Feature Structure](../../plan/feature-structure.md)*
 
 ---
 
 ## Purpose
 
-The Feature Brief is the **only human-authored input** to the Planifest Agentic Iteration Loop. Everything the agent builds — execution plans, ADRs, code, tests, docs — derives from this document. If it's vague, everything downstream is vague. If it's specific, the agent has a fighting chance.
+The Feature Brief is the **only human-authored input** to the confirmed design Agentic Iteration Loop. Everything the agent builds - execution plans, ADRs, code, tests, docs - derives from this document. If it's vague, everything downstream is vague. If it's specific, the agent has a fighting chance.
 
 You are the Product Owner and Technical Architect. This brief is where you exercise both roles.
 
@@ -17,7 +17,7 @@ You are the Product Owner and Technical Architect. This brief is where you exerc
 ## When to Write It
 
 - **Before** engaging the orchestrator
-- **One per initiative** - if you have multiple initiatives, write multiple briefs
+- **One per feature** - if you have multiple features, write multiple briefs
 - **Updated** when the scope or architecture changes materially (the orchestrator re-reads it)
 
 ---
@@ -28,7 +28,7 @@ You are the Product Owner and Technical Architect. This brief is where you exerc
 
 Write 2-3 sentences. Be specific about the problem, who has it, and how you'll know it's solved.
 
-| âŒ Bad | âœ… Good |
+| Ã¢ÂÅ’ Bad | Ã¢Å“â€¦ Good |
 |--------|---------|
 | "Improve performance" | "Reduce checkout latency from 3s to under 500ms - 40% of users abandon at payment" |
 | "Add user management" | "Enable self-service account creation so customer support stops onboarding 200 users/week manually" |
@@ -71,7 +71,7 @@ The [Backend Stack Evaluation](../standards/backend-stack-evaluation.md) and [Fr
 
 ### Scope Boundaries
 
-**In Scope** - what this initiative delivers. Be specific.
+**In Scope** - what this feature delivers. Be specific.
 
 **Out of Scope** - what it does NOT deliver. This is equally important. Without it, the agent may build features you didn't ask for. Explicit exclusions save cycles.
 
@@ -85,7 +85,7 @@ If you don't have a target, leave it blank. The orchestrator will ask. Better to
 
 ### Acceptance Criteria
 
-How you know the initiative is done. These become the orchestrator's exit criteria. Be specific - the agent will test against them.
+How you know the feature is done. These become the orchestrator's exit criteria. Be specific - the agent will test against them.
 
 ---
 
@@ -103,9 +103,14 @@ How you know the initiative is done. These become the orchestrator's exit criter
 
 1. You write the brief and save it to `plan/current/feature-brief.md`
 2. You tell the orchestrator to load it
-3. The orchestrator assesses it against the three layers (Product, Architecture, Engineering) and coaches you through any gaps - one question at a time
-4. Once complete, the orchestrator produces the Planifest (the validated design) and begins the Agentic Iteration Loop
+3. The orchestrator assesses it against the three layers:
+   - **Product**: Functional Requirements. What the system must do and why.
+   - **Architecture**: Standards. The cross-cutting rules and non-functional requirements.
+   - **Engineering**: Implementation. How the system was actually built.
+   The orchestrator coaches you through any gaps - one question at a time.
+4. Once complete, the orchestrator produces the **confirmed design** and begins the Agentic Iteration Loop
 
 ---
 
 *Template: [feature-brief.template.md](feature-brief.template.md)*
+

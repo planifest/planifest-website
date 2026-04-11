@@ -1,4 +1,4 @@
-# Component Manifest - Template Guide
+﻿# Component Manifest - Template Guide
 
 > This is the canonical template for `component.yml` - the manifest file that describes a built component. Agents write it after building; agents and humans read it before changing anything.
 
@@ -10,7 +10,7 @@
 
 The `component.yml` is created at **two points** in the lifecycle:
 
-1. **Pre-seeded by the human** (or orchestrator) before the pipeline runs - with stack decisions, initiative mode, and domain knowledge path. Purpose, contract, and data sections are left empty or minimal. This gives the codegen-agent its constraints.
+1. **Pre-seeded by the human** (or orchestrator) before the pipeline runs - with stack decisions, feature mode, and domain knowledge path. Purpose, contract, and data sections are left empty or minimal. This gives the codegen-agent its constraints.
 
 2. **Completed by the codegen-agent** after the implementation is built - the agent fills in purpose, contract, data ownership, risk, scope, and quality sections based on what was actually implemented.
 
@@ -32,9 +32,9 @@ src/{{component-id}}/component.yml
 
 | Field | Required | Written by | Description |
 |---|---|---|---|
-| `id` | Yes | Human / Orchestrator | Kebab-case identifier. Must be unique across the initiative. |
+| `id` | Yes | Human / Orchestrator | Kebab-case identifier. Must be unique across the feature. |
 | `name` | Yes | Human / Orchestrator | Human-readable name. |
-| `initiative` | Yes | Human / Orchestrator | The initiative this component belongs to. |
+| `feature` | Yes | Human / Orchestrator | The feature this component belongs to. |
 | `version` | Yes | Agent | Semver. Incremented by the agent on each meaningful change. |
 | `status` | Yes | Agent | `planned` -> `active` -> `deprecated`. Only the orchestrator or a human sets `deprecated`. |
 
@@ -77,7 +77,7 @@ Describes the component's interface - what it accepts, what it produces, who dep
 
 | Field | Required | Written by | Description |
 |---|---|---|---|
-| `contract.apiSpec` | Yes | Agent | Path to the OpenAPI spec (from project root). The spec-agent writes this to `plan/{initiative-id}/openapi-spec.yaml` (if the component serves an API). |
+| `contract.apiSpec` | Yes | Agent | Path to the OpenAPI spec (from project root). The spec-agent writes this to `plan/{feature-id}/openapi-spec.yaml` (if the component serves an API). |
 | `contract.inputs` | Yes | Agent | Array of inputs (HTTP endpoints, events, queues) the component accepts. |
 | `contract.outputs` | Yes | Agent | Array of outputs the component produces. |
 | `contract.consumedBy` | Yes | Agent | Array of component IDs that depend on this component. Updated as the system grows. |
@@ -107,13 +107,13 @@ Populated by the security-agent and updated by any agent that identifies a risk.
 
 ### Scope
 
-Mirrors the initiative brief's scope boundaries, narrowed to this component.
+Mirrors the feature brief's scope boundaries, narrowed to this component.
 
 | Field | Required | Written by | Description |
 |---|---|---|---|
 | `scope.in` | Yes | Human / Agent | What is in scope for this component. |
 | `scope.out` | Yes | Human / Agent | What is explicitly out of scope. |
-| `scope.deferred` | No | Human / Agent | What is deferred to a future initiative. |
+| `scope.deferred` | No | Human / Agent | What is deferred to a future feature. |
 
 ### Quality
 
@@ -132,7 +132,7 @@ Operational metadata used by the CI/CD pipeline and template stamping system.
 | Field | Required | Written by | Description |
 |---|---|---|---|
 | `pipeline.templateVersion` | Yes | Agent / Orchestrator | Which pipeline template version this component is on. |
-| `pipeline.initiativeMode` | Yes | Human | `greenfield`, `retrofit`, or `agent-interface`. |
+| `pipeline.featureMode` | Yes | Human | `greenfield`, `retrofit`, or `agent-interface`. |
 | `pipeline.domainKnowledgePath` | Yes | Agent | Path to the component's domain knowledge docs directory. |
 
 ### Metadata
@@ -161,3 +161,4 @@ Operational metadata used by the CI/CD pipeline and template stamping system.
 ---
 
 *Template: [component.template.yml](component.template.yml)*
+

@@ -1,4 +1,4 @@
-{
+﻿{
     "$id": "shared",
     "$comment": "Planifest shared definitions - reusable types referenced by all other schemas.",
     "$defs": {
@@ -308,7 +308,7 @@
                 "name",
                 "type",
                 "summary",
-                "initiative",
+                "feature",
                 "status",
                 "risk"
             ],
@@ -330,7 +330,7 @@
                 "summary": {
                     "type": "string"
                 },
-                "initiative": {
+                "feature": {
                     "type": "string"
                 },
                 "status": {
@@ -354,3 +354,4 @@
         }
     }
 }
+

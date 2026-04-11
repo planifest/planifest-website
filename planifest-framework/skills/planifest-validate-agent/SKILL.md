@@ -1,4 +1,4 @@
----
+﻿---
 name: planifest-validate-agent
 description: Runs CI checks (lint, typecheck, test, build) and self-corrects up to 5 times. Invoked during Phase 4.
 bundle_templates: []
@@ -13,7 +13,7 @@ bundle_standards: [code-quality-standards.md, testing-standards.md, api-design-s
 
 ## Hard Limits
 
-1. Specification must be complete before code generation begins.
+1. Requirements must be complete before code generation begins.
 2. No direct schema modification - write a migration proposal and stop.
 3. Destructive schema operations require human approval - no exceptions.
 4. Data is owned by one component - never write to data owned by another.
@@ -24,7 +24,7 @@ bundle_standards: [code-quality-standards.md, testing-standards.md, api-design-s
 
 ## Input
 
-- The implementation at `src/{component-id}/` (all components in the initiative)
+- The implementation at `src/{component-id}/` (all components in the feature)
 - The project's CI check commands (read `package.json`, `Makefile`, or equivalent)
 
 ---
@@ -63,7 +63,7 @@ Cycle N:
 If the issue persists after 5 attempts, **halt and escalate to the human** with this format:
 
 ```
-VALIDATION BLOCKED — human intervention required
+VALIDATION BLOCKED - human intervention required
 
 Failing check: <lint | typecheck | test | build>
 Error: <exact error message>
@@ -86,7 +86,7 @@ Do NOT proceed to the next pipeline phase if any check is failing. The pipeline 
 
 - **Fix the actual bug.** Do not suppress linting rules, skip failing tests, or weaken type checks to make errors go away.
 - **Do not widen scope.** Fix the failure. Do not refactor adjacent code, improve test coverage beyond what failed, or restructure the project.
-- **If a test failure reveals a spec ambiguity**, record it in `src/{component-id}/docs/quirks.md` and note it for the human. Fix the test to match your best interpretation of the spec, but flag the ambiguity.
+- **If a test failure reveals a requirements ambiguity**, record it in `src/{component-id}/docs/quirks.md` and note it for the human. Fix the test to match your best interpretation of the requirements, but flag the ambiguity.
 - **Track every cycle.** Record what failed and how you fixed it - this goes into `pipeline-run.md`.
 
 ---
@@ -95,12 +95,12 @@ Do NOT proceed to the next pipeline phase if any check is failing. The pipeline 
 
 When validating, check fixes against these standards:
 
-- [Code Quality Standards](../standards/code-quality-standards.md) — module structure, naming, error handling
-- [Testing Standards](../standards/testing-standards.md) — test structure, coverage, mocking rules
-- [API Design Standards](../standards/api-design-standards.md) — endpoint naming, error responses, status codes
-- [Database Standards](../standards/database-standards.md) — query patterns, connection management
+- [Code Quality Standards](../standards/code-quality-standards.md) - module structure, naming, error handling
+- [Testing Standards](../standards/testing-standards.md) - test structure, coverage, mocking rules
+- [API Design Standards](../standards/api-design-standards.md) - endpoint naming, error responses, status codes
+- [Database Standards](../standards/database-standards.md) - query patterns, connection management
 
-Do not refactor code to meet standards during validation — only fix actual failures. If you notice a standards violation that isn't causing a test/lint/build failure, record it in recommendations for the docs-agent.
+Do not refactor code to meet standards during validation - only fix actual failures. If you notice a standards violation that isn't causing a test/lint/build failure, record it in recommendations for the docs-agent.
 
 ---
 
@@ -111,3 +111,4 @@ If a capability skill exists for the declared testing framework (e.g. `webapp-te
 ---
 
 *This skill is invoked by the orchestrator. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*
+
