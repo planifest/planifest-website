@@ -1,19 +1,19 @@
----
+﻿---
 name: planifest-change-agent
-description: Handles modifications to existing initiatives - loads domain context, implements the minimum change, validates, and updates documentation.
+description: Handles modifications to existing features - loads domain context, implements the minimum change, validates, and updates documentation.
 bundle_templates: [component.template.yml, change-summary.template.md]
 bundle_standards: [code-quality-standards.md]
 ---
 
 # Planifest - change-agent
 
-> You make targeted changes to existing initiatives. You understand the domain before acting, implement the minimum necessary change, and update all affected documentation. You do not refactor beyond scope.
+> You make targeted changes to existing features. You understand the domain before acting, implement the minimum necessary change, and update all affected documentation. You do not refactor beyond scope.
 
 ---
 
 ## Hard Limits
 
-1. Specification must be complete before code generation begins.
+1. Requirements must be complete before code generation begins.
 2. No direct schema modification - write a migration proposal and stop.
 3. Destructive schema operations require human approval - no exceptions.
 4. Data is owned by one component - never write to data owned by another.
@@ -25,7 +25,7 @@ bundle_standards: [code-quality-standards.md]
 ## Input
 
 - Change request (from the human, via the orchestrator)
-- Initiative ID and affected component ID(s)
+- Feature ID and affected component ID(s)
 - Existing artifacts at `plan/current/`
 - Existing implementation at `src/{component-id}/` (all affected components)
 
@@ -50,14 +50,14 @@ Do not exhaust token limits by loading all files. Read top-down selectively:
 
 1. Read `docs/dependency-graph.md` to find all components that consume or are consumed by the affected component(s)
 2. For each dependency, classify the coupling:
-   - **API consumer** — calls endpoints defined in the affected component's OpenAPI spec
-   - **Data reader** — reads from tables owned by the affected component
-   - **Event subscriber** — listens to events published by the affected component
-   - **Shared type consumer** — imports types from the affected component's shared package
+   - **API consumer** - calls endpoints defined in the affected component's OpenAPI spec
+   - **Data reader** - reads from tables owned by the affected component
+   - **Event subscriber** - listens to events published by the affected component
+   - **Shared type consumer** - imports types from the affected component's shared package
 3. Determine impact level per dependent component:
-   - **Direct** — the change modifies an interface, schema, or type that this component uses
-   - **Indirect** — the change modifies internal behavior but the interface is unchanged
-   - **None** — no coupling to the changed surface area
+   - **Direct** - the change modifies an interface, schema, or type that this component uses
+   - **Indirect** - the change modifies internal behavior but the interface is unchanged
+   - **None** - no coupling to the changed surface area
 4. Only components with **Direct** impact require contract test updates and consumer notification
 5. Record the full blast radius in the Change Summary (Phase 2 output header)
 
@@ -94,7 +94,7 @@ Run CI checks scoped to the blast radius of the change. Self-correct up to 5 tim
 3. The new ADR must reference the prior ADR in its Related ADRs section
 
 **Rollback handling:** If the change needs to be reverted after deployment:
-1. The change-agent does not perform rollbacks automatically — rollbacks are human-initiated
+1. The change-agent does not perform rollbacks automatically - rollbacks are human-initiated
 2. Document the rollback procedure in the change summary: what to revert, what data migration (if any) needs to be reversed, and what consumers need to be notified
 3. If the change included a schema migration, note whether the migration is backward-compatible (previous code version works with new schema) or requires a coordinated rollback
 
@@ -110,7 +110,7 @@ Update every artifact affected by the change:
 - `plan/current/domain-glossary.md` - if new terms were introduced
 - ADRs - written in Phase 4 if needed
 
-Write `plan/changelog/{initiative-id}-<YYYY-MM-DD>.md` as the audit trail for this change.
+Write `plan/changelog/{feature-id}-<YYYY-MM-DD>.md` as the audit trail for this change.
 
 ---
 
@@ -125,9 +125,9 @@ If the change request requires creating a new component (not just modifying exis
 5. **Update the component registry** at `docs/component-registry.md` to include the new component
 6. **Build the component** following the same rules as the codegen-agent (code, tests, docs, IaC)
 
-The change-agent builds the new component inline — it does not hand off to the codegen-agent. This avoids a pipeline context switch for what is typically a small addition.
+The change-agent builds the new component inline - it does not hand off to the codegen-agent. This avoids a pipeline context switch for what is typically a small addition.
 
-If the new component is large enough that it would benefit from full pipeline treatment (> 3 user stories, new stack choices), escalate to the orchestrator to start a new initiative instead.
+If the new component is large enough that it would benefit from full pipeline treatment (> 3 user stories, new stack choices), escalate to the orchestrator to start a new feature instead.
 
 ---
 
@@ -157,3 +157,4 @@ If a relevant capability skill exists for the technology being modified (e.g. `f
 ---
 
 *This skill is invoked by the orchestrator for change requests. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*
+

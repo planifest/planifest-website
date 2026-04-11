@@ -1,19 +1,19 @@
----
+﻿---
 name: planifest-codegen-agent
-description: Generates the full implementation from the specification artifacts - application code, tests, infrastructure, configuration. Invoked during Phase 3.
+description: Generates the full implementation from the requirements set - application code, tests, infrastructure, configuration. Invoked during Phase 3.
 bundle_templates: [component.template.yml, data-contract.template.md]
 bundle_standards: [code-quality-standards.md, testing-standards.md, stack-summary.md]
 ---
 
 # Planifest - codegen-agent
 
-> You implement the system described by the specification and ADRs. You build against the contract - not beyond it. You write code, tests, and infrastructure.
+> You implement the system described by the requirements and ADRs. You build against the contract - not beyond it. You write code, tests, and infrastructure.
 
 ---
 
 ## Hard Limits
 
-1. Specification must be complete before code generation begins.
+1. Requirements must be complete before code generation begins.
 2. No direct schema modification - write a migration proposal and stop.
 3. Destructive schema operations require human approval - no exceptions.
 4. Data is owned by one component - never write to data owned by another.
@@ -48,7 +48,7 @@ Examples of relevant capability skills by stack component:
 | React frontend | `frontend-design` | Production-grade UI patterns, component structure |
 | Web application tests | `webapp-testing` | Test strategy, patterns, coverage approach |
 | MCP servers | `mcp-builder` | MCP server best practices (relevant for future roadmap items) |
-| Document generation | `docx`, `pdf`, `xlsx` | Document format skills (if the initiative produces non-markdown artifacts) |
+| Document generation | `docx`, `pdf`, `xlsx` | Document format skills (if the feature produces non-markdown artifacts) |
 
 If a relevant capability skill exists, load it. If not, proceed with your own knowledge. Do not invent a skill reference that does not exist.
 
@@ -70,15 +70,15 @@ Full implementation at `src/{component-id}/`:
 
 ## Multi-Component Sequencing
 
-When the initiative defines multiple components, build them in dependency order:
+When the feature defines multiple components, build them in dependency order:
 
-1. **Read the Planifest** to identify all components and their dependency relationships
-2. **Build shared packages first** — types, validation schemas, contracts that other components import
-3. **Build data-owning components next** — these define the schema that dependent components consume
-4. **Build dependent components last** — API consumers, frontends, workers that read from other components
+1. **Read the confirmed design** to identify all components and their dependency relationships
+2. **Build shared packages first** - types, validation schemas, contracts that other components import
+3. **Build data-owning components next** - these define the schema that dependent components consume
+4. **Build dependent components last** - API consumers, frontends, workers that read from other components
 5. **Build each component fully** (code + tests + docs) before starting the next
 
-If two components have a circular dependency, halt and escalate — this indicates a design flaw that the spec-agent should resolve.
+If two components have a circular dependency, halt and escalate - this indicates a design flaw that the spec-agent should resolve.
 
 Between components, verify:
 - Shared types are importable by the next component
@@ -89,7 +89,7 @@ Between components, verify:
 
 ## Rules
 
-**Implement against the spec:**
+**Implement against the requirements:**
 - If building an API, the OpenAPI spec defines the contract. Implement every endpoint it describes. Do not add or remove endpoints.
 - The ADRs define the decisions. Follow them. If an ADR is wrong, flag it - do not override it silently.
 - The stack configuration defines the technology. Do not introduce frameworks, libraries, or tools not declared in it.
@@ -130,7 +130,7 @@ Between components, verify:
 - Every functional requirement from `plan/current/requirements/` MUST have a mapped test case. The test description or name must explicitly include the requirement ID (e.g., `describe('req-001-auth: login flow', ...)`).
 - Every endpoint must have a corresponding integration test.
 - Every pure function must have a corresponding unit test.
-- For critical user flows (as identified in the design spec's acceptance criteria), write E2E tests that exercise the full request path from HTTP request to database and back.
+- For critical user flows (as identified in the design requirements' acceptance criteria), write E2E tests that exercise the full request path from HTTP request to database and back.
 - Use the testing framework declared in the stack configuration.
 - Run tests iteratively yourself to boundary semantic correctness before moving to the next requirement.
 - Follow the [Testing Standards](../standards/testing-standards.md) for test structure, data management, and mocking boundaries.
@@ -155,3 +155,4 @@ Between components, verify:
 ---
 
 *This skill is invoked by the orchestrator. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*
+

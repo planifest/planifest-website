@@ -1,49 +1,28 @@
 # Planifest - Master Plan
 
-
 ---
 
-> Planifest is a **specification framework for agentic development**. It defines how requirements are captured, how decisions are recorded, and how agents are instructed and verified - across the full span of product, architecture, and engineering. This document is the canonical architecture reference. All sub-documents are linked via standard markdown links and diagrams are rendered as Mermaid.
+> Planifest is a **requirements framework for agentic development**. It defines how requirements are captured, how decisions are recorded, and how agents are instructed and verified - across the full span of product, architecture, and engineering. This document is the canonical architecture reference. All sub-documents are linked via standard markdown links and diagrams are rendered as Mermaid.
 
 > **Planifest gives agents the domain knowledge to build with purpose - and gives teams the visibility to trust what was built.**
 
 ---
 
-## Table of Contents
-
-- [1. What Planifest Is](#1-what-planifest-is)
-- [2. System Overview](#2-system-overview)
-- [3. SDLC Documentation Architecture](#3-sdlc-documentation-architecture)
-- [4. Human and Agent Responsibilities](#4-human-and-agent-responsibilities)
-- [5. Pipeline Architecture - New Initiatives](#5-pipeline-architecture-new-initiatives)
-- [6. Pipeline Architecture - Change & Maintenance](#6-pipeline-architecture-change-maintenance)
-- [7. Agent Orchestration Layer](#7-agent-orchestration-layer)
-- [8. Artifact Types](#8-artifact-types)
-- [9. Adoption Modes](#9-adoption-modes)
-- [10. Monorepo Structure](#10-monorepo-structure)
-- [11. Documentation Sync](#11-documentation-sync)
-- [Local Dev - Agentic Tool Execution Mode](p010-planifest-agentic-tool-runbook.md)
-- [MCP Design - Tool Server Architecture](roadmap/p005-planifest-mcp-architecture.md) *(roadmap)*
-- [Functional Decisions](p003-planifest-functional-decisions.md)
-- [The Pathway to Agentic Development](p004-the-pathway-to-agentic-development.md)
-
----
-
 ## 1. What Planifest Is
 
-Planifest is a specification framework for agentic development. It is not a code generator. It is not a CI/CD tool. It is the layer that gives agents the domain knowledge to build correctly - and gives teams the evidence to verify they did.
+Planifest is a requirements framework for agentic development. It is not a code generator. It is not a CI/CD tool. It is the layer that gives agents the domain knowledge to build correctly - and gives teams the evidence to verify they did.
 
-A **Planifest** is the plan and the manifest: the plan is what will be built, the manifest is what it builds against. For every initiative, the orchestrator agent produces a Planifest - a single document that records both. You cannot plan what to build without recording what you're building against.
+A **confirmed design** is the plan and the manifest: the plan is what will be built, the manifest is what it builds against. For every feature, the orchestrator agent produces a **confirmed design** - a single document that records both. You cannot plan what to build without recording what you're building against.
 
 **The root problem** Planifest solves is not the absence of good tooling - it is the absence of domain knowledge. Agents cannot acquire domain knowledge implicitly the way an experienced developer does. Without it, they generate code that is technically correct but architecturally wrong. They make decisions that have already been made. They create components that overlap with ones that already exist. They build quickly, and incorrectly, at scale.
 
 Planifest builds a structured domain for agents to reason within: what the system does, what it is made of, what decisions have been made and why, how each component relates to the whole. When an agent is asked to build something, it works within that domain - not in isolation.
 
-Planifest specifies three layers of every initiative:
+Planifest specifies three layers of every feature:
 
-- **Product** - Functional requirements. What the system must do. Derived from user stories, acceptance criteria, problem statements. The *Why* and the *What*.
-- **Architecture** - Non-functional requirements. How the system must perform, scale, and operate. SLOs, latency budgets, availability targets, security constraints, cost boundaries. The *How it must behave*.
-- **Engineering** - Technical delivery plan. Component design, data contracts, interface contracts, infrastructure, deployment topology. The *How it will be built*.
+- **Product Layer**: Functional Requirements (What the system does and why).
+- **Architecture Layer**: Standards (Cross-cutting rules and non-functional requirements).
+- **Engineering Layer**: Implementation (How the system was actually built).
 
 Across all three layers, Scope, Risks, and Dependencies are first-class concerns. Nothing significant is left implicit. See [Functional Decisions](p003-planifest-functional-decisions.md) for the full set of functional decisions.
 
@@ -51,13 +30,16 @@ Across all three layers, Scope, Risks, and Dependencies are first-class concerns
 
 ## 2. System Overview
 
+Planifest is composed of three core concepts: the **Documentation Architecture**, the **Three-Track Pipeline**, and the **Agent Skills**.
+
 ```mermaid
 flowchart TD
-    A([ðŸ‘¤ Initiative Brief]) --> ORCH[Orchestrator]
-    Z([ðŸ‘¤ Adjustment / Bug Report]) --> ORCH
+    A[Feature Brief] --> ORCH[planifest-orchestrator]
+    
+    Z([👤 Adjustment / Bug Report]) --> ORCH
 
     ORCH --> PHASE0[Phase 0: Assess & Coach]
-    PHASE0 -->|Planifest confirmed| LOOP
+    PHASE0 -->|Design confirmed| LOOP
     
     subgraph LOOP["Agentic Iteration Loop (Phases 1-6)"]
         direction TB
@@ -69,92 +51,46 @@ flowchart TD
         PHASE5 --> PHASE6[Phase 6: planifest-docs-agent]
     end
     
-    PHASE6 --> HGATE([ðŸ‘¤ PR Review])
+    PHASE6 --> HGATE([👤 PR Review])
 
     style A fill:transparent,stroke:#28a745,stroke-width:2px
     style Z fill:transparent,stroke:#28a745,stroke-width:2px
     style HGATE fill:transparent,stroke:#28a745,stroke-width:2px
-    style PHASE0 fill:transparent,stroke:#f0a500,stroke-width:2px
+    style LOOP fill:transparent,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray: 5 5
 ```
-
-> Planifest runs in two modes: any **CI/CD platform** (GitHub Actions, GitLab CI, Bitbucket Pipelines, CircleCI, etc.) using an LLM API, and any **agentic coding tool** (Claude Code, Cursor, Codex, Antigravity, GitHub Copilot, etc.) locally on a dev machine. See [Agentic Tool Runbook](p010-planifest-agentic-tool-runbook.md).
 
 ---
 
 ## 3. SDLC Documentation Architecture
 
-The overarching SDLC folder structure (consisting of the `plan/`, `manifest/`, and `docs/` folders) is the most critical concept in Planifest. It acts as a structured, versioned file tree that captures everything Planifest knows about a system - per initiative, per component, and system-wide. Agents query these files before building anything. It is the mechanism by which the domain is made available to agents that cannot acquire it implicitly.
+Planifest builds a domain by writing to a structured set of folders versioned in Git. Every artifact is a markdown or YAML file.
 
-```mermaid
-flowchart LR
-    subgraph DKS["SDLC Collaboration Folders"]
-        Q["domain_query"]
-        GC["get_component"]
-        GDG["get_dependency_graph"]
-        GR["get_risk"]
-        GG["get_glossary"]
-        GDC["get_data_contract"]
-    end
+### Layer 1: The Plan (`plan/`)
+Captures the *intent* and the *decisions* for a specific feature.
+- `current/` - The design, brief, requirements, and ADRs for the change in progress.
+- `archive/` - Historical features filed after merge.
+- `changelog/` - A human-readable record of all system changes.
 
-    AG["Agents"] -->|read / write| DKS
-    DKS --> STORE[(git docs/ folder)]
+### Layer 2: The Manifest (`src/{component}/component.yml`)
+The single source of truth for component domain knowledge. Captures the *contract* and *state* of the implementation. It replaces separate markdown files for purpose, scope, and risk.
 
-    style DKS fill:transparent,stroke:#ffc107,stroke-width:2px,stroke-dasharray: 5 5
-    style STORE fill:transparent,stroke:#0066cc,stroke-width:2px
-```
-
-### Access path - v1.0
-
-**Git `docs/` folder** - agents read and write documents directly via Agent Skills. Documents are colocated with code. No additional infrastructure required. Works locally and in CI.
-
-A dedicated queryable Domain Knowledge Store MCP service is a roadmap item - see [RC-001](p014-planifest-roadmap.md).
-
-### Agents query before generating
-
-Before building any component, an agent must at minimum:
-1. `get_component` - understand what already exists in the vicinity
-2. `domain_query` - confirm no existing component has overlapping responsibility
-3. `get_risk` - understand what risk has already been identified
-4. `get_glossary` - confirm it is using the correct ubiquitous language
-
-### Document versioning
-
-Every document is versioned. Updates create new versions rather than overwriting. History is never destroyed - only superseded. Documents carry `author: "human" | "agent"` - agent-authored documents are always flagged distinctly.
-
-See [MCP Design](roadmap/p005-planifest-mcp-architecture.md), [MCP Domain Service Spec](roadmap/p007-planifest-domain-knowledge-service-reference.md), and [MCP Interface Spec](roadmap/p006-planifest-domain-knowledge-service-interface.md) for the full MCP tool interface and conformance requirements *(roadmap - RC-001)*.
+### Layer 3: The Library (`docs/`)
+Repository-wide knowledge and artifact history.
+- `adr/` - All component-specific and system-level ADRs.
+- `migrations/` - Data migration history per component.
+- `component-registry.md` - Index of all system components.
+- `dependency-graph.md` - Visualisation of component relationships.
 
 ---
 
 ## 4. Human and Agent Responsibilities
 
-Planifest is not zero human-in-the-loop. It is zero human-in-the-loop *for building*. Humans retain approval authority over anything that changes intent or carries irreversible consequences.
+Planifest is not for zero human-in-the-loop. It is for zero human-in-the-loop for *building*. Humans remain the source of truth and approval authority.
 
-```mermaid
-flowchart LR
-    subgraph HUMAN["ðŸ‘¤ Humans"]
-        H1["Author Initiative Briefs"]
-        H2["Review & approve PRs\n(code + docs together)"]
-        H3["Approve schema changes\n& migrations"]
-        H4["Review high/critical\nrisk items"]
-        H5["Decide on agent-raised\nimprovements"]
-    end
-
-    subgraph AGENT["ðŸ¤– Agents"]
-        A1["Build, test, document\n& raise PRs"]
-        A2["Self-heal bugs that\ndon't break requirements"]
-        A3["Raise issues, quirks\n& tech debt"]
-        A4["Propose migrations -\nnever apply unilaterally"]
-    end
-
-    style HUMAN fill:transparent,stroke:#28a745,stroke-width:2px
-    style AGENT fill:#f0f4ff,stroke:#6c8ebf
-```
-
-### Default rules
-
-Conservative by default. Autonomy is earned progressively. Hard limits cannot be overridden under any circumstance. Rules can be relaxed per initiative as confidence grows - except hard limits, which are non-negotiable.
-
-See [FD-007 - Default rules](p003-planifest-functional-decisions.md#fd-007--default-rules-are-conservative-autonomy-is-earned-progressively) for the full default rules table.
+| Role | Responsibility |
+|---|---|
+| **Human** | Author the Feature Brief, coach Phase 0, approve PRs, approve schema changes, review high-risk items. |
+| **Agent** | Triage the track, requirements, build, test, document, self-heal logic bugs, propose migrations. |
 
 ### Three-Track Decision Tree (Scope-based Routing)
 
@@ -162,201 +98,113 @@ Every incoming request is triaged into one of three execution tracks based on th
 
 | Track | Signal | Rigour |
 |---|---|---|
-| **Fast Path** | UI styling, copy/text changes, or isolated pure-function logic bugs. No schema changes. | **Low**: Bypass spec/ADR. Direct implementation + validation. |
+| **Fast Path** | UI styling, copy/text changes, or isolated pure-function logic bugs. No schema changes. | **Low**: Bypass requirements/ADR. Direct implementation + validation. |
 | **Change Pipeline** | Targeted bug fix or modification to 1-2 existing components. | **Medium**: Phase 1 Context -> Phase 2 Change -> Phase 3 Validate. |
-| **Initiative Pipeline** | New features, ≥ 3 user stories, or touches > 3 components. | **High**: Full Phase 0-6 Agentic Iteration Loop. |
+| **Feature Pipeline** | New features, ≥ 3 user stories, or touches > 3 components. | **High**: Full Phase 0-6 Agentic Iteration Loop. |
 
 See [Planifest Pipeline](p015-planifest-pipeline.md) for detailed criteria per track.
 
 ---
 
-## 5. Pipeline Architecture - Initiative Pipeline
+## 5. Pipeline Architecture - Feature Pipeline
 
 Triggered when a new Feature Brief is provided.
 
-**The design is a hard gate.** The orchestrator coaches the human until a complete design (`plan/current/design.md`) is produced and **Planifest confirmed**. The pipeline then proceeds through specification, architecture, and generation.
-
 ```mermaid
 flowchart TD
-    BRIEF([ðŸ‘¤ Feature Brief]) --> P0[â‘ Phase 0: Assess & Coach]
-    P0 -->|Planifest confirmed| LOOP
+    BRIEF([👤 Feature Brief]) --> P0[① Phase 0: Assess & Coach]
+    P0 -->|Design confirmed| LOOP
     
     subgraph LOOP["Agentic Iteration Loop"]
         direction TB
-        P1[â‘  Phase 1: planifest-spec-agent]
-        P1 --> P2[â‘¡ Phase 2: planifest-adr-agent]
-        P2 --> P3[â‘¢ Phase 3: planifest-codegen-agent]
-        P3 --> P4[â‘£ Phase 4: planifest-validate-agent]
-        P4 --> P5[â‘¤ Phase 5: planifest-security-agent]
-        P5 --> P6[â‘¥ Phase 6: planifest-docs-agent]
+        P1[① Phase 1: planifest-spec-agent]
+        P1 --> P2[② Phase 2: planifest-adr-agent]
+        P2 --> P3[③ Phase 3: planifest-codegen-agent]
+        P3 --> P4[④ Phase 4: planifest-validate-agent]
+        P4 --> P5[⑤ Phase 5: planifest-security-agent]
+        P5 --> P6[⑥ Phase 6: planifest-docs-agent]
     end
     
-    P6 --> HGATE([ðŸ‘¤ PR Review])
+    P6 --> HGATE([👤 PR Review])
 
     style BRIEF fill:transparent,stroke:#28a745,stroke-width:2px
     style HGATE fill:transparent,stroke:#28a745,stroke-width:2px
-    style P0 fill:transparent,stroke:#f0a500,stroke-width:2px
+    style LOOP fill:transparent,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
-### Agent responsibilities
-
-| Agent | Domain Knowledge Access (v1.0) | Output |
-|---|---|---|
-| planifest-spec-agent | Reads `docs/` and `plan/current/` directly | design-spec.md, openapi.yaml, scope.md, risk-register.md |
-| planifest-adr-agent | Reads `docs/adr/` directly | docs/adr/*.md |
-| planifest-codegen-agent | Reads component files; writes via filesystem | Full implementation + tests + IaC |
-| planifest-validate-agent | Reads failure logs; writes via filesystem | Test results, self-correct logs |
-| planifest-security-agent | Reads source files directly | security-report.md |
-| planifest-docs-agent | Writes to `docs/` and `plan/current/` folders directly | SDLC folders updated |
+1. **Phase 0: Assess and Coach** ([planifest-orchestrator]) - Validates the brief, coaches gaps, reaches **Design confirmed** status.
+2. **Phase 1: Requirements** ([planifest-spec-agent]) - Produces the Execution Plan and OpenAPI spec.
+3. **Phase 2: Architecture Decisions** ([planifest-adr-agent]) - Records ADRs for the feature.
+4. **Phase 3: Code Generation** ([planifest-codegen-agent]) - Full implementation, tests, and IaC.
+5. **Phase 4: Validate** ([planifest-validate-agent]) - CI validation and self-correction.
+6. **Phase 5: Security** ([planifest-security-agent]) - Produces the security assessment report.
+7. **Phase 6: Documentation & Ship** ([planifest-docs-agent]) - Updates manifest, registry, and changelog.
 
 ---
 
 ## 6. Pipeline Architecture - Change & Maintenance
 
+Triggered for modifications to existing systems.
+
 ```mermaid
 flowchart TD
-    TRIGGER([ðŸ‘¤ Adjustment / Bug Report])
-
-    subgraph PHASE1["â‘  Domain Context"]
-        DKS["domain_query + get_component<br/>get_dependency_graph + get_risk"]
+    RE([👤 Change Request]) --> PHASE1
+    
+    subgraph PHASE1["① Phase 1: Context"]
+        R["planifest-spec-agent"]
     end
+ 
 
-    subgraph PHASE2["â‘¡ Targeted Change"]
+    subgraph PHASE2["② Targeted Change"]
         C["planifest-change-agent"]
     end
 
-    subgraph PHASE3["â‘¢ Validate & Self-Correct"]
-        V{"CI passes?"}
-        FIX["Self-correct"]
-        FAIL(["âŒ Halt"])
-        RETRY(["Retries left?"])
+    subgraph PHASE3["③ Validate & Self-Correct"]
+        V["planifest-validate-agent"]
     end
 
-    subgraph PHASE4["â‘£ ADR & Migration Check"]
-        ADR{"Contract changed?"}
-        NEWADR["adr-agent"]
-        SCHEMA{"Schema changed?"}
-        MIG["propose_migration\nFlag for human review"]
+    PHASE1 --> PHASE2 --> PHASE3 --> P4
+    
+    subgraph P4["④ Documentation & Ship"]
+        direction TB
+        D["planifest-docs-agent"]
     end
 
-    subgraph PHASE5["â‘¤ Security"]
-        SEC["security-agent"]
-    end
+    P4 --> PR([👤 PR Review])
 
-    subgraph PHASE6["â‘¥ Ship & Update"]
-        PR["pr-agent"]
-        DOCS["docs-agent"]
-        UPDK["Update plan/ and docs/"]
-    end
-
-    HGATE([ðŸ‘¤ PR Review])
-    DONE([âœ… Merged Â· Domain updated])
-
-    TRIGGER --> PHASE1
-    PHASE1 --> PHASE2
-    PHASE2 --> PHASE3
-    V -->|Yes| PHASE4
-    V -->|No| RETRY
-    RETRY -->|Yes| FIX --> V
-    RETRY -->|No| FAIL
-    ADR -->|Yes| NEWADR --> PHASE5
-    ADR -->|No| SCHEMA
-    SCHEMA -->|Yes| MIG --> PHASE5
-    SCHEMA -->|No| PHASE5
-    PHASE5 --> PHASE6
-    PR --> DOCS --> UPDK --> HGATE --> DONE
-
-    style TRIGGER fill:#d4edda,stroke:#28a745,color:#000
-    style HGATE fill:transparent,stroke:#28a745,stroke-width:2px
-    style DONE fill:#d4edda,stroke:#28a745,color:#000
-    style FAIL fill:#f8d7da,stroke:#dc3545,color:#000
-    style PHASE1 fill:#fff8e1,stroke:#f0a500
-    style PHASE4 fill:#f9f0ff,stroke:#9b59b6
+    style RE fill:transparent,stroke:#28a745,stroke-width:2px
+    style PR fill:transparent,stroke:#28a745,stroke-width:2px
 ```
 
 ---
 
 ## 7. Agent Orchestration Layer
 
-In v1.0, the pipeline is executed by a human-triggered agent session following the orchestrator skill. The orchestrator skill sequences the phase skills, and each agent reads and writes files directly.
+The pipeline is orchestrated as a state machine. Each agent skill is a distinct tool invocation with scoped context.
 
-A fully automated orchestrator service (watching for Initiative Briefs, running the pipeline as a CI state machine) is a roadmap item - see [RC-002](p014-planifest-roadmap.md). A serial write queue to structurally eliminate concurrent merge conflicts is [RC-003](p014-planifest-roadmap.md).
-
-Code and docs are always committed together in a single atomic operation. Neither is ever committed without the other - enforced by the pipeline skill instructions and reviewed at the PR gate.
-
-### Agent interface
-
-```typescript
-type AgentContext = {
-  runId: string
-  goal: string
-  initiativeId: string
-  componentId?: string
-}
-
-type AgentResult = {
-  status: "complete" | "blocked" | "failed"
-  blockedReason?: string    // surfaces a spec gap if blocked
-  outputPaths: string[]     // files written to disk
-}
-```
+- **Idempotency**: Re-running a phase with the same input produces the same output.
+- **Self-Correction**: Agents observe CI failures and iterate (max 5 cycles).
+- **Auditability**: Every decision and generation is recorded in the `iteration-log.md`.
 
 ---
 
 ## 8. Artifact Types
 
-Planifest defines distinct artifact types. No artifact bleeds into another. Each is maintained and versioned independently.
+See [Functional Decisions: FD-019](p003-planifest-functional-decisions.md#fd-019---documentation-is-granular-versioned-and-machine-readable) for the full list of artifacts.
 
-**Per Initiative:**
-
-| Artifact | Purpose |
-|---|---|
-| Feature Brief | What needs to be built and why |
-| Design Specification | Functional and non-functional requirements |
-| OpenAPI Specification | Language-agnostic API contract - generated first |
-| ADRs | Every significant decision with context and consequences |
-| Risk Register | Technical, operational, security, compliance risks |
-| Scope | In / out / deferred |
-| Security Report | Threat model, dependency audit, auth/authz, network policy |
-| Quirks | Known oddities, workarounds, acknowledged tech debt |
-| Recommendations | Suggested improvements for future iterations |
-| Operational Model | Runbook triggers, on-call expectations, alerting thresholds |
-| SLO Definitions | Error budgets, SLIs/SLOs |
-| Cost Model | Compute, storage, egress, third-party cost estimates |
-| Domain Glossary | Ubiquitous language - agents must respect it |
-
-**Per Component:**
-
-| Artifact | Purpose |
-|---|---|
-| Component Purpose | What this component exists to do in the wider system |
-| Interface Contract | Inputs, outputs, schema, consumers, breaking change policy |
-| Dependencies | What it consumes / what depends on it |
-| Data Contract | Schema, invariants, ownership - one owner per dataset |
-| Migration History | Full history of schema changes - never destroyed |
-| ADRs | Component-level decisions |
-| Risk | Component-scoped risk items |
-| Scope | Component-scoped in / out / deferred |
-| Quirks | Component-scoped oddities |
-| Test Coverage Summary | Coverage state at point of generation |
-| Known Tech Debt | Explicitly acknowledged debt |
-
-**System-wide:**
-
-| Artifact | Purpose |
-|---|---|
-| Component Registry | Index of every component - what it is, what it does |
-| Dependency Graph | How components relate to each other |
+- **Product Layer**: Functional Requirements.
+- **Architecture Layer**: Standards.
+- **Engineering Layer**: Implementation.
 
 ---
 
 ## 9. Adoption Modes
 
-| Mode | `initiative_mode` | Entry point | Description |
-|---|---|---|---|
-| **Greenfield** | `greenfield` | Feature Brief | New system, no prior codebase. Pipeline runs spec to PR. |
-| **Retrofit** | `retrofit` | Existing codebase | spec-agent performs codebase ingestion first - scans, infers architecture, generates ADRs from what exists. Surfaces drift and tech debt before any new code. |
-| **Agent Interface Layer** | `agent-interface` | Interface spec | Large or complex component library. Interface layer specified first; agents develop against it, not the internals. |
+| Mode | Entry Point | Ingestion Requirement |
+|---|---|---|
+| **Greenfield** | Feature Brief | None. |
+| **Retrofit** | Existing codebase | High - scan repo, infer architecture, generate initial ADRs. |
+| **Agent Interface** | Interface Spec | Medium - scope to the interface contract. |
 
 ---
 
@@ -364,53 +212,43 @@ Planifest defines distinct artifact types. No artifact bleeds into another. Each
 
 ```
 monorepo/
-â”œâ”€â”€ planifest-framework/
-â”‚   â”œâ”€â”€ skills/
-â”‚   â”‚   â”œâ”€â”€ planifest-orchestrator/SKILL.md   # Entry point
-â”‚   â”‚   â”œâ”€â”€ planifest-spec-agent/SKILL.md
-â”‚   â”‚   â”œâ”€â”€ planifest-adr-agent/SKILL.md
-â”‚   â”‚   â”œâ”€â”€ planifest-codegen-agent/SKILL.md
-â”‚   â”‚   â”œâ”€â”€ planifest-validate-agent/SKILL.md
-â”‚   â”‚   â”œâ”€â”€ planifest-security-agent/SKILL.md
-â”‚   â”‚   â”œâ”€â”€ planifest-docs-agent/SKILL.md
-â”‚   â”‚   â””â”€â”€ planifest-change-agent/SKILL.md
-â”‚   â”œâ”€â”€ setup/                        # Tool setup scripts
-â”‚   â”œâ”€â”€ templates/                      # Artifact templates
-â”‚   â”‚   â”œâ”€â”€ feature-brief.template.md
-â”‚   â”‚   â”œâ”€â”€ iteration-log.template.md
-â”‚   â”‚   â””â”€â”€ ...
-â”œâ”€â”€ plan/                           # Execution plans
-â”‚   â”œâ”€â”€ current/
-â”‚   â”‚   â”œâ”€â”€ design.md               # Confirmed build plan
-â”‚   â”‚   â”œâ”€â”€ feature-brief.md
-â”‚   â”‚   â”œâ”€â”€ iteration-log.md
-â”‚   â”‚   â””â”€â”€ ...
-â”‚   â”œâ”€â”€ archive/                     # Historical plans
-â”‚   â””â”€â”€ changelog/                   # Audit log
-â”œâ”€â”€ src/
-â”‚   â””â”€â”€ {component-id}/
-â”‚       â”œâ”€â”€ component.yml           # Component manifest (Single Source of Truth)
-â”‚       â””â”€â”€ apps/ | packages/ | infra/   # Implementation
-â”œâ”€â”€ docs/                           # Repo-wide state & artifact history
-â”‚   â”œâ”€â”€ adr/                        # Component-specific ADRs (persisted)
-â”‚   â”œâ”€â”€ migrations/                  # Component migration records
-â”‚   â”œâ”€â”€ component-registry.md
-â”‚   â””â”€â”€ dependency-graph.md
-â””â”€â”€ README.md
+├── planifest-framework/
+│   ├── skills/
+│   │   ├── planifest-orchestrator/SKILL.md   # Entry point
+│   │   ├── planifest-spec-agent/SKILL.md
+│   │   ├── ...
+│   ├── setup/                        # Tool setup scripts
+│   ├── templates/                      # Artifact templates
+├── plan/                           # Execution plans
+│   ├── current/
+│   │   ├── design.md               # Confirmed design
+│   │   ├── feature-brief.md
+│   │   ├── iteration-log.md
+│   │   └── ...
+│   ├── archive/                     # Historical features
+│   └── changelog/                   # Audit log
+├── src/
+│   └── {component-id}/
+│       ├── component.yml           # Component manifest (Single Source of Truth)
+│       └── apps/ | packages/ | infra/   # Implementation
+└── docs/                           # Repo-wide state & artifact history
+    ├── adr/                        # Component-specific ADRs (persisted)
+    ├── migrations/                  # Component migration records
+    ├── component-registry.md
+    └── dependency-graph.md
+README.md
 ```
 
 ---
 
 ## 11. Documentation Sync
 
-Every agent output is a markdown document, written to `plan/current/` (initiative-level artifacts) or `src/{component-id}/docs/` (component-level artifacts), with repo-wide state in `docs/`. The git repository is the documentation system - markdown and Mermaid render natively on GitHub, GitLab, and Bitbucket. No additional sync infrastructure is required for v1.0.
-
-Teams that want a richer documentation experience (Obsidian, Notion, Confluence) can integrate at the documentation provider level - see [RC-005 - Pluggable Documentation Provider](p014-planifest-roadmap.md) in the roadmap.
+The documentation destination is pluggable. Files in `plan/` and `docs/` are the primary source of truth. The `planifest-docs-agent` can sync these to external providers:
+- Git (default)
+- Obsidian
+- Notion
+- Confluence
 
 ---
 
----
-
-*This document is the living Planifest architecture reference. As the system evolves, agents update it.*
-
-*Related: [Functional Decisions](p003-planifest-functional-decisions.md) | [The Pathway to Agentic Development](p004-the-pathway-to-agentic-development.md) | [Agentic Tool Runbook](p010-planifest-agentic-tool-runbook.md) | [Pilot App](p011-planifest-pilot-app.md) | [Backend Stack Evaluation](p013-planifest-backend-stack-evaluation.md) | [Roadmap](p014-planifest-roadmap.md) | [Frontend Stack Evaluation](p016-planifest-frontend-stack-evaluation.md) | [Strategic Intent vs Stochastic Execution](p017-research-report-strategic-intent-vs-stochastic-execution.md) | [Code Quality Standards](../planifest-framework/standards/code-quality-standards.md)*
+*Part of the Planifest project. Related: [Pilot App](p011-planifest-pilot-app.md) | [Pipeline Reference](p015-planifest-pipeline.md)*

@@ -2,7 +2,7 @@
 
 ---
 
-> A living document capturing the concepts, patterns, and adoption strategies for Planifest - a specification framework for agentic development. To be augmented with use cases and patterns.
+> A living document capturing the concepts, patterns, and adoption strategies for Planifest - a requirements framework for agentic development. To be augmented with use cases and patterns.
 
 *Related: [Master Plan](p001-planifest-master-plan.md) | [Functional Decisions](p003-planifest-functional-decisions.md) | [Strategic Intent vs Stochastic Execution](p017-research-report-strategic-intent-vs-stochastic-execution.md)*
 
@@ -22,7 +22,10 @@ Efficiency is only half the battle. Control is the other. Without an audit trail
 
 ### The Root Cause: Missing Domain Knowledge
 
-Agents cannot acquire domain knowledge implicitly like experienced developers. They need a structured domain to reason within. Planifest solves this by building that domain—a specification of the system that covers Product, Architecture, and Engineering layers.
+Agents cannot acquire domain knowledge implicitly like experienced developers. They need a structured domain to reason within. Planifest solves this by building that domain-a requirements set of the system that covers:
+- **Product Layer**: The **Why** and the **What** (Functional requirements, user stories, AC).
+- **Architecture Layer**: The **How it Performs** (Operating parameters: SLOs, security, cost).
+- **Engineering Layer**: The **How it is Built** (Technical delivery: component design, data contracts, topology).
 
 > Planifest gives agents the domain knowledge to build with purpose - and gives teams the visibility to trust what was built.
 
@@ -30,15 +33,15 @@ Agents cannot acquire domain knowledge implicitly like experienced developers. T
 
 ## 2. Core Principles
 
-### Spec-First Development
+### Requirements-First Development
 
-Planifest insists on **specification before development**. Agents do not begin coding until the status is **Planifest confirmed**. The specification is not just an input; it is the standard against which all outputs are assessed.
+Planifest insists on **requirements before development**. Agents do not begin coding until the status is **Design confirmed**. The requirements are not just an input; it is the standard against which all outputs are assessed.
 
 ### Phase 0 - Assess and Coach (Hard Gate)
 
-The orchestrator agent (**planifest-orchestrator**) begins by assessing the **Feature Brief**. It identifies gaps, ambiguities, or missing considerations. It coaches the human through these gaps—one question at a time—until the **confirmed design** (`plan/current/design.md`) is produced.
+The orchestrator agent (**planifest-orchestrator**) begins by assessing the **Feature Brief**. It identifies gaps, ambiguities, or missing considerations. It coaches the human through these gaps - one question at a time - until the **confirmed design** (`plan/current/design.md`) is produced.
 
-**The human must grant Planifest confirmed status before the pipeline proceeds.**
+**The human must grant Design confirmed status before the pipeline proceeds.**
 
 ---
 
@@ -47,7 +50,7 @@ The orchestrator agent (**planifest-orchestrator**) begins by assessing the **Fe
 ```mermaid
 flowchart TD
     A[Feature Brief\nHuman-authored] --> P0[Phase 0: planifest-orchestrator]
-    P0 -->|Planifest confirmed| LOOP
+    P0 -->|Design confirmed| LOOP
     
     subgraph LOOP["Agentic Iteration Loop (Phases 1-6)"]
         direction TB
@@ -59,7 +62,7 @@ flowchart TD
         P5 --> P6[Phase 6: planifest-docs-agent]
     end
     
-    P6 --> HGATE([ðŸ‘¤ PR Review])
+    P6 --> HGATE([👤 PR Review])
 
     style A fill:transparent,stroke:#28a745,stroke-width:2px
     style P0 fill:transparent,stroke:#f0a500,stroke-width:2px
@@ -70,7 +73,7 @@ flowchart TD
 
 1. **Fast Path**: Narrow, low-risk changes (styles, copy, pure-function bugs). Low rigour.
 2. **Change Pipeline**: Targeted modifications to existing components via **planifest-change-agent**. Medium rigour.
-3. **Initiative Pipeline**: Full Phase 0-6 sequence for new features or significant changes. High rigour.
+3. **Feature Pipeline**: Full Phase 0-6 sequence for new features or significant changes. High rigour.
 
 ---
 
@@ -78,12 +81,12 @@ flowchart TD
 
 | Mode | Entry Point | Path |
 |---|---|---|
-| **Greenfield** | Feature Brief | Spec -> Build |
-| **Retrofit** | Existing codebase | Ingest -> Spec -> Build |
-| **Agent Interface** | Interface Spec | Abstract -> Spec -> Build |
+| **Greenfield** | Feature Brief | Requirements -> Build |
+| **Retrofit** | Existing codebase | Ingest -> Requirements -> Build |
+| **Agent Interface** | Interface Spec | Abstract -> Requirements -> Build |
 
 ### Greenfield
-The simplest entry point. The orchestrator coaches from scratch to produce the design, and the pipeline runs from spec to PR.
+The simplest entry point. The orchestrator coaches from scratch to produce the design, and the pipeline runs from requirements to PR.
 
 ### Retrofit (Existing Codebases)
 The most common case. Before a change, the `planifest-spec-agent` performs **codebase ingestion**: scanning the repo, inferring architecture, and generating ADRs from what exists. It then reconciles the brief against reality before building.
@@ -95,15 +98,15 @@ For high complexity. Specify a well-defined interface layer first in the **compo
 
 ## 5. Artifacts and SDLC Folders
 
-Planifest builds a structured, versioned file tree in `plan/`, `manifest/`, and `docs/`.
+Planifest builds a structured, versioned file tree in `plan/`, `src/`, and `docs/`.
 
-### Per Initiative (in `plan/current/`)
+### Per Feature (in `plan/current/`)
 - Feature Brief, Confirmed Design (`design.md`)
-- Design Specification, OpenAPI Specification
+- Design Requirements, OpenAPI Specification
 - ADRs, Risk Register, Scope, Security Report
 - Operational Model, SLO Definitions, Cost Model, Domain Glossary
 
-### Per Component (`component.yml`)
+### Per Component (`src/{component}/component.yml`)
 The **component.yml** is the single source of truth for component domain knowledge. It replaces individual markdown files for:
 - **Purpose & Context**: Summary, system context, and responsibilities.
 - **Interface Contract**: API specs, inputs, outputs, and consumedBy/consumes dependencies.
@@ -125,11 +128,11 @@ The **component.yml** is the single source of truth for component domain knowled
 |---|---|
 | **Feature Brief** | The human-authored seed document that initiates the pipeline. |
 | **Confirmed Design** | The output of Phase 0 (`plan/current/design.md`). |
-| **Planifest confirmed** | The hard gate status required to proceed past Phase 0. |
+| **Design confirmed** | The hard gate status required to proceed past Phase 0. |
 | **Agentic Iteration Loop** | The collective sequence of Phases 1-6. |
 | **ADR** | Architecture Decision Record. Lives in `plan/current/adr/`. |
 | **Data Contract** | Singular ownership of data schema and invariants. |
 
 ---
 
-*Part of the Planifest project.*
+*Part of the confirmed design project.*

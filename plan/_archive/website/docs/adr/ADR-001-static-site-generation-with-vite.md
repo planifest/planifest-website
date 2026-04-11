@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-The Planifest framework requires a landing page to showcase its features and agentic development approach. The site needs to be fast (LCP < 1.0s), secure, and easy to maintain. Since the content is primarily informational and user-specific data is not stored, a dynamic server-side rendered (SSR) application or a traditional CMS would introduce unnecessary complexity, security surface area, and hosting costs. Vite offers a fast, modern build toolchain for static assets.
+The confirmed design framework requires a landing page to showcase its features and agentic development approach. The site needs to be fast (LCP < 1.0s), secure, and easy to maintain. Since the content is primarily informational and user-specific data is not stored, a dynamic server-side rendered (SSR) application or a traditional CMS would introduce unnecessary complexity, security surface area, and hosting costs. Vite offers a fast, modern build toolchain for static assets.
 
 ## Decision
 We will build the website as a completely static site generated using Vite with vanilla HTML/JS/CSS, avoiding heavy reactive frameworks like React or Vue since the interactive requirements (animations, theme toggling) are minimal.

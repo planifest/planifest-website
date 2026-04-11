@@ -18,7 +18,7 @@ Every component must implement all three:
 
 ## 2. Logging
 
-- **Structured logging only** — JSON format, never unstructured strings
+- **Structured logging only** - JSON format, never unstructured strings
 - **Required fields:** `timestamp`, `level`, `message`, `service`, `requestId`
 - **Log levels:** `error` (action required), `warn` (degraded but functional), `info` (significant events), `debug` (development only, never in production)
 - **Never log:** credentials, PII, full request/response bodies, stack traces at info level
@@ -56,8 +56,8 @@ Every service exposes:
 
 | Endpoint | Purpose | Response |
 |----------|---------|----------|
-| `/health` | Liveness — is the process running? | 200 OK |
-| `/ready` | Readiness — can it serve traffic? | 200 OK or 503 |
+| `/health` | Liveness - is the process running? | 200 OK |
+| `/ready` | Readiness - can it serve traffic? | 200 OK or 503 |
 
 Readiness checks verify database connectivity, cache availability, and downstream service health.
 

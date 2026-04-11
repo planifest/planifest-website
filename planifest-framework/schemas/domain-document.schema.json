@@ -1,4 +1,4 @@
-{
+﻿{
     "$id": "domain-document",
     "$comment": "Planifest Domain Document envelope - every document in the knowledge store conforms to this shape. Content varies by document type; the envelope is always the same.",
     "type": "object",
@@ -6,7 +6,7 @@
         "id",
         "type",
         "scope",
-        "initiative",
+        "feature",
         "version",
         "createdAt",
         "updatedAt",
@@ -19,12 +19,12 @@
     "properties": {
         "id": {
             "type": "string",
-            "description": "Unique document identifier, e.g. 'initiative:auth-service:design-spec'"
+            "description": "Unique document identifier, e.g. 'feature:auth-service:design-spec'"
         },
         "type": {
             "type": "string",
             "enum": [
-                "initiative-brief",
+                "feature-brief",
                 "design-spec",
                 "openapi-spec",
                 "adr",
@@ -49,12 +49,12 @@
         "scope": {
             "type": "string",
             "enum": [
-                "initiative",
+                "feature",
                 "component",
                 "system"
             ]
         },
-        "initiative": {
+        "feature": {
             "type": "string"
         },
         "component": {
@@ -105,3 +105,4 @@
         }
     }
 }
+

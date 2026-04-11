@@ -1,6 +1,6 @@
 # Security Report - Planifest Website
 
-> Documents the threat model, dependency audit, authentication, authorisation, and network policy for the Planifest Website.
+> Documents the threat model, dependency audit, authentication, authorisation, and network policy for the confirmed design Website.
 
 ## 1. Threat Model
 

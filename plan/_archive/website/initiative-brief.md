@@ -1,12 +1,12 @@
-# Initiative Brief - Planifest Website
+﻿# Feature Brief - Planifest Website
 
-> Written by a human. This is the input document that kicks off the Planifest pipeline. The orchestrator reads this and coaches you through any gaps before passing it to the spec-agent.
+> Written by a human. This is the input document that kicks off the confirmed design pipeline. The orchestrator reads this and coaches you through any gaps before passing it to the spec-agent.
 
 ---
 
 ## Business Goal
 
-Create a landing page and informational website for the Planifest project. The website needs to showcase the framework with a beautiful, slick design including dynamic animations, and must support both light and dark themes. It serves as the public face of the project, hosted freely on GitHub Pages.
+Create a landing page and informational website for the confirmed design project. The website needs to showcase the framework with a beautiful, slick design including dynamic animations, and must support both light and dark themes. It serves as the public face of the project, hosted freely on GitHub Pages.
 
 ---
 
@@ -36,7 +36,7 @@ Create a landing page and informational website for the Planifest project. The w
 
 | Component | Type | New or Existing | Responsibility |
 |-----------|------|-----------------|---------------|
-| web-app | static-site | new | Displaying the Planifest landing page |
+| web-app | static-site | new | Displaying the confirmed design landing page |
 
 ### Data Ownership
 
@@ -118,3 +118,4 @@ Create a landing page and informational website for the Planifest project. The w
 - [ ] Users can toggle between light and dark mode.
 - [ ] The site feels modern, animated, and slick.
 - [ ] A GitHub Actions workflow exists to deploy to `gh-pages` branch.
+

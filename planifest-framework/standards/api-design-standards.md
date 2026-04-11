@@ -1,4 +1,4 @@
-# Planifest API Design Standards
+﻿# Planifest API Design Standards
 
 > APIs are contracts. They are consumed by other components, external systems, and future agents. A well-designed API is self-documenting, consistent, and hard to misuse.
 
@@ -54,7 +54,7 @@ All errors use a consistent structure:
 ## 4. Authentication and Authorization
 
 - All endpoints require authentication unless explicitly marked as public in the OpenAPI spec
-- Use the auth strategy declared in the Planifest (JWT, session, OAuth2, API key)
+- Use the auth strategy declared in the confirmed design (JWT, session, OAuth2, API key)
 - Authorization checks happen at the handler level, not in middleware alone
 - Rate limiting is required for all public-facing endpoints
 
@@ -62,10 +62,10 @@ All errors use a consistent structure:
 
 ## 5. OpenAPI Specification
 
-- Every API must have a corresponding OpenAPI 3.1 spec at `plan/{initiative-id}/openapi-spec.yaml`
-- The spec is the source of truth — implementation must match it exactly
+- Every API must have a corresponding OpenAPI 3.1 spec at `plan/{feature-id}/openapi-spec.yaml`
+- The spec is the source of truth - implementation must match it exactly
 - Every endpoint, parameter, request body, and response must be documented
-- Use `$ref` for shared schemas — do not duplicate type definitions
+- Use `$ref` for shared schemas - do not duplicate type definitions
 - Include example values for every schema
 
 ---
@@ -87,3 +87,4 @@ Breaking changes require:
 ---
 
 *Referenced by spec-agent and codegen-agent. Source of truth: `planifest-framework/standards/api-design-standards.md`*
+

@@ -1,6 +1,6 @@
 # Planifest Deployment Standards
 
-> Deployment is the last mile between code and value. A good deployment is boring — predictable, automated, and reversible. These standards ensure agent-generated deployment configuration meets production requirements.
+> Deployment is the last mile between code and value. A good deployment is boring - predictable, automated, and reversible. These standards ensure agent-generated deployment configuration meets production requirements.
 
 ---
 
@@ -20,12 +20,12 @@ Use the strategy declared in the operational model:
 
 If the stack uses containers:
 
-- **Multi-stage builds** — separate build and runtime stages
-- **Minimal base images** — use `alpine`, `distroless`, or `slim` variants
-- **Non-root user** — never run as root in production
-- **Health check** — `HEALTHCHECK` instruction in Dockerfile
-- **No secrets in images** — use runtime injection via environment variables or secrets manager
-- **Pin versions** — use exact image tags, never `latest`
+- **Multi-stage builds** - separate build and runtime stages
+- **Minimal base images** - use `alpine`, `distroless`, or `slim` variants
+- **Non-root user** - never run as root in production
+- **Health check** - `HEALTHCHECK` instruction in Dockerfile
+- **No secrets in images** - use runtime injection via environment variables or secrets manager
+- **Pin versions** - use exact image tags, never `latest`
 
 ---
 
@@ -48,7 +48,7 @@ The CI pipeline must:
 
 - All configuration is injected via environment variables
 - Secrets are stored in a secrets manager (never in code, never in env files committed to git)
-- Each environment has its own configuration — never share config between staging and production
+- Each environment has its own configuration - never share config between staging and production
 - Feature flags use a structured format: `FEATURE_{NAME}_ENABLED=true|false`
 
 ---
@@ -57,7 +57,7 @@ The CI pipeline must:
 
 - Every deployment must be reversible within 5 minutes
 - Keep the previous version's artifacts available for at least 7 days
-- Database migrations must be backward-compatible — the previous code version must work with the new schema
+- Database migrations must be backward-compatible - the previous code version must work with the new schema
 - Rollback procedures are documented in the operational model
 
 ---

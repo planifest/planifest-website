@@ -1,8 +1,8 @@
-# Initiative Brief - framework-link
+﻿# Feature Brief - framework-link
 
 ## Business Goal
 
-Provide direct access to the Planifest Framework source code from the main documentation website, enabling users to easily find, review, and contribute to the framework repository.
+Provide direct access to the confirmed design Framework source code from the main documentation website, enabling users to easily find, review, and contribute to the framework repository.
 
 ---
 
@@ -57,3 +57,4 @@ Provide direct access to the Planifest Framework source code from the main docum
 - [ ] The top navigation bar includes a "GitHub" link pointing to `https://github.com/planifest/planifest-framework`.
 - [ ] The footer includes a "GitHub" link pointing to `https://github.com/planifest/planifest-framework`.
 - [ ] Links open in a new tab (`target="_blank"`) and use `rel="noopener noreferrer"` for security.
+

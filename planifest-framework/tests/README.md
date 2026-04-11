@@ -1,6 +1,6 @@
-# Planifest Setup Tests
+﻿# Planifest Setup Tests
 
-This directory contains integration tests for the Planifest framework setup scripts (`setup.sh` and `setup.ps1`).
+This directory contains integration tests for the confirmed design framework setup scripts (`setup.sh` and `setup.ps1`).
 
 These tests verify that running the setup process for an AI coding agent (like Claude Code or Cursor) correctly generates the expected folders, copies the skill files, and creates necessary configuration (like boot files or rules).
 
@@ -31,7 +31,7 @@ To run the tests, execute the scripts from the root of the repository or from wi
    - Tool-specific skill folders (e.g., `.claude/skills` or `.cursor/skills`).
    - Copied `SKILL.md` files (e.g., `planifest-orchestrator/SKILL.md`).
    - Boot files for tools that require them (e.g., `CLAUDE.md`).
-   - Workflows/Commands for tools that support them (e.g., `/initiative-pipeline`).
+   - Workflows/Commands for tools that support them (e.g., `/feature-pipeline`).
 5. **Cleanup**: Even if a test fails, `finally` blocks ensure the temporary folder is deleted, leaving your actual workspace unaffected.
 
 ## Adding New Tests
@@ -48,3 +48,4 @@ if (-not (Test-Path ".[tool-dir]\skills")) {
     throw "FAIL: .[tool-dir]\skills directory not created"
 }
 ```
+

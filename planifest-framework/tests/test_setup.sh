@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 set -euo pipefail
 
 echo "Running setup.sh tests..."
@@ -31,7 +31,7 @@ if [ ! -f "CLAUDE.md" ]; then
     exit 1
 fi
 
-if [ ! -f ".claude/commands/initiative-pipeline.md" ]; then
+if [ ! -f ".claude/commands/feature-pipeline.md" ]; then
     echo "FAIL: Workflow command not created for claude-code"
     exit 1
 fi
@@ -50,3 +50,4 @@ if [ ! -f ".cursor/skills/planifest-orchestrator/SKILL.md" ]; then
 fi
 
 echo "SUCCESS: All setup.sh tests passed."
+

@@ -11,16 +11,16 @@ repo/
 ├── planifest-framework/        ← The framework (skills, templates, schemas, standards)
 │                                 Drop this in. Don't modify it per-project.
 │
-├── plan/                       ← Initiatives and their specifications
-│                                 One subfolder per initiative. Plans, briefs, ADRs,
-│                                 design specs, user stories, scope, risk.
+├── plan/                       ← Features and their requirements
+│                                 One subfolder per feature. Plans, briefs, ADRs,
+│                                 design requirements, user stories, scope, risk.
 │                                 Everything that describes WHAT to build and WHY.
 │
 ├── src/                        ← Component implementations
 │                                 One subfolder per component. Code, tests, config,
 │                                 manifests, and component-level docs.
 │
-└── docs/                       ← Repo-wide state and cross-initiative documentation
+└── docs/                       ← Repo-wide state and cross-feature documentation
                                   Component registry, dependency graph, system
                                   context documents. The overall picture.
 ```
@@ -29,7 +29,7 @@ repo/
 
 ## `planifest-framework/` - The Framework
 
-This folder is the Planifest framework itself. It is the same across every project. You do not modify it per-initiative - you update it when the framework evolves.
+This folder is the confirmed design framework itself. It is the same across every project. You do not modify it per-feature - you update it when the framework evolves.
 
 ```
 planifest-framework/
@@ -42,19 +42,19 @@ planifest-framework/
 
 ---
 
-## `plan/` - Initiatives and Specifications
+## `plan/` - Features and Requirements
 
-Organized by initiative. Each initiative gets a subfolder. This is where humans write briefs and agents write specs. No code lives here.
+Organized by feature. Each feature gets a subfolder. This is where humans write briefs and agents write requirements. No code lives here.
 
 ```
 plan/
-├── current/                         ← The active initiative
-│   ├── initiative-brief.md          ← Human input (start here)
-│   ├── planifest.md                 ← Validated plan (orchestrator output)
+├── current/                         ← The active feature
+│   ├── feature-brief.md          ← Human input (start here)
+│   ├── design.md                    ← Validated plan (orchestrator output)
 │   ├── pipeline-run.md              ← Audit trail (per run)
 │   │
 │   └── docs/
-│       ├── design-spec.md           ← Functional & non-functional requirements
+│       ├── design-requirements.md   ← Functional & non-functional requirements
 │       ├── openapi-spec.yaml        ← API contract
 │       ├── scope.md                 ← In / Out / Deferred
 │       ├── risk-register.md         ← Risk items with likelihood & impact
@@ -64,7 +64,7 @@ plan/
 │       ├── slo-definitions.md       ← Error budgets, SLIs/SLOs
 │       ├── cost-model.md            ← Compute, storage, egress cost estimates
 │       ├── recommendations.md       ← Improvement suggestions
-│       ├── quirks.md                ← Initiative-level quirks and workarounds
+│       ├── quirks.md                ← Feature-level quirks and workarounds
 │       ├── change-summary.md        ← Written by the change-agent per run
 │       │
 │       └── adr/
@@ -73,20 +73,20 @@ plan/
 │           └── ...
 │
 ├── _archive/
-│   ├── {initiative-id}/             ← Historical initiatives (moved here upon completion)
+│   ├── {feature-id}/             ← Historical features (moved here upon completion)
 │   │   └── ...                      ← Same structure as current/
 │
 └── changelog/                       ← Log of all changes
-    └── [initiative-id]-[date].md    ← A single change record
+    └── [feature-id]-[date].md    ← A single change record
 
 ```
 
 ### Path Rules - plan/
 
-1. **Initiative ID** is kebab-case, human-chosen, and stable.
-2. **One level of subfolders** - all spec docs and supporting files live flat in `docs/`. ADRs get their own `docs/adr/` subfolder.
+1. **Feature ID** is kebab-case, human-chosen, and stable.
+2. **One level of subfolders** - all requirements docs and supporting files live flat in `docs/`. ADRs get their own `docs/adr/` subfolder.
 3. **No code** - nothing executable lives in `plan/`. If it runs, it belongs in `src/`.
-4. **Phased initiatives** append the phase number: `docs/design-spec-phase-2.md`, `pipeline-run-phase-2.md`. The `planifest.md` is updated per phase, not duplicated.
+4. **Phased features** append the phase number: `docs/design-requirements-phase-2.md`, `pipeline-run-phase-2.md`. The `design.md` is updated per phase, not duplicated.
 5. **ADRs** are numbered sequentially. Never renumber. Superseded ADRs stay with `status: superseded`.
 
 ---
@@ -125,14 +125,14 @@ src/
 1. **Component ID** is kebab-case, matches the `id` in `component.json`.
 2. **`component.json` is mandatory** - every component has one. Read it before any work; update it after every build.
 3. **Component-specific docs** live with the component at `src/{component-id}/docs/`. These describe the component's data contract, interface, dependencies, risk, and technical specifics.
-4. **Initiative-level docs** live in `plan/_archive/{initiative-id}/docs/`. The component's `component.json` references the initiative via the `initiative` field and points to its domain knowledge via `pipeline.domainKnowledgePath`.
+4. **Feature-level docs** live in `plan/_archive/{feature-id}/docs/`. The component's `component.json` references the feature via the `feature` field and points to its domain knowledge via `pipeline.domainKnowledgePath`.
 5. **Existing components** that predate Planifest are retrofitted by adding a `component.json` at their root.
 
 ---
 
 ## `docs/` - Repo-Wide State
 
-Cross-initiative documentation and the overall system picture. This is the living state of the whole repository - not tied to any single initiative.
+Cross-feature documentation and the overall system picture. This is the living state of the whole repository - not tied to any single feature.
 
 ```
 docs/
@@ -140,11 +140,11 @@ docs/
 └── dependency-graph.md          ← Mermaid diagram showing how components relate
 ```
 
-The docs-agent writes to this folder at the end of each pipeline run. It accumulates over time as initiatives ship components.
+The docs-agent writes to this folder at the end of each pipeline run. It accumulates over time as features ship components.
 
 ### Path Rules - docs/
 
-1. **Cross-initiative only** - nothing in `docs/` belongs to a specific initiative. Initiative-scoped docs go in `plan/_archive/{initiative-id}/docs/`.
+1. **Cross-feature only** - nothing in `docs/` belongs to a specific feature. Feature-scoped docs go in `plan/_archive/{feature-id}/docs/`.
 2. **Written by the docs-agent** - humans may annotate, but agents own the component registry and dependency graph.
 3. **Always current** - the docs-agent updates these files at the end of every pipeline run, not just on initial creation.
 
@@ -153,18 +153,18 @@ The docs-agent writes to this folder at the end of each pipeline run. It accumul
 ## How the Folders Connect
 
 ```
-plan/_archive/{initiative-id}/planifest.md
+plan/_archive/{feature-id}/design.md
     └── lists component IDs -> src/{component-id}/component.json
-                                    └── references initiative -> plan/_archive/{initiative-id}/
-                                    └── domainKnowledgePath  -> plan/_archive/{initiative-id}/docs/
+                                     └── references feature -> plan/_archive/{feature-id}/
+                                     └── domainKnowledgePath  -> plan/_archive/{feature-id}/docs/
 
-plan/_archive/{initiative-id}/docs/design-spec.md
+plan/_archive/{feature-id}/docs/design-requirements.md
     └── functional requirements -> implemented in -> src/{component-id}/src/
 
-plan/_archive/{initiative-id}/docs/adr/ADR-001-*.md
+plan/_archive/{feature-id}/docs/adr/ADR-001-*.md
     └── decisions -> followed by -> src/{component-id}/src/
 
-plan/_archive/{initiative-id}/docs/openapi-spec.yaml
+plan/_archive/{feature-id}/docs/openapi-spec.yaml
     └── API contract -> implemented in -> src/{component-id}/src/
 
 src/{component-id}/docs/data-contract.md
@@ -178,8 +178,8 @@ docs/dependency-graph.md
 ```
 
 The relationship is bidirectional:
-- `planifest.md` lists all component IDs
-- Each `component.json` references its initiative ID
+- `design.md` lists all component IDs
+- Each `component.json` references its feature ID
 - The plan describes WHAT; the code IS the WHAT; the docs folder holds the cross-cutting view
 
 ---

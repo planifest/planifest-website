@@ -1,7 +1,7 @@
-# Website Refinements
+﻿# Website Refinements
 
 **Date:** 2026-03-22
-**Initiative:** website-refinements
+**Feature:** website-refinements
 
 ## Changes Applied
 - Replaced functional references to a theoretical "Domain Knowledge Store" across foundational documentation with concrete references to Planifest's SDLC document architecture (the `plan/`, `docs/`, and `manifest/` folders) per User constraints.
@@ -12,3 +12,4 @@
 ## Component Affected
 - `web-app` (Manifest scope and updated pipeline documentation reference path).
 - `planifest-docs/*` (Strategy context content)
+

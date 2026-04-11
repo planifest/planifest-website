@@ -1,4 +1,4 @@
----
+﻿---
 name: planifest-docs-agent
 description: Produces complete per-component documentation, system-wide registry, dependency graph, and iteration log audit trail. Invoked during the Documentation step.
 bundle_templates: [iteration-log.template.md, recommendations.template.md]
@@ -25,7 +25,7 @@ bundle_standards: []
 ## Input
 
 - All artifacts produced by prior phases at `plan/`
-- The implementation at `src/{component-id}/` (all components in the initiative)
+- The implementation at `src/{component-id}/` (all components in the feature)
 - The design at `plan/current/design.md`
 
 ---
@@ -34,7 +34,7 @@ bundle_standards: []
 
 ### Per-component artifacts
 
-For each component in the initiative, write to `src/{component-id}/docs/`:
+For each component in the feature, write to `src/{component-id}/docs/`:
 
 | Artifact | File | Purpose |
 |---|---|---|
@@ -57,7 +57,7 @@ Write to `docs/` at the repository root:
 | Component Registry | `component-registry.md` | Index of every component - ID, type, one-liner summary, status |
 | Dependency Graph | `dependency-graph.md` | Mermaid diagram showing how components relate |
 
-### Initiative-level completeness
+### Feature-level completeness
 
 Confirm the following exist at `plan/` and are consistent:
 
@@ -75,10 +75,10 @@ Confirm the following exist at `plan/` and are consistent:
 
 ### Audit trail
 
-Write `plan/changelog/{initiative-id}-<YYYY-MM-DD>.md`:
+Write `plan/changelog/{feature-id}-<YYYY-MM-DD>.md`:
 
 ```markdown
-# Iteration Log - {initiative-id}
+# Iteration Log - {feature-id}
 
 Date: {timestamp}
 Tool: {agent tool used}
@@ -139,8 +139,9 @@ Do not flag legitimate absences as drift. Do flag missing artifacts that should 
 
 ## Capability Skills
 
-If a capability skill exists for document generation formats needed by the initiative (e.g. `docx` for Word documents, `pdf` for PDF reports), load it where relevant.
+If a capability skill exists for document generation formats needed by the feature (e.g. `docx` for Word documents, `pdf` for PDF reports), load it where relevant.
 
 ---
 
 *This skill is invoked by the orchestrator. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*
+

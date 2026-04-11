@@ -2,6 +2,7 @@
 .claude/
 .cursor/
 .agents/
+.agent/
 .gemini/
 .github/skills/
 .windsurf/

@@ -1,6 +1,6 @@
 # Planifest Testing Standards
 
-> Tests are the specification's executable counterpart. Every acceptance criterion becomes a test. Every contract becomes a contract test. Every edge case the spec identifies becomes a test case. If it's not tested, it's not verified.
+> Tests are the requirements' executable counterpart. Every acceptance criterion becomes a test. Every contract becomes a contract test. Every edge case the requirements identify become a test case. If it's not tested, it's not verified.
 
 ---
 
@@ -42,9 +42,9 @@ Every functional requirement must be explicitly traceable to a test. You MUST in
 // ✅ Correct: Traceable to req-001-auth
 describe("req-001-auth: user login flow", () => {
   test("returns 401 when password is mathematically invalid", () => {
-    // Arrange — set up preconditions
-    // Act — perform the operation
-    // Assert — verify the outcome
+    // Arrange - set up preconditions
+    // Act - perform the operation
+    // Assert - verify the outcome
   })
 })
 ```
@@ -76,9 +76,9 @@ describe("req-001-auth: user login flow", () => {
 ## 4. Test Data
 
 - Use factories or builders, not raw object literals repeated across tests
-- Test data should be minimal — only include fields relevant to the test
+- Test data should be minimal - only include fields relevant to the test
 - Never use production data in tests
-- Never hardcode dates — use relative dates or freezable clocks
+- Never hardcode dates - use relative dates or freezable clocks
 - Database tests must clean up after themselves or use transactions that roll back
 
 ---
@@ -93,7 +93,7 @@ describe("req-001-auth: user login flow", () => {
 
 ## 6. Flakiness Policy
 
-- A flaky test is worse than no test — it erodes trust in the suite
+- A flaky test is worse than no test - it erodes trust in the suite
 - If a test fails intermittently, fix it or delete it. Do not retry-and-ignore.
 - Common flakiness sources to avoid: time-dependent assertions, shared state, port conflicts, network calls to external services
 - All tests must be deterministic. Use dependency injection for time, randomness, and external state.
@@ -102,7 +102,7 @@ describe("req-001-auth: user login flow", () => {
 
 ## 7. Coverage
 
-Coverage is a proxy, not a target. The goal is confidence that the specification is implemented correctly.
+Coverage is a proxy, not a target. The goal is confidence that the requirements are implemented correctly.
 
 | Metric | Minimum | Target |
 |--------|---------|--------|
@@ -110,7 +110,7 @@ Coverage is a proxy, not a target. The goal is confidence that the specification
 | Branch coverage | 70% | 85%+ |
 | Critical path coverage | 100% | 100% |
 
-"Critical path" = the primary user-facing flows identified in the design spec's acceptance criteria.
+"Critical path" = the primary user-facing flows identified in the design requirements' acceptance criteria.
 
 ---
 

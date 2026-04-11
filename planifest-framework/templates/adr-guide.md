@@ -2,7 +2,7 @@
 
 > How the adr-agent writes Architecture Decision Records, and how to read them.
 
-*Related: [ADR Agent Skill](../skills/adr-agent-SKILL.md) | [Design Spec Guide](design-spec-guide.md)*
+*Related: [ADR Agent Skill](../skills/adr-agent-SKILL.md) | [design requirements Guide](design-spec-guide.md)*
 
 ---
 
@@ -46,7 +46,7 @@ State what was decided and why. Be specific enough that someone reading this in 
 
 At least 2 alternatives for every ADR. For each: pros, cons, and why it was rejected. This is the evidence that the decision was deliberate.
 
-| âŒ Bad | âœ… Good |
+| âŒ Bad | ✅ Good |
 |--------|---------|
 | "We considered MySQL but chose PostgreSQL" | "MySQL: lower operational overhead (+), limited JSON support for our use case (-), no native row-level security (-). Rejected because the data contract requires JSONB columns and row-level access policies." |
 

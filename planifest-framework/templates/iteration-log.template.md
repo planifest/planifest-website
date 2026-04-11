@@ -1,10 +1,10 @@
----
-title: "Iteration Log - {{initiative-id}}"
+﻿---
+title: "Iteration Log - {{feature-id}}"
 summary: "Execution log for the agent session."
 status: "active"
 version: "0.1.0"
 ---
-# Iteration Log - {{initiative-id}}
+# Iteration Log - {{feature-id}}
 
 **Skill:** [docs-agent](../skills/planifest-docs-agent/SKILL.md) (or whichever agent completes the final iteration step)
 **Date:** {{ISO-8601}}
@@ -18,7 +18,7 @@ version: "0.1.0"
 
 | Phase | Status | Gate Result | Notes |
 |-------|--------|-------------|-------|
-| 0 - Assess & Coach | {{pass/skip}} | Planifest confirmed: {{yes/no}} | {{coaching rounds count}} |
+| 0 - Assess & Coach | {{pass/skip}} | Design confirmed: {{yes/no}} | {{coaching rounds count}} |
 | 1 - Specification | {{pass/fail/skip}} | All artifacts produced: {{yes/no}} | |
 | 2 - ADRs | {{pass/fail/skip}} | {{n}} ADRs generated | |
 | 3 - Code Generation | {{pass/fail/skip}} | Implementation complete: {{yes/no}} | {{deviations count}} |
@@ -57,9 +57,10 @@ version: "0.1.0"
 ## Next Step
 
 ```bash
-git push origin initiative/{{initiative-id}}
+git push origin feature/{{feature-id}}
 ```
 
 ---
 
 *Written by the agent at the end of every Agentic Iteration Loop. This is the audit trail.*
+

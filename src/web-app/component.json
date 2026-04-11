@@ -1,12 +1,12 @@
-{
+﻿{
     "$comment": "Planifest Component Manifest - written by agents after build, read by agents before change. See p007 for the full Domain Knowledge Service schema.",
     "id": "web-app",
     "name": "Planifest Website",
-    "initiative": "website",
+    "feature": "website",
     "version": "0.1.0",
     "status": "active",
     "purpose": {
-        "summary": "Displaying the Planifest landing page.",
+        "summary": "Displaying the confirmed design landing page.",
         "systemContext": "Serves as the public face of the project, hosted freely on GitHub Pages.",
         "type": "microfrontend",
         "domain": "marketing",
@@ -15,7 +15,7 @@
             "Render markdown files from planifest-docs at build time",
             "Provide light/dark mode theme toggling",
             "Provide persistent site navigation",
-            "Provide direct links to the Planifest Framework GitHub repository"
+            "Provide direct links to the confirmed design Framework GitHub repository"
         ],
         "notResponsibleFor": [
             "Backend server operations",
@@ -70,7 +70,7 @@
             "Responsive persistent hamburger navigation",
             "Static sitemap generation",
             "Dynamic parsing of active documentation links",
-            "Linking out to the Planifest Framework GitHub repository",
+            "Linking out to the confirmed design Framework GitHub repository",
             "Top navigation bar for quick access to key resources and external links"
         ],
         "out": [
@@ -95,7 +95,7 @@
     },
     "pipeline": {
         "templateVersion": "1.0.0",
-        "initiativeMode": "greenfield",
+        "featureMode": "greenfield",
         "domainKnowledgePath": "plan/_archive/website-nav-sitemap/docs"
     },
     "metadata": {
@@ -108,3 +108,4 @@
         "model": "gemini-2.5-pro"
     }
 }
+

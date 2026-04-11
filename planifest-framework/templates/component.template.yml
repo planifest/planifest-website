@@ -1,8 +1,8 @@
-# Planifest Component Manifest
+﻿# Planifest Component Manifest
 # See p007 for the full Domain Knowledge Service schema.
 id: "{{component-id}}"
 name: "{{Human-Readable Name}}"
-initiative: "{{initiative-id}}"
+feature: "{{feature-id}}"
 version: "0.1.0"
 status: "planned | active | deprecated"
 type: "microservice | microfrontend | component-pack"
@@ -34,7 +34,7 @@ stack:
   ci: "github-actions | gitlab-ci | bitbucket-pipelines"
 
 contract:
-  apiSpec: "plan/{{initiative-id}}/openapi-spec.yaml"
+  apiSpec: "plan/{{feature-id}}/openapi-spec.yaml"
   inputs:
     - name: "{{endpoint-or-event-name}}"
       type: "http | grpc | event | queue"
@@ -60,7 +60,7 @@ scope:
   outOfScope:
     - "What is explicitly out of scope"
   deferred:
-    - "What is deferred to a future initiative"
+    - "What is deferred to a future feature"
 
 risk:
   level: "low | medium | high | critical"
@@ -80,8 +80,8 @@ quality:
 
 pipeline:
   templateVersion: "1.0.0"
-  initiativeMode: "greenfield | retrofit | agent-interface"
-  domainKnowledgePath: "plan/{{initiative-id}}/docs"
+  featureMode: "greenfield | retrofit | agent-interface"
+  domainKnowledgePath: "plan/{{feature-id}}/docs"
 
 metadata:
   createdAt: "{{ISO-8601}}"
@@ -91,3 +91,4 @@ metadata:
   skill: "{{skill-name}}"
   tool: "{{agentic-tool-name}}"
   model: "{{model-name-and-version}}"
+
