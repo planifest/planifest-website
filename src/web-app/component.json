@@ -1,9 +1,9 @@
-﻿{
+{
     "$comment": "Planifest Component Manifest - written by agents after build, read by agents before change. See p007 for the full Domain Knowledge Service schema.",
     "id": "web-app",
     "name": "Planifest Website",
     "feature": "website",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "status": "active",
     "purpose": {
         "summary": "Displaying the confirmed design landing page.",
@@ -71,7 +71,8 @@
             "Static sitemap generation",
             "Dynamic parsing of active documentation links",
             "Linking out to the confirmed design Framework GitHub repository",
-            "Top navigation bar for quick access to key resources and external links"
+            "Top navigation bar for quick access to key resources and external links",
+            "Branded favicons and webmanifest for all devices"
         ],
         "out": [
             "Backend APIs",
@@ -100,7 +101,7 @@
     },
     "metadata": {
         "createdAt": "2026-03-11T23:21:00Z",
-        "updatedAt": "2026-03-22T23:02:43Z",
+        "updatedAt": "2026-04-12T22:27:00Z",
         "createdBy": "agent",
         "lastModifiedBy": "agent",
         "skill": "planifest-codegen-agent",
