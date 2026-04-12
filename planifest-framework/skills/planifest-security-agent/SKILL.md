@@ -24,6 +24,8 @@ bundle_standards: []
 
 ## Input
 
+> **Context-Mode Protocol:** When `ctx_batch_execute` is available, use it for the full security scan — pass grep/find commands targeting auth patterns, input handling, secrets, and IaC in `commands`; pass your STRIDE threat questions in `queries`. Use `ctx_execute_file` to analyse specific files flagged for review. Raw code never enters context — only your findings do.
+
 - The validated implementation at `src/{component-id}/` (all components in the feature)
 - Infrastructure as Code at `src/{component-id}/` (Terraform, Pulumi, CDK, etc. - if declared in the stack)
 - Design Requirements at `plan/current/design-requirements.md`

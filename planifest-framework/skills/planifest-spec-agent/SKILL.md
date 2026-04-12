@@ -109,6 +109,8 @@ When the confirmed design indicates a phased feature (features grouped into phas
 
 When the confirmed design indicates `adoption_mode: retrofit`, read the existing codebase before producing artifacts. Infer the existing architecture, identify components, surface undocumented decisions. Reconcile the Feature Brief against the discovered reality. The execution plan must describe the system as it exists and what is changing - not just the change in isolation.
 
+> **Context-Mode Protocol:** When `ctx_batch_execute` is available, use it for codebase discovery — pass shell commands (find, grep, ls) in `commands` and your architectural questions in `queries`. Use `ctx_execute_file` to analyze individual files without flooding context. Only summaries enter context.
+
 ---
 
 *This skill is invoked by the orchestrator. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*

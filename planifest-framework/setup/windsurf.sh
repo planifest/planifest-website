@@ -11,3 +11,7 @@ TOOL_WORKFLOWS_DIR=""
 TOOL_BOOT_FILE=".windsurfrules"
 
 TOOL_BOOT_TEMPLATE="planifest-framework/templates/standard-boot.md"
+
+# context-mode MCP routing rules — installed when --context-mode-mcp is passed
+TOOL_AGENTS_FILE=".windsurf/rules/context-mode.md"
+TOOL_AGENTS_TEMPLATE="planifest-framework/templates/context-mode-agents.md"

@@ -17,6 +17,7 @@ WORKFLOWS_SRC="$SCRIPT_DIR/workflows"
 SETUP_DIR="$SCRIPT_DIR/setup"
 
 VALID_TOOLS="claude-code cursor codex antigravity copilot windsurf cline"
+CONTEXT_MODE_MCP=false
 
 # --- Shared functions ---
 
@@ -126,6 +127,82 @@ copy_workflow() {
   mkdir -p "$target_dir"
   cp "$workflow_file" "$dest_file"
   echo "  + workflows/${name}.md"
+}
+
+merge_hook_settings() {
+  # Merge PreToolUse hook entries into .claude/settings.json (REQ-004)
+  # Uses additive merge: existing content is preserved; Grep/Bash/WebFetch entries
+  # are removed then re-added to ensure idempotency on re-run.
+  local settings_file="$1"
+  local hooks_dir="$2"  # relative path used in the command value (e.g. .claude/hooks/context-mode)
+
+  local new_hooks
+  new_hooks=$(jq -n \
+    --arg grep_cmd  "$hooks_dir/block-grep.sh" \
+    --arg bash_cmd  "$hooks_dir/block-bash.sh" \
+    --arg fetch_cmd "$hooks_dir/block-webfetch.sh" \
+    '[
+      {"matcher":"Grep",     "hooks":[{"type":"command","command":$grep_cmd}]},
+      {"matcher":"Bash",     "hooks":[{"type":"command","command":$bash_cmd}]},
+      {"matcher":"WebFetch", "hooks":[{"type":"command","command":$fetch_cmd}]}
+    ]')
+
+  if [ -f "$settings_file" ]; then
+    # Additive merge: preserve existing entries; replace Grep/Bash/WebFetch on re-run
+    local merged
+    merged=$(jq \
+      --argjson new_hooks "$new_hooks" \
+      '
+        .hooks //= {} |
+        .hooks.PreToolUse //= [] |
+        .hooks.PreToolUse |= (
+          map(select(.matcher | IN("Grep","Bash","WebFetch") | not))
+          + $new_hooks
+        )
+      ' "$settings_file")
+    printf '%s\n' "$merged" > "$settings_file"
+    echo "  ~ .claude/settings.json (context-mode hook entries merged)"
+  else
+    mkdir -p "$(dirname "$settings_file")"
+    jq -n --argjson new_hooks "$new_hooks" \
+      '{"hooks":{"PreToolUse":$new_hooks}}' > "$settings_file"
+    echo "  + .claude/settings.json (created with context-mode hook entries)"
+  fi
+}
+
+install_context_mode_hooks() {
+  # Copy enforcement hook scripts to the target project and wire settings.json (REQ-004)
+  local hooks_src_rel="$1"   # relative to SCRIPT_DIR  e.g. hooks/context-mode
+  local hooks_dir_rel="$2"   # relative to PROJECT_ROOT e.g. .claude/hooks/context-mode
+  local settings_rel="$3"    # relative to PROJECT_ROOT e.g. .claude/settings.json
+
+  local src="$SCRIPT_DIR/$hooks_src_rel"
+  local dest="$PROJECT_ROOT/$hooks_dir_rel"
+  local settings="$PROJECT_ROOT/$settings_rel"
+
+  if [ ! -d "$src" ]; then
+    echo "  ! Warning: hook scripts not found at $src — skipping hook installation"
+    return
+  fi
+
+  echo ""
+  echo "  Installing context-mode enforcement hooks"
+
+  # Create target directory
+  mkdir -p "$dest"
+
+  # Copy and chmod each script
+  for script in "$src"/*.sh; do
+    [ -f "$script" ] || continue
+    local script_name
+    script_name="$(basename "$script")"
+    cp "$script" "$dest/$script_name"
+    chmod +x "$dest/$script_name"
+    echo "  + $hooks_dir_rel/$script_name"
+  done
+
+  # Merge PreToolUse wiring into settings.json
+  merge_hook_settings "$settings" "$hooks_dir_rel"
 }
 
 activate_guardrails() {
@@ -451,24 +528,48 @@ setup_tool() {
     write_boot_file "$PROJECT_ROOT/$TOOL_BOOT_FILE" "$TOOL_BOOT_CONTENT"
   fi
 
+  # Install context-mode MCP routing rules (AGENTS.md) if --context-mode-mcp flag is set
+  if [ "$CONTEXT_MODE_MCP" = true ] && [ -n "${TOOL_AGENTS_FILE:-}" ] && [ -n "${TOOL_AGENTS_TEMPLATE:-}" ]; then
+    local agents_content
+    agents_content=$(cat "$SCRIPT_DIR/../$TOOL_AGENTS_TEMPLATE")
+    write_boot_file "$PROJECT_ROOT/$TOOL_AGENTS_FILE" "$agents_content"
+  fi
+
+  # Install context-mode enforcement hooks if --context-mode-mcp flag is set (REQ-004)
+  if [ "$CONTEXT_MODE_MCP" = true ] && [ -n "${TOOL_HOOKS_SRC:-}" ] && [ -n "${TOOL_HOOKS_DIR:-}" ] && [ -n "${TOOL_SETTINGS_FILE:-}" ]; then
+    install_context_mode_hooks "$TOOL_HOOKS_SRC" "$TOOL_HOOKS_DIR" "$TOOL_SETTINGS_FILE"
+  fi
+
   echo "  Done."
 }
 
 # --- Main ---
 
-TOOL="${1:-}"
+TOOL=""
+for arg in "$@"; do
+  case "$arg" in
+    --context-mode-mcp) CONTEXT_MODE_MCP=true ;;
+    -*) echo "Unknown flag: $arg"; exit 1 ;;
+    *) TOOL="$arg" ;;
+  esac
+done
 
 if [ -z "$TOOL" ]; then
   echo ""
   echo "Planifest Setup"
   echo ""
-  echo "Usage: ./planifest-framework/setup.sh <tool>"
+  echo "Usage: ./planifest-framework/setup.sh <tool> [--context-mode-mcp]"
   echo ""
   echo "Tools:"
   for t in $VALID_TOOLS; do
     echo "  $t"
   done
   echo "  all"
+  echo ""
+  echo "Flags:"
+  echo "  --context-mode-mcp   Install context-mode MCP routing rules file"
+  echo "                       (only needed if context-mode MCP plugin is installed)"
+  echo "                       See: https://github.com/mksglu/context-mode"
   echo ""
   echo "Run from the repository root."
   echo "Each tool's config: planifest-framework/setup/<tool>.sh"

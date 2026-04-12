@@ -37,6 +37,8 @@ bundle_standards: [code-quality-standards.md]
 
 Before changing anything, read:
 
+> **Context-Mode Protocol:** When `ctx_batch_execute` is available, run the domain context reads and blast radius analysis as a single batch call. Pass all discovery commands in `commands` and your dependency/impact questions in `queries`. This replaces sequential file reads and grep calls — raw output stays in the sandbox.
+
 **Precision Reading Protocol:**
 Do not exhaust token limits by loading all files. Read top-down selectively:
 1. `src/{component-id}/component.yml` - read the frontmatter first. Only read the body if relevant.
