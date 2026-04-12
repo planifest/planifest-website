@@ -50,7 +50,7 @@ Claude Code is one of the supported local runtimes. It loads the orchestrator sk
 
 ### Setup
 
-The adapter file is loaded automatically when Claude Code opens the project root. No MCP servers are required for v1.0 - the agent reads and writes files directly.
+The adapter file is loaded automatically when Claude Code opens the project root. For complex codebases, we recommend using the **Context-Mode MCP server** with the `--context-mode-mcp` setup flag. This installs enforcement hooks that prevent the agent from flooding its context window.
 
 ### Running the feature pipeline
 
@@ -145,8 +145,10 @@ Regardless of the tool, the following hard limits are enforced by the skill set 
 
 ## 8. Context Limit Strategy
 
-Large features can exceed the context window of local tools.
+Large features can exceed the context window of local tools. Planifest handles this via **Context-Mode**.
 
+- **Context-Mode MCP (Primary)**: Uses a sandboxed search engine to query large outputs instead of reading them into context. Essential for large codebases. Activated via `--context-mode-mcp`.
+- **Enforcement Hooks**: Physically blocks context-flooding native tools (`Grep`, `Bash` web calls) in Claude Code to ensure the agent uses the sandbox.
 - **Selective context**: For the Change Pipeline, only load the required component manifests and contracts.
 - **Phase-based isolation**: Complete each phase, commit the artifacts, and start the next phase in a fresh session if context is tight.
 - **Component granularity**: Keep components focused. Small components have small contracts and fit easily in context.

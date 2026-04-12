@@ -26,6 +26,9 @@ bundle_standards: [code-quality-standards.md, testing-standards.md, stack-summar
 
 **Precision Reading Protocol:**
 Do not read the entire `plan/` directory unconditionally. This wastes context tokens.
+
+> **Context-Mode Protocol:** When `ctx_execute_file` is available, use it for **analysis-only** reads (exploring structure, checking patterns, scanning for issues). Use the `Read` tool only when you need file content in context to edit it. For grepping across `src/`, use `ctx_execute(language:"shell", code:"grep ...")` — only your printed summary enters context.
+
 1. Scope your context by navigating precisely:
    - Component Manifest at `src/{component-id}/component.yml` - read the YAML frontmatter first to determine if the body is needed.
    - Execution Plan at `plan/current/execution-plan.md` - read for architecture overview.

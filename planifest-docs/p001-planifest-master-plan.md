@@ -236,6 +236,7 @@ monorepo/
     ├── migrations/                  # Component migration records
     ├── component-registry.md
     └── dependency-graph.md
+AGENTS.md                           # Context-Mode routing rules (optional)
 README.md
 ```
 

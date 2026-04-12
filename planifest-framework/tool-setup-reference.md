@@ -1,4 +1,4 @@
-﻿# Agentic Tool Setup Reference
+# Agentic Tool Setup Reference
 
 > How each supported coding tool discovers skills, and what the setup script creates for each.
 
@@ -20,6 +20,12 @@ Two setup scripts are provided - use whichever matches your OS:
 | Windows | `setup.ps1` | PowerShell (pre-installed) |
 
 **Zero dependencies.** Both scripts use only built-in OS capabilities - no Node.js, Python, or anything else required.
+
+### Optional Flags
+
+| Flag | Purpose |
+|------|---------|
+| `--context-mode-mcp` | Installs [context-mode](https://github.com/mksglu/context-mode) routing rules (`AGENTS.md`) and enforcement hooks (Claude Code only). |
 
 ---
 
@@ -63,12 +69,17 @@ For each tool, the script:
 │   ├── planifest-docs-agent/SKILL.md
 │   ├── _planifest-templates/
 │   ├── _planifest-standards/
-│   └── _planifest-schemas/
+│   ├── _planifest-schemas/
 └── commands/
     ├── feature-pipeline.md
     ├── change-pipeline.md
     └── retrofit.md
+└── hooks/context-mode/ (if --context-mode-mcp)
+    ├── block-bash.sh
+    ├── block-grep.sh
+    └── block-webfetch.sh
 CLAUDE.md
+AGENTS.md (if --context-mode-mcp)
 ```
 
 ---
@@ -273,6 +284,32 @@ All seven tools share these conventions:
    .windsurf/
    .clinerules/
    ```
+
+---
+
+## Context-Mode Integration
+
+When the `--context-mode-mcp` flag is passed, the setup script performs additional integration steps to protect the agent's context window.
+
+### 1. Routing Rules (All Tools)
+
+A `context-mode-agents.md` template is copied to the project root as `AGENTS.md`. This file contains instructions for the agent to prefer `ctx_*` tools (provided by the context-mode MCP server) over native tools like `Grep` or `Bash`.
+
+### 2. Enforcement Hooks (Claude Code Only)
+
+For Claude Code, the script installs physical guardrails that prevent the agent from bypassing the routing rules.
+
+- **Hook scripts** are copied from `planifest-framework/hooks/context-mode/` to `.claude/hooks/context-mode/`.
+- **Settings integration**: `.claude/settings.json` is updated (via `jq` on Unix or PowerShell on Windows) to register these scripts as `PreToolUse` hooks.
+
+| Hook | Intercepted Tool | Logic |
+|------|-----------------|-------|
+| `block-grep.sh` | `Grep` | Always blocked. Redirects to `ctx_execute`. |
+| `block-bash.sh` | `Bash` | Blocked if command matches patterns: `grep`, `rg`, `curl`, `wget`. |
+| `block-webfetch.sh` | `WebFetch` | Always blocked. Redirects to `ctx_fetch_and_index`. |
+
+**Bash Allowlist**: The following commands are always allowed through `block-bash.sh`:
+`git`, `mkdir`, `rm`, `mv`, `cd`, `ls`, `npm install`, `pip install`.
 
 ---
 

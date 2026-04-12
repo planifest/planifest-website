@@ -114,6 +114,8 @@ Tool: {agent tool used}
 
 ### Drift Detection
 
+> **Context-Mode Protocol:** When `ctx_batch_execute` is available, run all drift checks as a single batch call — pass grep/find commands for each check type in `commands` and your consistency questions in `queries`. This replaces sequential file reads across `src/`, `plan/`, and `docs/` — only drift findings enter context.
+
 Perform these specific drift checks:
 
 | Check | Source of Truth | Verify Against | Action if Drift Found |

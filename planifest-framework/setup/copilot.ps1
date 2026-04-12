@@ -9,5 +9,8 @@
     SkillsDir    = '.github\skills'
     WorkflowsDir = '.github\copilot-workflows'
     BootFile     = '.github\copilot-instructions.md'
-    BootTemplate = "planifest-framework/templates/standard-boot.md"
+    BootTemplate   = "planifest-framework/templates/standard-boot.md"
+    # context-mode MCP routing rules — installed when --context-mode-mcp is passed
+    AgentsFile     = '.github\instructions\context-mode.md'
+    AgentsTemplate = "planifest-framework/templates/context-mode-agents.md"
 }

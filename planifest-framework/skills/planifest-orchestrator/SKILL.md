@@ -407,6 +407,8 @@ The coaching conversation in Phase 0 and the pipeline phases are the same regard
 
 **Retrofit** - An existing codebase exists. Before coaching, perform a structured discovery:
 
+> **Context-Mode Protocol:** When `ctx_batch_execute` is available, run all discovery steps as a single batch call — pass shell commands in the `commands` array and your key questions in the `queries` array. Raw output stays in the sandbox; only the indexed summary enters context.
+
 1. **Scan for entry points:** `package.json`, `go.mod`, `requirements.txt`, `Cargo.toml`, `Makefile`, `Dockerfile`, `docker-compose.yml` - these reveal the stack
 2. **Identify components:** Each directory with its own build/test configuration is a candidate component. Create a `component.yml` for each.
 3. **Map data ownership:** Find database connections, ORM configurations, migration files. Determine which component owns which tables/collections.

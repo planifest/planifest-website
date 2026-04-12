@@ -31,6 +31,8 @@ bundle_standards: [code-quality-standards.md, testing-standards.md, api-design-s
 
 ## Process
 
+> **Context-Mode Protocol:** When `ctx_execute` is available, run CI checks via `ctx_execute(language:"shell", code:"...")` so that large test/build output stays in the sandbox — only the failure summary enters context. Use `ctx_execute_file` to read failing source files for analysis without loading them into context.
+
 Run the project's CI checks in this strict order:
 
 1. **Semantic Correctness** - Verify that every functional requirement from `plan/current/requirements/` has a mapped, executing test case identifiable by its req-ID. If logic exists without a covering test, semantic validation fails.

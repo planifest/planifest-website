@@ -7,18 +7,24 @@
     Each tool's specific config lives in setup/<tool>.ps1.
     This script handles shared logic only.
 
-.PARAMETER Tool
-    The agentic tool to configure: claude-code, cursor, codex, antigravity, copilot, windsurf, cline, or all.
-
 .EXAMPLE
     .\planifest-framework\setup.ps1 claude-code
+    .\planifest-framework\setup.ps1 claude-code --context-mode-mcp
     .\planifest-framework\setup.ps1 all
 #>
 
-param(
-    [Parameter(Position = 0)]
-    [string]$Tool
-)
+# Manual arg parsing — supports --flag style for cross-platform consistency
+$Tool = $null
+$ContextModeMcp = $false
+foreach ($arg in $args) {
+    switch ($arg) {
+        '--context-mode-mcp' { $ContextModeMcp = $true }
+        default {
+            if ($arg -like '-*') { Write-Host "Unknown flag: $arg"; exit 1 }
+            else { $Tool = $arg }
+        }
+    }
+}
 
 $ErrorActionPreference = 'Stop'
 
@@ -153,6 +159,89 @@ function Copy-PlanifestWorkflow {
     New-Item -ItemType Directory -Path $TargetDir -Force | Out-Null
     Copy-Item -Path $WorkflowFile -Destination $destFile -Force
     Write-Host "  + workflows/$name.md"
+}
+
+function Merge-HookSettings {
+    # Merge PreToolUse hook entries into .claude/settings.json (REQ-004)
+    # Additive merge: existing content preserved; Grep/Bash/WebFetch entries
+    # removed then re-added for idempotency on re-run.
+    param(
+        [string]$SettingsPath,
+        [string]$HooksDir   # relative path used in command values
+    )
+
+    $newEntries = @(
+        @{ matcher = "Grep";     hooks = @(@{ type = "command"; command = "$HooksDir/block-grep.sh" }) }
+        @{ matcher = "Bash";     hooks = @(@{ type = "command"; command = "$HooksDir/block-bash.sh" }) }
+        @{ matcher = "WebFetch"; hooks = @(@{ type = "command"; command = "$HooksDir/block-webfetch.sh" }) }
+    )
+
+    if (Test-Path $SettingsPath) {
+        # Additive merge using PowerShell JSON handling
+        $existing = Get-Content -Raw -Path $SettingsPath | ConvertFrom-Json -Depth 10
+
+        # Ensure hooks.PreToolUse exists
+        if (-not $existing.hooks) {
+            $existing | Add-Member -NotePropertyName 'hooks' -NotePropertyValue ([PSCustomObject]@{}) -Force
+        }
+        if (-not $existing.hooks.PreToolUse) {
+            $existing.hooks | Add-Member -NotePropertyName 'PreToolUse' -NotePropertyValue @() -Force
+        }
+
+        # Remove existing Grep/Bash/WebFetch entries, then append new ones
+        $toRemove = @('Grep', 'Bash', 'WebFetch')
+        $filtered = @($existing.hooks.PreToolUse | Where-Object { $toRemove -notcontains $_.matcher })
+        $existing.hooks.PreToolUse = $filtered + $newEntries
+
+        $existing | ConvertTo-Json -Depth 10 | Set-Content -Path $SettingsPath -Encoding UTF8
+        Write-Host "  ~ .claude/settings.json (context-mode hook entries merged)"
+    }
+    else {
+        $dir = Split-Path -Parent $SettingsPath
+        if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+
+        $settings = [PSCustomObject]@{
+            hooks = [PSCustomObject]@{
+                PreToolUse = $newEntries
+            }
+        }
+        $settings | ConvertTo-Json -Depth 10 | Set-Content -Path $SettingsPath -Encoding UTF8
+        Write-Host "  + .claude/settings.json (created with context-mode hook entries)"
+    }
+}
+
+function Install-ContextModeHooks {
+    # Copy enforcement hook scripts and wire settings.json (REQ-004)
+    param(
+        [string]$HooksSrcRel,    # relative to ScriptDir  e.g. hooks/context-mode
+        [string]$HooksDirRel,    # relative to ProjectRoot e.g. .claude/hooks/context-mode
+        [string]$SettingsRel     # relative to ProjectRoot e.g. .claude/settings.json
+    )
+
+    $src      = Join-Path $ScriptDir $HooksSrcRel
+    $dest     = Join-Path $ProjectRoot $HooksDirRel
+    $settings = Join-Path $ProjectRoot $SettingsRel
+
+    if (-not (Test-Path $src)) {
+        Write-Host "  ! Warning: hook scripts not found at $src — skipping hook installation"
+        return
+    }
+
+    Write-Host ""
+    Write-Host "  Installing context-mode enforcement hooks"
+
+    # Create target directory
+    New-Item -ItemType Directory -Path $dest -Force | Out-Null
+
+    # Copy each script
+    Get-ChildItem -Path $src -Filter '*.sh' | ForEach-Object {
+        $destFile = Join-Path $dest $_.Name
+        Copy-Item -Path $_.FullName -Destination $destFile -Force
+        Write-Host "  + $HooksDirRel/$($_.Name)"
+    }
+
+    # Merge settings.json wiring
+    Merge-HookSettings -SettingsPath $settings -HooksDir $HooksDirRel
 }
 
 function Invoke-PlanifestGuardrails {
@@ -499,6 +588,21 @@ function Invoke-PlanifestSetup {
         Write-PlanifestBootFile -RelPath $toolConfig.BootFile -Content $bootContent
     }
 
+    # Install context-mode MCP routing rules if --context-mode-mcp flag is set
+    if ($ContextModeMcp -and $toolConfig.AgentsFile -and $toolConfig.AgentsTemplate) {
+        $agentsContentPath = Join-Path $ProjectRoot $toolConfig.AgentsTemplate
+        $agentsContent = Get-Content -Raw -Path $agentsContentPath
+        Write-PlanifestBootFile -RelPath $toolConfig.AgentsFile -Content $agentsContent
+    }
+
+    # Install context-mode enforcement hooks if --context-mode-mcp flag is set (REQ-004)
+    if ($ContextModeMcp -and $toolConfig.HooksSrc -and $toolConfig.HooksDir -and $toolConfig.SettingsFile) {
+        Install-ContextModeHooks `
+            -HooksSrcRel  $toolConfig.HooksSrc `
+            -HooksDirRel  $toolConfig.HooksDir `
+            -SettingsRel  $toolConfig.SettingsFile
+    }
+
     Write-Host "  Done."
 }
 
@@ -508,13 +612,18 @@ if (-not $Tool) {
     Write-Host ""
     Write-Host "Planifest Setup"
     Write-Host ""
-    Write-Host "Usage: .\planifest-framework\setup.ps1 [tool]"
+    Write-Host "Usage: .\planifest-framework\setup.ps1 [tool] [--context-mode-mcp]"
     Write-Host ""
     Write-Host "Tools:"
     foreach ($t in $ValidTools) {
         Write-Host "  $t"
     }
     Write-Host "  all"
+    Write-Host ""
+    Write-Host "Flags:"
+    Write-Host "  --context-mode-mcp   Install context-mode MCP routing rules file"
+    Write-Host "                       (only needed if context-mode MCP plugin is installed)"
+    Write-Host "                       See: https://github.com/mksglu/context-mode"
     Write-Host ""
     Write-Host "Run from the repository root."
     Write-Host "Each tool's config: planifest-framework\setup\[tool].ps1"
